@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé Chapitre 1 – Traitement du signal</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<style>
+:root{
+  --bg:#fbfaf7; --fg:#1f2328; --muted:#5b6370; --card:#ffffff; --border:#e3e0d8;
+  --accent:#2457a6; --tip-bg:#eef6ee; --tip-bd:#3c8a46; --warn-bg:#fff4e5; --warn-bd:#d9822b;
+  --ex-bg:#eef3fb; --ex-bd:#2457a6; --key-bg:#fdf0f0; --key-bd:#c0392b; --th:#f1eee6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181c; --fg:#e6e6e6; --muted:#a0a7b4; --card:#1e2127; --border:#333842;
+    --accent:#7aa7ff; --tip-bg:#1b2a1e; --tip-bd:#5fb36b; --warn-bg:#2d2416; --warn-bd:#e09a4a;
+    --ex-bg:#1a2333; --ex-bd:#7aa7ff; --key-bg:#2e1c1c; --key-bd:#e06b5e; --th:#262a31;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.7 "Segoe UI",system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:1.9rem;line-height:1.25;margin:.2em 0}
+h2{font-size:1.45rem;margin-top:2.2em;padding-bottom:.3em;border-bottom:2px solid var(--accent);color:var(--accent)}
+h3{font-size:1.15rem;margin-top:1.8em}
+h4{margin:1.2em 0 .3em}
+.sub{color:var(--muted);margin-top:0}
+nav{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 20px;margin:20px 0}
+nav ol{margin:.3em 0;padding-left:1.3em}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:var(--card);display:block;overflow-x:auto}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--th)}
+.box{border-left:4px solid;border-radius:8px;padding:10px 14px;margin:14px 0}
+.box p{margin:.3em 0}
+.box ul{margin:.3em 0}
+.tip{background:var(--tip-bg);border-color:var(--tip-bd)}
+.warn{background:var(--warn-bg);border-color:var(--warn-bd)}
+.ex{background:var(--ex-bg);border-color:var(--ex-bd)}
+.key{background:var(--key-bg);border-color:var(--key-bd)}
+.box b.lbl{display:block;margin-bottom:2px}
+.formula{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;margin:10px 0;overflow-x:auto}
+pre{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;overflow-x:auto;font-size:14px;line-height:1.4}
+.star{color:#d4a017}
+.grid4{display:grid;grid-template-columns:auto 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:12px 0}
+.grid4 div{padding:10px;border:1px solid var(--border);background:var(--card)}
+.grid4 .h{background:var(--th);font-weight:600}
+ul.check{list-style:none;padding-left:0}
+ul.check li::before{content:"☐  "}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:4px 0;position:relative}
+table,.formula,pre,.box{position:relative}
+:root{--c1:#2563c9;--c2:#e0701a;--c3:#2e9445;--c4:#8a3fc7;--c5:#0f8f8f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c1:#7aa7ff;--c2:#ff9a4d;--c3:#5fcf78;--c4:#c08bff;--c5:#4fd1c5}}
+.figs{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:10px;margin:16px auto}
+.figs figure{margin:0;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 6px 8px}
+.figs figure.wide{grid-column:1/-1}
+.figs figcaption{font-size:13.5px;color:var(--muted);text-align:center;line-height:1.4;padding:2px 4px}
+.figcap{font-size:14px;color:var(--muted);text-align:center;margin-top:-6px}
+.plot{width:100%;height:auto;display:block}
+.plot text{font-family:"Segoe UI",system-ui,sans-serif}
+.plot .small{font-size:11px;fill:var(--muted)}
+.plot .lab{font-size:12px;fill:var(--fg);font-style:italic}
+.plot .mid{font-size:14px;fill:var(--fg)}
+.plot .big{font-size:20px;font-weight:700;fill:var(--fg)}
+.plot .big2{font-size:15px;font-weight:700;fill:var(--fg)}
+.plot .ax{stroke:var(--muted);stroke-width:1.2}
+.plot .guide{stroke:var(--muted);stroke-dasharray:3 3;stroke-width:.8;opacity:.6}
+@media (max-width:640px){.figs{grid-template-columns:1fr !important}}
+@media print{ body{background:#fff;color:#000} nav{display:none} h2{page-break-before:auto} }
+</style>
+</head>
+<body>
+<main>
+
+<h1>📘 Chapitre I : Introduction au traitement du signal</h1>
+<p class="sub">Résumé détaillé pour débutant, avec astuces. Cours d'E. Abdelmounim, FST Settat.</p>
+
+<nav>
+<b>Sommaire</b>
+<ol>
+<li><a href="#p1">Définitions de base</a></li>
+<li><a href="#p2">Les fonctions principales du traitement du signal</a></li>
+<li><a href="#p3">Les domaines d'application</a></li>
+<li><a href="#p4">La classification des signaux</a> <span class="star">★★</span></li>
+<li><a href="#p5">Les signaux usuels</a> <span class="star">★★</span></li>
+<li><a href="#fin">À retenir et checklist</a></li>
+</ol>
+<p style="margin:.3em 0;color:var(--muted)">Légende : <span class="star">★</span> important, <span class="star">★★</span> très important.
+Encadrés : <span style="color:var(--tip-bd)">vert = astuce</span>, <span style="color:var(--warn-bd)">orange = piège</span>, <span style="color:var(--ex-bd)">bleu = exemple</span>.</p>
+</nav>
+
+<!-- ============ PARTIE 1 ============ -->
+<h2 id="p1">Partie 1 : Définitions de base</h2>
+
+<h3>1.1 C'est quoi un signal ?</h3>
+<ul>
+<li><b>Un signal, c'est toute grandeur qui porte une information.</b></li>
+<li>C'est la <b>forme physique d'une grandeur qu'on peut mesurer</b> : un courant, une tension, une force, une température, une pression…</li>
+<li>Il est <b>produit par un système physique</b> et on le <b>récupère avec un capteur</b>.</li>
+</ul>
+<div class="box ex"><b class="lbl">🧠 Exemple</b>
+<p>Un thermomètre électronique est un capteur. Il transforme la température en une tension. Cette tension est le signal, et l'information qu'elle porte, c'est la température.</p></div>
+
+<h3>1.2 Le traitement du signal (TS)</h3>
+<ul>
+<li>Son but : <b>étudier et traiter l'information portée par les signaux</b>.</li>
+<li>Il mélange <b>les sciences fondamentales</b> (maths, physique appliquée) et <b>la technologie</b> (électronique, informatique industrielle).</li>
+</ul>
+
+<h3>1.3 Le traitement numérique du signal (TNS / DSP)</h3>
+<ul>
+<li><b>DSP = Digital Signal Processing</b>, en français TNS (Traitement Numérique du Signal).</li>
+<li>Il travaille sur des <b>signaux numériques</b>, c'est-à-dire des suites de nombres.</li>
+<li>Il utilise des processeurs spécialisés, appelés <b>DSP (Digital Signal Processors)</b>.</li>
+<li>Dans le monde réel, les signaux sont <b>analogiques</b> : ils varient de façon continue. Pour les rendre numériques, on passe par un <b>CAN (Convertisseur Analogique/Numérique)</b>.</li>
+</ul>
+<div class="box warn"><b class="lbl">⚠️ Astuce : le sigle « DSP » a plusieurs sens</b>
+<ul>
+<li><i>Digital Signal <b>Processing</b></i> : la discipline.</li>
+<li><i>Digital Signal <b>Processor</b></i> : la puce.</li>
+<li>Plus loin : <i>Densité Spectrale de Puissance</i>.</li>
+</ul>
+<p>Il faut regarder le contexte pour savoir lequel.</p></div>
+
+<p><b>Signal analogique et signal discret (graphes du cours) :</b></p>
+<ul>
+<li><b>Analogique</b> : une courbe continue, qui a une valeur à chaque instant \(t\).</li>
+<li><b>Discret</b> : des points pris seulement à certains instants (des « bâtons »).</li>
+</ul>
+
+<div class="figs" data-fig="anadis"></div>
+
+<h3>1.4 La numérisation <span class="star">★</span></h3>
+<div class="box key"><p style="font-size:1.15em;text-align:center"><b>Numérisation = Échantillonnage + Quantification + Codage</b></p></div>
+<p>On les fait dans cet ordre :</p>
+<table>
+<tr><th>Étape</th><th>Ce qu'on fait</th><th>Formule</th><th>Explication simple</th></tr>
+<tr><td><b>1. Échantillonnage</b></td><td>On découpe le <b>temps</b> en instants séparés</td><td>\(t = N\,T_e\)</td><td>On prend une mesure toutes les \(T_e\) secondes. \(T_e\) est la <b>période d'échantillonnage</b> et \(N\) le numéro de la mesure (0, 1, 2…).</td></tr>
+<tr><td><b>2. Quantification</b></td><td>On découpe les <b>amplitudes</b> (les valeurs)</td><td>\(A = M\,q\)</td><td>On arrondit chaque valeur au multiple le plus proche du <b>pas de quantification \(q\)</b>. \(M\) est un entier.</td></tr>
+<tr><td><b>3. Codage</b></td><td>On écrit \(M\) en <b>binaire</b> (0 et 1)</td><td>\(M_{\text{décimal}} \to \text{binaire}\)</td><td>Par exemple \(5 \to 101\)</td></tr>
+</table>
+<p><b>Les étapes en images, sur un même signal :</b></p>
+<div class="figs" data-fig="num"></div>
+<p><b>Le codage des 8 premiers échantillons :</b></p>
+<div id="codage"></div>
+<p>Le résultat ressemble à : <code>011001110101010111000111</code></p>
+<ul>
+<li><b>Pourquoi des 0 et des 1 ?</b> Parce que c'est le langage des ordinateurs et des processeurs numériques.</li>
+<li><b>Ce qu'on gagne avec le numérique :</b> on peut <b>l'archiver</b>, <b>le transmettre</b> et <b>le traiter</b> avec un ordinateur.</li>
+</ul>
+<div class="box ex"><b class="lbl">🧠 Exemple concret</b>
+<p>On mesure une tension de 3,7 V. On prend \(q = 1\) V, donc on arrondit à 4 V et \(M = 4\). En binaire, 4 s'écrit 100.</p></div>
+<div class="box tip"><b class="lbl">💡 Astuce mémoire</b>
+<ul>
+<li>échantillonnage → on agit sur le <b>temps</b> (axe horizontal)</li>
+<li>quantification → on agit sur l'<b>amplitude</b> (axe vertical)</li>
+<li>codage → on passe en <b>binaire</b></li>
+</ul></div>
+
+<h3>1.5 Le bruit</h3>
+<ul>
+<li><b>Le bruit, c'est tout phénomène qui gêne</b> la perception ou l'interprétation d'un signal : interférences, bruit de fond…</li>
+<li><span class="star">★</span> <b>La différence entre signal et bruit dépend de l'utilisateur.</b> La notion de bruit est <b>relative</b>, elle dépend du contexte.</li>
+</ul>
+<p><b>L'exemple du cours :</b></p>
+<table>
+<tr><th></th><th>Onde d'un satellite</th><th>Signal d'une source astrophysique (une étoile…)</th></tr>
+<tr><td>Technicien en télécom</td><td><b>signal</b> ✅</td><td>bruit ❌</td></tr>
+<tr><td>Astronome</td><td>bruit ❌</td><td><b>signal</b> ✅</td></tr>
+</table>
+<p>Le même phénomène peut donc être utile pour l'un et gênant pour l'autre.</p>
+
+<h3>1.6 Le rapport signal sur bruit (SNR) <span class="star">★</span></h3>
+<p>Il mesure <b>à quel point le signal est pollué par le bruit</b>. Avec \(P_s\) la puissance du signal et \(P_b\) la puissance du bruit :</p>
+<div class="formula">\[ SNR = \frac{P_s}{P_b} \qquad\qquad SNR_{dB} = 10\,\log_{10}(SNR) \]</div>
+<p><b>Le même signal avec plus ou moins de bruit :</b></p>
+<div class="figs" data-fig="bruit"></div>
+<div class="box tip"><b class="lbl">💡 Astuces de calcul (log₁₀)</b>
+<table>
+<tr><th>\(SNR\)</th><th>1</th><th>2</th><th>10</th><th>100</th><th>1000</th><th>0,1</th></tr>
+<tr><th>\(SNR_{dB}\)</th><td>0 dB</td><td>≈ 3 dB</td><td>10 dB</td><td>20 dB</td><td>30 dB</td><td>−10 dB</td></tr>
+</table>
+<ul>
+<li>Retiens : <b>chaque fois qu'on multiplie par 10, on ajoute 10 dB.</b></li>
+<li>0 dB : le signal et le bruit ont la même puissance.</li>
+<li>Un <b>grand SNR = bonne qualité</b>, avec peu de bruit. Un SNR <b>négatif</b> en dB veut dire que le bruit est plus fort que le signal.</li>
+</ul></div>
+
+<!-- ============ PARTIE 2 ============ -->
+<h2 id="p2">Partie 2 : Les fonctions principales du traitement du signal</h2>
+<p><b>L'idée générale :</b> l'homme échange énormément d'information avec la nature et avec les machines qu'il construit. Ces échanges se font par :</p>
+<ul>
+<li>l'<b>observation</b>, c'est-à-dire la mesure de phénomènes physiques,</li>
+<li>le <b>dialogue</b>, c'est-à-dire la communication entre hommes, entre l'homme et la machine, ou entre machines.</li>
+</ul>
+<p>Ils passent par des <b>signaux</b> (des fonctions du temps) ou des <b>images</b>. Ces signaux sont souvent complexes et <b>masqués par des perturbations</b> : bruit de fond, parasites, interférences.</p>
+<p>👉 Une tâche essentielle du TS est donc d'<b>extraire l'information utile</b> (par analyse, filtrage, régénération, mesure, détection, identification), puis de <b>présenter le résultat</b> sous une forme adaptée à l'homme ou à la machine.</p>
+
+<h3>Le schéma récapitulatif (diapo 15) <span class="star">★</span></h3>
+<p>Au centre il y a le <b>Signal</b>, et les fonctions se rangent en <b>deux familles</b> :</p>
+<div class="figs" data-fig="schema"></div>
+<table>
+<tr><th>⬅️ <b>Élaboration des signaux</b><br><small>(on fabrique ou on met de l'information dans le signal)</small></th><th>➡️ <b>Interprétation des signaux</b><br><small>(on extrait l'information du signal)</small></th></tr>
+<tr><td>Synthèse<br>Modulation / changement de fréquence<br>Codage</td><td>Analyse<br>Mesure<br>Filtrage<br>Régénération<br>Détection<br>Identification</td></tr>
+</table>
+<div class="box tip"><b class="lbl">💡 Astuce</b><p>À gauche on <b>incorpore</b> de l'information, à droite on <b>extrait</b> de l'information. Ce schéma peut tomber en question de cours.</p></div>
+
+<h3>Chaque fonction expliquée</h3>
+
+<h4>🔍 Analyse</h4>
+<ul>
+<li>On cherche à <b>isoler les composantes essentielles</b> d'un signal compliqué, pour mieux comprendre <b>sa nature et son origine</b>.</li>
+<li>Analyse = <b>décomposer</b> le signal en éléments de base.</li>
+<li>Outil principal : l'<b>analyse spectrale</b> (DSP = densité spectrale de puissance, TF = transformée de Fourier, analyse temps-fréquence…).</li>
+</ul>
+
+<h4>🧩 Synthèse</h4>
+<ul><li>C'est <b>l'opération inverse de l'analyse</b> : on <b>reconstruit</b> un signal à partir de ses éléments de base, en combinant des signaux élémentaires.</li></ul>
+<div class="box tip"><p>💡 Analyse = démonter un Lego. Synthèse = remonter le Lego.</p></div>
+<div class="figs" data-fig="anasyn"></div>
+<p class="figcap"><b>Analyse</b> : on part du signal complet (à droite) et on retrouve ses 2 composantes. <b>Synthèse</b> : on additionne les 2 composantes pour fabriquer le signal.</p>
+
+<h4>📏 Mesure</h4>
+<ul>
+<li>Mesurer un signal, surtout un signal aléatoire, c'est <b>estimer la valeur d'une grandeur caractéristique</b> (par exemple sa moyenne), <b>avec un certain degré de confiance</b>.</li>
+<li>On dit « estimer » et pas « connaître exactement », parce qu'avec un signal aléatoire on n'est jamais sûr à 100 %.</li>
+</ul>
+
+<h4>🧹 Filtrage</h4>
+<p>On <b>élimine</b> d'un signal certaines composantes <b>indésirables</b>. Exemples :</p>
+<ul>
+<li>enlever la <b>composante DC</b> (la partie continue, la valeur moyenne constante) d'un signal,</li>
+<li><b>annuler l'écho</b> dans un appel téléphonique,</li>
+<li>enlever le <b>bruit sur une image</b>.</li>
+</ul>
+
+<div class="figs" data-fig="filtre"></div>
+
+<h4>🔧 Régénération</h4>
+<ul><li>On essaie de <b>rendre au signal sa forme d'origine</b> après les <b>déformations</b> (distorsions) qu'il a subies pendant son trajet.</li></ul>
+
+<div class="figs" data-fig="regen"></div>
+
+<h4>🎯 Détection</h4>
+<ul>
+<li>On essaie d'<b>extraire un signal utile du bruit de fond</b> qui se superpose à lui.</li>
+<li>Exemples : détecter des <b>craquements</b> sur un enregistrement, ou repérer le <b>bruit anormal d'une machine</b>, qui est la <b>signature d'un type de panne</b>.</li>
+</ul>
+
+<div class="figs" data-fig="detect"></div>
+
+<h4>🏷️ Identification</h4>
+<ul>
+<li>Elle vient souvent <b>en complément</b> de la détection : elle <b>classe</b> le signal observé.</li>
+<li>Exemples : reconnaître une <b>maladie sur un ECG</b> (électrocardiogramme), la <b>reconnaissance de la parole</b>.</li>
+</ul>
+<div class="box tip"><b class="lbl">💡 Ne pas confondre</b>
+<ul><li><b>Détection</b> : « est-ce qu'il y a quelque chose ? »</li><li><b>Identification</b> : « c'est quoi exactement ? »</li></ul></div>
+
+<h4>💾 Codage (3 types) <span class="star">★</span></h4>
+<p>En plus de traduire le signal en 0 et 1, le codage sert à trois choses :</p>
+<table>
+<tr><th>Type</th><th>But</th><th>Méthode</th></tr>
+<tr><td><b>Codage canal</b> (correcteur d'erreurs)</td><td>Lutter contre le <b>bruit</b></td><td>On <b>ajoute</b> de la redondance (des bits en plus pour vérifier et corriger)</td></tr>
+<tr><td><b>Codage source</b></td><td><b>Économiser</b> la bande passante ou la mémoire</td><td>On <b>diminue</b> la redondance (c'est la compression)</td></tr>
+<tr><td><b>Codage ligne</b></td><td>Transformer les 0 et 1 logiques en <b>signaux électriques</b> physiques</td><td>Pour qu'ils puissent circuler sur les canaux de transmission</td></tr>
+</table>
+<div class="box warn"><b class="lbl">⚠️ Piège classique</b><p>Le codage canal <b>ajoute</b> de la redondance, le codage source en <b>enlève</b>. Ils font l'inverse l'un de l'autre.</p></div>
+
+<h4>📡 Modulation et changement de fréquence</h4>
+<p>Ils servent à :</p>
+<ul>
+<li><b>adapter un signal aux fréquences</b> que peut transporter une voie de transmission,</li>
+<li><b>réduire la taille des antennes</b> quand on transmet par ondes électromagnétiques.</li>
+</ul>
+<div class="box ex"><b class="lbl">🧠 Pourquoi les antennes ?</b>
+<p>La taille d'une antenne dépend de la longueur d'onde \(\lambda = \dfrac{c}{F}\). Plus la fréquence est <b>haute</b>, plus \(\lambda\) est <b>petite</b>, donc plus l'antenne est <b>petite</b>. La modulation fait monter le signal en fréquence.</p></div>
+
+<p><b>La modulation en images :</b></p>
+<div class="figs" data-fig="modul"></div>
+
+<!-- ============ PARTIE 3 ============ -->
+<h2 id="p3">Partie 3 : Les domaines d'application</h2>
+<p><b>Exemples de signaux :</b> vibrations sismiques, images satellite, signaux biomédicaux (ECG), la parole, les sons musicaux…</p>
+<p><b>Le domaine d'application est universel :</b> télécommunications, audio (parole et musique), radar, sonar, sismologie, imagerie (médicale ou spatiale), automobile, instrumentation, électroménager…</p>
+
+<h3>3.1 Les télécommunications</h3>
+<ul>
+<li>Le but est de <b>transporter de l'information d'un point à un autre</b> : appels téléphoniques, télévision, données informatiques…</li>
+<li>Il faut un <b>canal</b> entre les deux points : une paire de fils, une onde hertzienne, une fibre optique…, avec l'électronique qui va avec.</li>
+<li><span class="star">★</span> <b>Objectif : faire passer un maximum d'information en un minimum de temps et avec un minimum de canaux.</b></li>
+<li>La technologie DSP a <b>bouleversé</b> l'industrie des télécoms.</li>
+</ul>
+
+<h4>a) Le multiplexage</h4>
+<ul>
+<li>On convertit les signaux analogiques en données numériques, on <b>intercale des paquets de bits</b> puis on les sépare à l'arrivée. On peut ainsi faire passer <b>plusieurs conversations sur un même canal</b>.</li>
+<li>Exemple en téléphonie : on transmet <b>24 voies en même temps</b>. Chaque voie est <b>échantillonnée 8000 fois par seconde (8 kHz)</b> et chaque échantillon est codé sur <b>8 bits</b>.</li>
+<li>L'<b>avantage économique</b> est énorme.</li>
+</ul>
+<div class="figs" data-fig="mux"></div>
+<div class="box tip"><b class="lbl">💡 Petit calcul utile (classique en exercice)</b>
+\[ D_{\text{1 voie}} = 8000\ \tfrac{\text{éch}}{\text{s}} \times 8\ \tfrac{\text{bits}}{\text{éch}} = 64\,000\ \text{bit/s} = 64\ \text{kbit/s} \]
+\[ D_{\text{24 voies}} = 24 \times 64\ \text{kbit/s} = 1536\ \text{kbit/s} \approx 1{,}5\ \text{Mbit/s} \]
+</div>
+
+<h4>b) La compression</h4>
+<ul>
+<li>À 8 kHz, une grande partie de l'information d'une conversation est <b>redondante</b> : un échantillon ressemble beaucoup à ses voisins.</li>
+<li>Des dizaines d'algorithmes DSP numérisent la voix avec <b>moins de bits par seconde</b> : ce sont les <b>algorithmes de compression</b>.</li>
+<li>Les <b>algorithmes de décompression</b> donnent un signal <b>proche</b> de l'original, pas forcément identique.</li>
+<li>On compare ces algorithmes par leur <b>taux de compression</b>. Exemple : le <b>MP3</b>.</li>
+</ul>
+
+<h4>c) Le contrôle d'écho</h4>
+<ul>
+<li>L'écho gêne les appels à <b>longue distance</b>.</li>
+<li>Sur une connexion courte (quelques km), le retard est de quelques <b>millisecondes</b>, ce qui gêne peu : l'oreille y est habituée.</li>
+<li>Sur une longue distance (satellite intercontinental), le retard peut aller jusqu'à <b>quelques secondes</b>, ce qui est très gênant.</li>
+<li><b>La solution DSP :</b> on <b>mesure le signal de retour</b> et on <b>génère un « anti-signal »</b>. Ajouté à la voix, il <b>annule l'écho</b>. (Vu en TD et en TP.)</li>
+</ul>
+
+<div class="figs" data-fig="echo"></div>
+
+<h3>3.2 Le traitement des signaux acoustiques</h3>
+<p>Nos deux sens principaux sont <b>la vue et l'ouïe</b>. Une grande partie des applications DSP concerne donc <b>l'image</b> et le <b>son</b> (son et parole).</p>
+
+<h3>3.3 La localisation par écho</h3>
+<p><b>Le principe :</b> on envoie une onde, elle <b>rebondit</b> sur l'objet, et on analyse l'<b>écho</b>.</p>
+<table>
+<tr><th>Application</th><th>Type d'onde</th></tr>
+<tr><td><b>RADAR</b> (<i>RAdio Detecting And Ranging</i>)</td><td>ondes <b>radio</b></td></tr>
+<tr><td><b>SONAR</b> (<i>SOund NAvigation and Ranging</i>)</td><td>ondes <b>acoustiques</b> dans l'<b>eau</b></td></tr>
+<tr><td><b>Géologie</b></td><td>explosions, puis analyse des échos pour trouver les couches de densités différentes</td></tr>
+<tr><td><b>Échographie</b> (médecine)</td><td>ondes <b>ultrasonores</b></td></tr>
+</table>
+
+<div class="figs" data-fig="radar"></div>
+<div class="box tip"><b class="lbl">💡 Astuce (en plus du cours) : calculer la distance</b><p>L'onde fait l'<b>aller-retour</b>. Si l'écho revient après un temps \(\tau\) et que l'onde va à la vitesse \(v\), la distance de l'objet est \(d = \dfrac{v\,\tau}{2}\). On divise par 2 à cause de l'aller-retour.</p></div>
+
+<h3>3.4 Le traitement d'image</h3>
+<ul>
+<li>Une image est un signal <b>particulier</b> : c'est une intensité mesurée <b>dans l'espace, \(I(x,y)\)</b>, alors que la plupart des signaux sont mesurés <b>dans le temps</b>.</li>
+<li>Elle contient <b>énormément d'information</b> : il faut plus de <b>10 Mo pour une seconde de vidéo</b>, soit <b>plus de 1000 fois</b> plus que pour un son de même durée.</li>
+<li>C'est un <b>sous-groupe à part</b> des techniques DSP.</li>
+<li><b>Les traitements possibles :</b> réglage de la luminance et du contraste, combinaison d'images, détection de contours, suppression du bruit, réglage de la netteté, réduction du flou de bougé, correction des distorsions, compression, segmentation, reconnaissance.</li>
+</ul>
+<p>Chaque domaine a ses particularités, qui relèvent de la recherche scientifique, mais il existe des <b>traitements de base communs</b> à tous.</p>
+
+<!-- ============ PARTIE 4 ============ -->
+<h2 id="p4">Partie 4 : La classification des signaux <span class="star">★★</span></h2>
+<p>On classe les signaux selon <b>6 critères</b>. Les voici dans l'ordre du cours.</p>
+
+<h3>4.1 Signal mathématique ou signal physique</h3>
+<table>
+<tr><th>Signal <b>mathématique</b> \(s(t)\)</th><th>Signal <b>physique</b></th></tr>
+<tr><td>Fonction de paramètres, dont au moins le temps</td><td>Signal réel, <b>mesurable par un capteur</b> (un oscilloscope, par exemple)</td></tr>
+<tr><td>Peut être <b>discontinu</b></td><td><b>Continu</b></td></tr>
+<tr><td>Peut avoir une <b>énergie infinie</b></td><td><b>Énergie finie</b></td></tr>
+<tr><td>Amplitude non limitée</td><td><b>Amplitude maximale bornée</b></td></tr>
+<tr><td>Durée (support temporel) <b>infinie</b></td><td>Durée <b>finie</b></td></tr>
+<tr><td>Valeurs <b>réelles</b> \(s(t)=\cos(\omega t)\) ou <b>complexes</b> \(s(t)=A\,e^{j\omega t}\)</td><td><b>Réel</b> et <b>causal</b> : il est <b>nul pour \(t&lt;0\)</b></td></tr>
+<tr><td>Spectre <b>infini</b></td><td>Spectre <b>fini</b>, mesurable par un <b>analyseur de spectre</b></td></tr>
+</table>
+<div class="box tip"><b class="lbl">💡 Astuce</b><p>Un signal physique, c'est un signal qui <b>existe vraiment</b>. Il a commencé à un moment (causal), il finit un jour, il ne monte pas à l'infini, il ne peut pas être complexe et il ne fait pas de saut impossible. Le cosinus, lui, existe depuis \(t=-\infty\) jusqu'à \(+\infty\) : il est mathématique.</p></div>
+
+<div class="figs" data-fig="mathphys"></div>
+<p><b>Les exercices des diapos 31 à 33 (« ce signal est-il mathématique ou physique ? ») :</b></p>
+<ul>
+<li><b>Diapo 32</b> : la courbe part vers <b>l'infini</b> (asymptote verticale), donc l'amplitude n'est pas bornée → <b>mathématique</b>.</li>
+<li><b>Diapo 33</b> : la courbe démarre à \(t=0\), reste bornée et retombe vers 0 → <b>physique</b>.</li>
+<li><b>Diapo 34</b> : un signal de parole enregistré, en ms → <b>physique</b>.</li>
+</ul>
+<div class="box tip"><b class="lbl">💡 Méthode</b><p>Pose-toi ces questions. Est-ce que l'amplitude est bornée ? Est-ce que le signal est nul avant 0 ? Est-ce que sa durée est finie ? Est-ce qu'il est continu, sans saut ? Si tu réponds oui à tout, il est <b>physique</b>.</p></div>
+
+<h3>4.2 Classification temporelle (selon l'évolution dans le temps)</h3>
+
+<h4>a) Signaux déterministes</h4>
+<ul>
+<li>On peut les <b>prévoir</b> à partir de <b>lois simples</b>. On connaît les lois physiques et les conditions initiales, donc on peut prévoir le résultat.</li>
+<li>Exemple : la sortie d'un <b>filtre électronique RC</b>.</li>
+</ul>
+<p>Parmi eux, on distingue :</p>
+<ul>
+<li><b>Les signaux périodiques :</b> le signal se répète toutes les \(T\) secondes :
+\[ s(t) = s(t+T) \quad \forall t \qquad \text{exemple : } s(t) = A\cos\!\left(\frac{2\pi}{T}\,t + \varphi\right) \]</li>
+<li><b>Les signaux non périodiques</b>, qui sont de deux sortes :
+<ul>
+<li><b>pseudo-périodiques</b> : ils ressemblent à des signaux périodiques sans l'être exactement (par exemple une somme de sinusoïdes dont les fréquences n'ont pas de rapport simple),</li>
+<li><b>transitoires</b> : ils ont un <b>support temporel fini</b>. Le signal « vit » seulement entre \(t_1\) et \(t_2\) :
+\[ \exists\, t_1, t_2 \ / \ s(t) = 0 \ \text{ pour } t &lt; t_1 \text{ et pour } t &gt; t_2 \]</li>
+</ul></li>
+</ul>
+
+<div class="figs" data-fig="perio"></div>
+
+<h4>b) Signaux aléatoires</h4>
+<ul>
+<li>Il est <b>impossible de les reproduire à l'identique</b>. Leur comportement est <b>imprévisible</b> et on ne peut les décrire qu'avec des <b>statistiques</b>.</li>
+<li>Exemples : le bruit de fond d'un circuit électronique, les <b>cours de la bourse</b>, les signaux naturels (météo, séismes…).</li>
+<li>On les étudie avec la <b>théorie des probabilités</b> : <b>valeur moyenne, variance, autocorrélation</b>…</li>
+</ul>
+<p>Parmi eux, on distingue :</p>
+<ul>
+<li><b>Les signaux stationnaires :</b> leurs <b>statistiques ne dépendent pas du temps</b> (la moyenne et la variance restent les mêmes à n'importe quel moment). Ils se divisent en :
+<ul>
+<li><b>ergodiques</b> : <b>une seule réalisation</b> (un seul enregistrement) suffit pour estimer les statistiques, car <b>la moyenne temporelle est égale à la moyenne statistique</b>,</li>
+<li><b>non ergodiques</b>.</li>
+</ul></li>
+<li><b>Les signaux non stationnaires.</b></li>
+</ul>
+<div class="figs" data-fig="station"></div>
+<div class="box ex"><b class="lbl">🧠 Ergodique, expliqué simplement : imagine 1000 dés</b>
+<ul>
+<li><b>Moyenne statistique</b> : on lance les 1000 dés <b>en même temps</b> et on fait la moyenne.</li>
+<li><b>Moyenne temporelle</b> : on lance <b>un seul dé 1000 fois</b> et on fait la moyenne.</li>
+</ul>
+<p>Si les deux donnent le même résultat, le signal est <b>ergodique</b>. C'est pratique, parce qu'un seul enregistrement suffit.</p></div>
+
+<div class="figs" data-fig="detalea"></div>
+<p><b>Les exercices des diapos 37 et 38 (déterministe ou aléatoire ?) :</b></p>
+<ul>
+<li>Une courbe régulière, bien lisse et répétitive → <b>déterministe</b>.</li>
+<li>Une courbe irrégulière, en « dents de scie » imprévisibles → <b>aléatoire</b>.</li>
+</ul>
+
+<p><b>L'arbre de classification à connaître par cœur <span class="star">★</span> :</b></p>
+<pre>
+                           SIGNAUX
+              ┌───────────────┴───────────────┐
+        Déterministes                     Aléatoires
+        ┌─────┴──────┐                ┌───────┴────────┐
+   Périodiques  Non périodiques   Stationnaires   Non stationnaires
+                ┌─────┴──────┐        ┌─────┴──────┐
+       Pseudo-périodiques  Transitoires  Ergodiques  Non ergodiques
+</pre>
+<div class="box tip"><b class="lbl">💡 Astuce mémoire</b><p>À gauche on <b>P</b>révoit (<b>P</b>ériodique, <b>P</b>seudo-périodique). À droite on fait des <b>S</b>tatistiques (<b>S</b>tationnaire).</p></div>
+
+<h3>4.3 Classification énergétique <span class="star">★</span></h3>
+<p><b>L'énergie d'un signal :</b></p>
+<div class="formula">\[ E = \int_{-\infty}^{+\infty} s^2(t)\,dt \]</div>
+<p>Concrètement, on élève le signal au carré (pour que tout soit positif), puis on fait la somme (l'intégrale) sur tout le temps, de \(-\infty\) à \(+\infty\).</p>
+<ul>
+<li><b>Signaux à énergie finie</b> : \(E &lt; \infty\). Exemple : les <b>signaux transitoires</b>.</li>
+<li><b>Signaux à énergie infinie</b> : \(E = \infty\). On regarde alors leur <b>puissance moyenne</b> :</li>
+</ul>
+<div class="formula">\[ P = \lim_{T\to\infty} \frac{1}{T}\int_{-T/2}^{+T/2} s^2(t)\,dt \]</div>
+<p>La puissance moyenne, c'est l'énergie divisée par la durée : une énergie « par seconde ».</p>
+<ul>
+<li><b>puissance moyenne finie</b> : \(P &lt; \infty\) (exemple : un signal périodique comme le cosinus),</li>
+<li><b>puissance moyenne infinie</b> : \(P = \infty\).</li>
+</ul>
+<div class="figs" data-fig="energie"></div>
+<div class="box ex"><b class="lbl">🧠 Deux calculs pas à pas (exemples en plus du cours)</b>
+<p><b>1) Énergie de \(s(t)=e^{-t}\,U(t)\)</b> (le signal vaut 0 avant 0, donc l'intégrale commence à 0) :</p>
+\[ E=\int_0^{+\infty} \left(e^{-t}\right)^2 dt=\int_0^{+\infty} e^{-2t}\,dt=\left[\frac{e^{-2t}}{-2}\right]_0^{+\infty}=0-\left(\frac{1}{-2}\right)=\frac12 \]
+<p>L'énergie est finie : c'est un signal à énergie finie, et sa puissance moyenne vaut 0.</p>
+<p><b>2) Puissance de \(s(t)=A\cos(\omega t)\)</b>. On utilise la formule \(\cos^2 x=\dfrac{1+\cos 2x}{2}\) :</p>
+\[ s^2(t)=A^2\cos^2(\omega t)=\frac{A^2}{2}+\frac{A^2}{2}\cos(2\omega t) \]
+<p>Sur une période, la moyenne de \(\cos(2\omega t)\) vaut 0 (il passe autant de temps au-dessus qu'en dessous de 0). Il reste :</p>
+\[ P=\frac{A^2}{2} \]
+</div>
+<div class="box tip"><b class="lbl">💡 Astuces très importantes</b>
+<ul>
+<li>Un signal à <b>énergie finie</b> a une <b>puissance moyenne nulle</b> (\(P=0\)). On divise un nombre fini par \(T\), qui tend vers l'infini.</li>
+<li>Un signal <b>périodique</b> a une <b>énergie infinie</b> mais une <b>puissance finie</b>. Il dure éternellement, mais chaque période apporte la même énergie.</li>
+<li>Pour un signal périodique, il suffit de calculer la puissance sur <b>une seule période</b> :
+\[ P = \frac{1}{T_0}\int_{T_0} s^2(t)\,dt \]</li>
+<li>Exemple à retenir : \(s(t) = A\cos(\omega t)\) a une puissance \(P = \dfrac{A^2}{2}\).</li>
+</ul></div>
+
+<h3>4.4 Classification dimensionnelle (selon le nombre de variables)</h3>
+<table>
+<tr><th>Type</th><th>Variables</th><th>Exemple</th></tr>
+<tr><td><b>1D</b> (monodimensionnel)</td><td>une seule (le temps ou une abscisse)</td><td>un son \(s(t)\)</td></tr>
+<tr><td><b>2D</b> (bidimensionnel)</td><td>deux</td><td>une image noir et blanc en niveaux de gris \(I(x,y)\)</td></tr>
+<tr><td><b>3D</b> (tridimensionnel)</td><td>trois</td><td>un film noir et blanc \(I(x,y,t)\)</td></tr>
+</table>
+<div class="figs" data-fig="dims"></div>
+<div class="box tip"><p>💡 Un film, c'est une image \((x,y)\) qui change avec le temps \((t)\), d'où les 3 dimensions.</p></div>
+
+<h3>4.5 Classification morphologique <span class="star">★</span> (on la relie à la numérisation)</h3>
+<p><b>Sur l'axe du temps :</b></p>
+<ul>
+<li>Si \(t\) varie de façon <b>continue</b>, le signal est <b>continu</b>, noté \(s(t)\). Pour un signal physique, on dit aussi <b>analogique</b>.</li>
+<li>Si \(t\) prend un <b>nombre dénombrable de valeurs</b> \((t_1, t_2, \dots, t_N)\), le signal est <b>discret</b>, noté \(s(t_n) = s(n)\).</li>
+<li>Si en plus l'écart entre deux instants est <b>constant</b>, \(t_{n+1} - t_n = T\), on a <b>échantillonné</b> le signal : c'est un <b>signal échantillonné \(s(n)\)</b>.</li>
+</ul>
+<p><b>Sur l'axe des amplitudes :</b></p>
+<ul>
+<li>L'amplitude peut être <b>continue</b> ou <b>discrète</b>.</li>
+<li>La <b>quantification</b>, c'est arrondir chaque valeur de \(s(t)\) à un <b>multiple d'un pas \(q\)</b> (le pas de quantification).</li>
+<li>Un signal à temps continu et amplitude discrète, noté \(s_q(t)\), est un <b>signal quantifié</b>.</li>
+<li>Si \(q\) est <b>le même partout</b>, la quantification est <b>uniforme</b>.</li>
+<li>Un signal à <b>temps discret ET amplitude discrète</b> est un <b>signal numérique</b>. On l'obtient avec un <b>CAN</b>.</li>
+</ul>
+<p><b>Trois remarques importantes :</b></p>
+<ul>
+<li>⚠️ <b>La perte d'information due à l'échantillonnage puis à la quantification est irréparable</b> : on ne retrouve jamais exactement l'original.</li>
+<li>Les signaux numériques <b>n'existent pas dans la nature</b>, puisque ce sont des suites de nombres.</li>
+<li>Il faut donc un <b>CAN</b> pour les produire.</li>
+</ul>
+
+<p><b>Le tableau des 4 formes <span class="star">★★</span> (diapo 47, à savoir dessiner) :</b></p>
+<div class="grid4">
+<div class="h"></div><div class="h">Amplitude continue</div><div class="h">Amplitude discrète</div>
+<div class="h">Temps continu</div><div><b>Analogique</b><br>courbe lisse</div><div><b>Quantifié</b><br>courbe « en escalier »</div>
+<div class="h">Temps discret</div><div><b>Échantillonné</b><br>bâtons de hauteur quelconque</div><div><b>Numérique</b> (ou logique)<br>bâtons dont la hauteur est sur une grille</div>
+</div>
+<p><b>Les 4 formes dessinées sur le même signal (comme la diapo 47) :</b></p>
+<div class="figs" data-fig="formes"></div>
+<div class="box tip"><b class="lbl">💡 Astuce pour dessiner</b>
+<ul>
+<li>Analogique → trait continu.</li>
+<li>Quantifié → on remplace le trait par des <b>marches d'escalier</b>.</li>
+<li>Échantillonné → on garde seulement des <b>points ou bâtons</b> à intervalles réguliers.</li>
+<li>Numérique → bâtons <b>et</b> hauteurs arrondies aux niveaux autorisés.</li>
+</ul></div>
+
+<h3>4.6 Classification spectrale (représentation temporelle et fréquentielle)</h3>
+<p><b>Représentation temporelle :</b> \(s(t)\) en fonction du temps. C'est la <b>plus naturelle</b> (exemples du cours : EEG, signal cardiaque).</p>
+<p><b>Représentation fréquentielle, ou spectre \(S(f)\) :</b></p>
+<ul>
+<li>Elle montre <b>beaucoup d'informations qu'on ne voit pas</b> en regardant le signal dans le temps. \(f\) est en <b>Hertz (Hz)</b>.</li>
+<li>Le spectre se compose d'un <b>module</b> (l'amplitude de chaque fréquence) et d'une <b>phase</b> (en degrés). Les diapos 53 et 54 montrent ces deux graphes à côté du signal temporel.</li>
+</ul>
+<div class="figs" data-fig="spectre"></div>
+<div class="box ex"><b class="lbl">🧠 Le spectre, c'est la « recette » du signal</b><p>Il dit quelles fréquences sont présentes, et en quelle quantité. Un signal qui a l'air compliqué dans le temps peut n'être que 2 ou 3 fréquences pures, et on le voit tout de suite sur le spectre (un pic par fréquence).</p></div>
+<div class="box tip"><b class="lbl">💡 Remarque sur les graphes</b><p>Le spectre est dessiné de −500 à +500 Hz, avec des <b>fréquences négatives</b>. C'est normal en maths : pour un signal réel, le <b>module est symétrique</b> (pair) par rapport à \(f=0\). Une fréquence réelle \(F\) apparaît donc à \(+F\) <b>et</b> à \(-F\).</p></div>
+
+<p><b>Les définitions :</b></p>
+<ul>
+<li><b>Support spectral</b> : l'ensemble des fréquences où le spectre <b>n'est pas nul</b>.</li>
+<li><b>Fréquence moyenne</b> et <b>largeur de bande</b> :</li>
+</ul>
+<div class="formula">\[ F_{moy} = \frac{F_{max} + F_{min}}{2} \qquad\qquad \Delta F = F_{max} - F_{min} \]</div>
+
+<p><b>Bande étroite ou large bande :</b></p>
+<ul>
+<li><b>Bande étroite</b> : \(\dfrac{\Delta F}{F_{moy}}\) est <b>petit</b> (\(F_{max} \approx F_{min}\)).</li>
+<li><b>Large bande</b> : \(\dfrac{\Delta F}{F_{moy}}\) est <b>grand</b> (\(F_{max} \gg F_{min}\)).</li>
+</ul>
+<div class="box ex"><b class="lbl">🧠 Exemple</b>
+<p>\(F_{min} = 99\) MHz et \(F_{max} = 101\) MHz. Alors \(\Delta F = 2\) MHz et \(F_{moy} = 100\) MHz, donc \(\dfrac{\Delta F}{F_{moy}} = 0{,}02\). C'est petit, donc <b>bande étroite</b>.</p></div>
+
+<div class="figs" data-fig="bandes"></div>
+<p><b>Les signaux à bande étroite sont classés selon \(F_{moy}\) :</b></p>
+<table>
+<tr><th>Bande</th><th>\(F_{moy}\)</th></tr>
+<tr><td><b>BF</b> (basses fréquences)</td><td>&lt; 250 kHz</td></tr>
+<tr><td><b>HF</b></td><td>250 kHz à 30 MHz</td></tr>
+<tr><td><b>VHF</b></td><td>30 MHz à 300 MHz</td></tr>
+<tr><td><b>UHF</b></td><td>300 MHz à 3 GHz</td></tr>
+<tr><td><b>SHF</b></td><td>&gt; 3 GHz</td></tr>
+</table>
+<div class="figs" data-fig="freqbar"></div>
+<div class="box tip"><b class="lbl">💡 Astuce mémoire</b><p>À partir de HF, les limites suivent le motif <b>30 M → 300 M → 3 G</b>. L'ordre des noms monte : <b>H</b>igh → <b>V</b>ery <b>H</b>igh → <b>U</b>ltra <b>H</b>igh → <b>S</b>uper <b>H</b>igh.</p></div>
+
+<p><b>Au-delà de \(10^{12}\) Hz</b>, on ne parle plus en fréquence mais en <b>longueur d'onde</b> :</p>
+<div class="formula">\[ \lambda = \frac{c}{F}, \qquad c = 300\,000\ \text{km/s} = 3\times10^{8}\ \text{m/s} \]</div>
+<table>
+<tr><th>Domaine</th><th>Longueur d'onde \(\lambda\)</th></tr>
+<tr><td><b>UV</b> (ultraviolet)</td><td>10 nm à 400 nm</td></tr>
+<tr><td><b>Visible</b></td><td>400 nm à 700 nm</td></tr>
+<tr><td><b>IR</b> (infrarouge)</td><td>700 nm à 0,1 mm</td></tr>
+</table>
+<div class="figs" data-fig="lambda"></div>
+<div class="box warn"><b class="lbl">⚠️ Attention</b><p>La longueur d'onde et la fréquence varient en <b>sens inverse</b>. Les UV ont une \(\lambda\) plus petite, donc une fréquence plus <b>grande</b>, que l'infrarouge. Le visible est coincé entre les deux (400 à 700 nm, du violet au rouge).</p></div>
+
+<!-- ============ PARTIE 5 ============ -->
+<h2 id="p5">Partie 5 : Les signaux usuels <span class="star">★★</span></h2>
+<p>À connaître par cœur : ils servent dans tous les chapitres.</p>
+
+<h3>5.1 La porte rectangulaire : \(\mathrm{Rect}(t/T)\)</h3>
+<div class="formula">\[ \mathrm{Rect}\!\left(\frac{t}{T}\right) = \begin{cases} 1 & \text{si } -\dfrac{T}{2} &lt; t &lt; \dfrac{T}{2} \\[2mm] 0 & \text{ailleurs} \end{cases} \]</div>
+<p>C'est un rectangle de <b>hauteur 1</b>, de <b>largeur \(T\)</b>, <b>centré en 0</b>.</p>
+<div class="figs" data-fig="rect"></div>
+<div class="box tip"><p>💡 Son aire vaut \(1 \times T = T\). C'est une « fenêtre » qui laisse passer le signal seulement pendant \(T\) secondes.</p></div>
+
+<h3>5.2 Le signal signe : \(\mathrm{Sign}(t)\)</h3>
+<div class="formula">\[ \mathrm{Sign}(t) = \begin{cases} +1 & \text{si } t &gt; 0 \\ -1 & \text{si } t &lt; 0 \end{cases} \]</div>
+
+<div class="figs" data-fig="sign"></div>
+
+<h3>5.3 L'échelon unité : \(U(t)\) (fonction de Heaviside)</h3>
+<div class="formula">\[ U(t) = \begin{cases} 1 & \text{si } t \ge 0 \\ 0 & \text{si } t &lt; 0 \end{cases} \]</div>
+<p>Il représente « on allume l'interrupteur à \(t=0\) ».</p>
+<div class="figs" data-fig="echelon"></div>
+<div class="box tip"><b class="lbl">💡 Astuces utiles</b>
+<ul>
+<li>\(\mathrm{Sign}(t) = 2\,U(t) - 1\). On le vérifie : pour \(t&gt;0\), \(2\cdot1-1=1\), et pour \(t&lt;0\), \(2\cdot0-1=-1\).</li>
+<li>Multiplier un signal par \(U(t)\) le rend <b>causal</b> (nul avant 0). C'est le lien avec les signaux physiques vus plus haut.</li>
+</ul></div>
+
+<h3>5.4 L'impulsion de Dirac : \(\delta(t)\) <span class="star">★★★</span></h3>
+<p><b>D'où elle vient :</b> on prend une porte de <b>largeur \(T\)</b> et de <b>hauteur \(1/T\)</b>, donc d'aire \(T \times \frac{1}{T} = 1\). On fait tendre \(T\) vers 0 :</p>
+<div class="formula">\[ \delta(t) = \lim_{T\to 0} \frac{1}{T}\,\mathrm{Rect}\!\left(\frac{t}{T}\right) \]</div>
+<p>La porte devient <b>infiniment fine</b> et <b>infiniment haute</b>, mais son <b>aire reste égale à 1</b>. On la dessine comme une <b>flèche verticale en \(t=0\)</b>.</p>
+
+<div class="figs" data-fig="diracc"></div>
+<p><b>Les 6 propriétés (à apprendre par cœur) :</b></p>
+<table>
+<tr><th>N°</th><th>Propriété</th><th>Ce que ça veut dire</th></tr>
+<tr><td>1</td><td>\(\delta(t) = 0\) pour \(t \ne 0\), et \(\delta(0)\) est <b>indéfini</b></td><td>Le Dirac n'existe qu'en \(t=0\).</td></tr>
+<tr><td>2</td><td>\(\displaystyle\int_{-\infty}^{+\infty} x(t)\,\delta(t)\,dt = x(0)\)<br><br>\(\displaystyle\int_{-\infty}^{+\infty} x(t)\,\delta(t-t_0)\,dt = x(t_0)\)</td><td><b>Propriété d'échantillonnage</b> : le Dirac « attrape » la valeur du signal à l'endroit où il se trouve.</td></tr>
+<tr><td>3</td><td>\(\displaystyle\int_{-\infty}^{+\infty} \delta(t)\,dt = 1\)</td><td>Aire unité.</td></tr>
+<tr><td>4</td><td>\(\dfrac{dU(t)}{dt} = \delta(t)\)</td><td>L'échelon fait un saut brutal de 0 à 1 en \(t=0\). Sa pente y est infinie, et cette pente infinie, c'est le Dirac.</td></tr>
+<tr><td>5</td><td>\(x(t)\,\delta(t) = x(0)\,\delta(t)\)<br><br>\(x(t)\,\delta(t-t_0) = x(t_0)\,\delta(t-t_0)\)</td><td>Le résultat est encore un Dirac, mais sa « force » vaut la valeur du signal à cet endroit.</td></tr>
+<tr><td>6</td><td>\(\delta(at) = \dfrac{1}{|a|}\,\delta(t)\)</td><td>Changement d'échelle. (Le cours écrit \(1/a\). La formule exacte utilise \(|a|\), ce qui ne change rien quand \(a&gt;0\).)</td></tr>
+</table>
+
+<div class="figs" data-fig="diracp"></div>
+<div class="box warn"><b class="lbl">⚠️ Piège à l'examen : ne pas confondre les propriétés 2 et 5</b>
+<ul>
+<li><b>Avec une intégrale \(\int\)</b> → le résultat est un <b>nombre</b> : \(x(t_0)\).</li>
+<li><b>Sans intégrale (simple produit)</b> → le résultat est <b>encore un Dirac</b> : \(x(t_0)\,\delta(t-t_0)\).</li>
+</ul>
+<p><b>Exemples :</b></p>
+\[ \int_{-\infty}^{+\infty} \cos(t)\,\delta(t)\,dt = \cos(0) = 1 \quad (\text{un nombre}) \]
+\[ \cos(t)\,\delta(t) = \cos(0)\,\delta(t) = \delta(t) \quad (\text{une fonction}) \]
+\[ \int_{-\infty}^{+\infty} t^2\,\delta(t-3)\,dt = 3^2 = 9 \]
+</div>
+
+<h3>5.5 Les signaux périodiques construits à partir d'un motif</h3>
+<ul>
+<li>\(x(t)\) est périodique si \(x(t+T_0) = x(t)\) pour tout \(t\). <b>\(T_0\) est la plus petite valeur positive</b> qui marche : c'est la <b>période</b>.</li>
+<li><b>Le motif</b> : on prend un morceau de base, appelé \(y(t)\). Dans le cours, c'est un <b>triangle</b> \(y(t) = \mathrm{tri}(t/T_1)\) qui va de \(-T_1\) à \(+T_1\), de hauteur 1.</li>
+<li>On <b>répète</b> ce motif toutes les \(T_0\) secondes :</li>
+</ul>
+<div class="formula">\[ x(t) = \sum_{k=-\infty}^{+\infty} y(t - kT_0) = \mathrm{rep}_{T_0}\{y(t)\} = y_{T_0}(t) \]</div>
+<div class="figs" data-fig="tri"></div>
+<div class="box ex"><b class="lbl">🧠 Comprendre la somme \(\Sigma\)</b>
+<p>\(y(t-kT_0)\) est le motif <b>décalé de \(kT_0\)</b>. Pour \(k=0\) il est centré en 0, pour \(k=1\) en \(T_0\), pour \(k=-1\) en \(-T_0\), et ainsi de suite. On colle toutes ces copies les unes après les autres.</p></div>
+<div class="box warn"><p>⚠️ Pour que les copies du triangle <b>ne se chevauchent pas</b>, il faut que sa largeur \(2T_1\) soit \(\le T_0\). Sur le dessin, le motif tient bien dans \([-T_0/2,\ T_0/2]\).</p></div>
+
+<h3>5.6 Le peigne de Dirac : \(\mathrm{Pgn}_{T_0}(t)\) <span class="star">★</span></h3>
+<p>C'est la <b>répétition d'un Dirac</b> toutes les \(T_0\) secondes :</p>
+<div class="formula">\[ \mathrm{Pgn}_{T_0}(t) = \mathrm{rep}_{T_0}\{\delta(t)\} = \sum_{k=-\infty}^{+\infty} \delta(t - kT_0) \]</div>
+<p>On le dessine comme une série de flèches, régulièrement espacées de \(T_0\), à la manière d'un <b>peigne</b>.</p>
+<div class="figs" data-fig="peigne"></div>
+<div class="box tip"><b class="lbl">💡 Pourquoi c'est important</b>
+<p>C'est l'outil mathématique de l'<b>échantillonnage</b>. Multiplier un signal par le peigne revient à ne garder que ses valeurs aux instants \(kT_0\) (propriété 5 du Dirac), c'est-à-dire à <b>l'échantillonner</b> :</p>
+\[ x(t)\cdot \mathrm{Pgn}_{T_0}(t) = \sum_{k} x(kT_0)\,\delta(t-kT_0) \]
+<p>Tu le retrouveras dans les chapitres suivants.</p></div>
+
+<!-- ============ FIN ============ -->
+<h2 id="fin">🎯 Ce qu'il faut retenir</h2>
+<p>Le cours se termine sur trois points :</p>
+<ol>
+<li><b>Les grandes finalités du traitement du signal</b> (le schéma élaboration / interprétation)</li>
+<li><b>Ses champs d'application</b></li>
+<li><b>Quelques signaux usuels</b> (Rect, Sign, U, δ, rep, peigne)</li>
+</ol>
+<p>📚 <b>Référence du cours :</b> <i>Théorie et traitement des signaux</i>, Frédéric de Coulon, Presses polytechniques et universitaires romandes, volume VI.</p>
+
+<h3>✅ Checklist de révision</h3>
+<ul class="check">
+<li>Je sais définir signal, bruit et SNR, et calculer un SNR en dB.</li>
+<li>Je connais les 3 étapes de la numérisation dans l'ordre.</li>
+<li>Je sais placer les 9 fonctions du TS dans le schéma (élaboration / interprétation).</li>
+<li>Je connais les 3 types de codage (canal, source, ligne).</li>
+<li>Je sais dessiner l'arbre déterministe / aléatoire.</li>
+<li>Je sais ce que veulent dire stationnaire et ergodique.</li>
+<li>Je connais les formules de l'énergie et de la puissance, et je sais lequel des deux est fini pour un signal transitoire ou périodique.</li>
+<li>Je sais remplir le tableau des 4 formes (analogique, quantifié, échantillonné, numérique).</li>
+<li>Je connais \(F_{moy}\), \(\Delta F\), les bandes BF à SHF et \(\lambda = c/F\).</li>
+<li>Je connais les 6 propriétés du Dirac et je ne confonds pas « avec intégrale » et « sans intégrale ».</li>
+</ul>
+
+</main>
+<script>
+(function(){
+const PI=Math.PI,S=Math.sin,Co=Math.cos,E=Math.exp,R=Math.round,A=Math.abs;
+let uid=0;
+function hash(k){let h=Math.imul(k^0x9e3779b9,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;return (h>>>0)/4294967296;}
+function noise(t,seed){const k=R(t*997)+seed*100003;const u1=Math.max(hash(2*k+1),1e-9),u2=hash(2*k+7);return Math.sqrt(-2*Math.log(u1))*Co(2*PI*u2);}
+function head(x,y,ang,c,sz){sz=sz||6;c=c||'var(--muted)';return `<path d="M0 0L${-sz} ${-sz/2}L${-sz} ${sz/2}Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang})" style="fill:${c}"/>`;}
+function plot(o){
+ const W=o.w||300,H=o.h||170,ml=30,mr=16,mt=18,mb=26;
+ const xa=o.x[0],xb=o.x[1],ya=o.y[0],yb=o.y[1];
+ const X=x=>ml+(x-xa)/(xb-xa)*(W-ml-mr),Y=y=>mt+(yb-y)/(yb-ya)*(H-mt-mb);
+ const id='clip'+(uid++);
+ const y0=Y(Math.min(Math.max(0,ya),yb)),x0=X(Math.min(Math.max(0,xa),xb));
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot"><defs><clipPath id="${id}"><rect x="${ml-4}" y="${mt-10}" width="${W-ml-mr+8}" height="${H-mt-mb+12}"/></clipPath></defs>`;
+ (o.hl||[]).forEach(h=>{s+=`<line x1="${ml}" x2="${W-mr}" y1="${Y(h.y)}" y2="${Y(h.y)}" class="guide"/>`;if(h.t)s+=`<text x="${W-mr}" y="${Y(h.y)-3}" text-anchor="end" class="small" style="fill:${h.c||'var(--muted)'}">${h.t}</text>`;});
+ (o.vl||[]).forEach(v=>{s+=`<line y1="${mt-8}" y2="${H-mb}" x1="${X(v.x)}" x2="${X(v.x)}" class="guide"/>`;if(v.t)s+=`<text x="${X(v.x)+3}" y="${mt-2}" class="small" style="fill:${v.c||'var(--muted)'}">${v.t}</text>`;});
+ s+=`<line x1="${ml-6}" y1="${y0}" x2="${W-6}" y2="${y0}" class="ax"/>`+head(W-6,y0,0);
+ s+=`<line x1="${x0}" y1="${H-mb+4}" x2="${x0}" y2="4" class="ax"/>`+head(x0,4,-90);
+ s+=`<text x="${x0+6}" y="12" class="lab">${o.yl||''}</text><text x="${W-8}" y="${y0-6}" text-anchor="end" class="lab">${o.xl===undefined?'t':o.xl}</text>`;
+ (o.xt||[]).forEach(([v,l])=>{s+=`<line x1="${X(v)}" x2="${X(v)}" y1="${y0-3}" y2="${y0+3}" class="ax"/><text x="${X(v)}" y="${y0+14}" text-anchor="middle" class="small">${l}</text>`;});
+ (o.yt||[]).forEach(([v,l])=>{s+=`<line x1="${x0-3}" x2="${x0+3}" y1="${Y(v)}" y2="${Y(v)}" class="ax"/><text x="${x0-5}" y="${Y(v)+4}" text-anchor="end" class="small">${l}</text>`;});
+ s+=`<g clip-path="url(#${id})">`;
+ (o.s||[]).forEach(z=>{
+  const c=z.c||'var(--c1)';
+  if(z.type==='stem'){z.xs.forEach((x,i)=>{const v=z.ys?z.ys[i]:z.f(x);s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)}" style="stroke:${c};stroke-width:1.6"/><circle cx="${X(x)}" cy="${Y(v)}" r="2.6" style="fill:${c}"/>`;});}
+  else if(z.type==='dirac'){z.xs.forEach((x,i)=>{const v=Array.isArray(z.h)?z.h[i]:z.h;s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)+6}" style="stroke:${c};stroke-width:2.2"/>`+head(X(x),Y(v),-90,c,8);});}
+  else{const a=z.a===undefined?xa:z.a,b=z.b===undefined?xb:z.b,N=z.n||500;let d='',pen=false,pts=[];
+   for(let i=0;i<=N;i++){const x=a+(b-a)*i/N;const v=z.f(x);if(v==null||!isFinite(v)){pen=false;continue;}const yy=Math.max(-60,Math.min(H+60,Y(v)));d+=(pen?'L':'M')+X(x).toFixed(1)+' '+yy.toFixed(1);pen=true;pts.push(X(x).toFixed(1)+' '+yy.toFixed(1));}
+   if(z.type==='area')s+=`<path d="M${X(a)} ${y0}L${pts.join('L')}L${X(b)} ${y0}Z" style="fill:${c};fill-opacity:.25;stroke:none"/>`;
+   else s+=`<path d="${d}" style="fill:none;stroke:${c};stroke-width:${z.w||1.8};opacity:${z.op||1}${z.dash?';stroke-dasharray:4 3':''}"/>`;}
+ });
+ s+='</g>';
+ (o.tx||[]).forEach(t=>{s+=`<text x="${X(t.x)}" y="${Y(t.y)}" text-anchor="${t.a||'start'}" class="small" style="fill:${t.c||'var(--fg)'}">${t.t}</text>`;});
+ return s+'</svg>';
+}
+function fig(name,panels,cols){
+ const el=document.querySelector('[data-fig="'+name+'"]');if(!el)return;
+ try{
+  const n=cols||Math.min(3,panels.length);el.style.setProperty('--cols',n);
+  if(panels.length===1&&!panels[0].wide)el.style.maxWidth='440px';
+  el.innerHTML=panels.map(p=>`<figure${p.wide?' class="wide"':''}>${p.svg?p.svg():plot(p)}${p.cap?`<figcaption>${p.cap}</figcaption>`:''}</figure>`).join('');
+ }catch(e){console.error(name,e);}
+}
+function schema(){const W=640,H=430,cx=320,cy=230,r=50;
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot">`;
+ s+=`<text x="100" y="22" text-anchor="middle" class="big2" style="fill:var(--c3)">ÉLABORATION</text><text x="100" y="40" text-anchor="middle" class="small">on met de l’information</text>`;
+ s+=`<text x="540" y="22" text-anchor="middle" class="big2" style="fill:var(--c1)">INTERPRÉTATION</text><text x="540" y="40" text-anchor="middle" class="small">on extrait l’information</text>`;
+ const box=(x,y,lines,c)=>{const h=lines.length>1?44:34;let t=`<rect x="${x-75}" y="${y-h/2}" width="150" height="${h}" rx="6" style="fill:var(--card);stroke:${c};stroke-width:1.8"/>`;lines.forEach((l,i)=>{t+=`<text x="${x}" y="${y+5+(i-(lines.length-1)/2)*16}" text-anchor="middle" class="mid">${l}</text>`;});return t;};
+ const edge=(x,y)=>{const dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy);return [cx+r*dx/d,cy+r*dy/d];};
+ const arrow=(x1,y1,x2,y2,c)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:${c};stroke-width:2"/>`+head(x2,y2,Math.atan2(y2-y1,x2-x1)*180/PI,c,9);
+ [[['Synthèse'],130],[['Modulation','chgt de fréquence'],230],[['Codage'],330]].forEach(([l,y])=>{const [ex,ey]=edge(175,y);s+=arrow(175,y,ex,ey,'var(--c3)')+box(100,y,l,'var(--c3)');});
+ ['Analyse','Mesure','Filtrage','Régénération','Détection','Identification'].forEach((n,i)=>{const y=75+i*62;const [ex,ey]=edge(465,y);s+=arrow(ex,ey,465,y,'var(--c1)')+box(540,y,[n],'var(--c1)');});
+ s+=`<circle cx="${cx}" cy="${cy}" r="${r}" style="fill:var(--card);stroke:var(--accent);stroke-width:2.5"/><text x="${cx}" y="${cy+7}" text-anchor="middle" class="big">Signal</text>`;
+ return s+'</svg>';}
+function img2d(){let s='<svg viewBox="0 0 300 170" class="plot">';const n=10,sz=12,ox=95,oy=26;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++){const v=R(25+220*E(-((i-6)**2+(j-4)**2)/8));s+=`<rect x="${ox+i*sz}" y="${oy+j*sz}" width="${sz}" height="${sz}" style="fill:rgb(${v},${v},${v});stroke:var(--border);stroke-width:.4"/>`;}
+ s+=`<line x1="${ox}" y1="${oy-8}" x2="${ox+n*sz+12}" y2="${oy-8}" class="ax"/>`+head(ox+n*sz+12,oy-8,0)+`<text x="${ox+n*sz+16}" y="${oy-4}" class="lab">x</text>`;
+ s+=`<line x1="${ox-8}" y1="${oy}" x2="${ox-8}" y2="${oy+n*sz+12}" class="ax"/>`+head(ox-8,oy+n*sz+12,90)+`<text x="${ox-20}" y="${oy+n*sz+14}" class="lab">y</text>`;
+ s+=`<text x="${ox+n*sz+10}" y="${oy+64}" class="small">I(x, y)</text>`;
+ return s+'</svg>';}
+function film(){let s='<svg viewBox="0 0 300 170" class="plot">';const n=6,sz=11,oy=30;
+ for(let k=0;k<3;k++){const ox=22+k*95;for(let i=0;i<n;i++)for(let j=0;j<n;j++){const v=R(25+220*E(-((i-1-1.6*k)**2+(j-2.5)**2)/2.5));s+=`<rect x="${ox+i*sz}" y="${oy+j*sz}" width="${sz}" height="${sz}" style="fill:rgb(${v},${v},${v});stroke:var(--border);stroke-width:.4"/>`;}
+  s+=`<text x="${ox+33}" y="${oy+n*sz+18}" text-anchor="middle" class="lab">t${['₁','₂','₃'][k]}</text>`;}
+ s+=`<line x1="22" y1="138" x2="270" y2="138" class="ax"/>`+head(272,138,0)+`<text x="276" y="142" class="lab">t</text>`;
+ s+=`<text x="150" y="160" text-anchor="middle" class="small">la tache blanche se déplace d’une image à l’autre</text>`;
+ return s+'</svg>';}
+function freqbar(){const W=640,H=120,p=l=>20+(l-3)/8*600,L=Math.log10;
+ const seg=[['BF',3,L(250e3),'var(--c1)'],['HF',L(250e3),L(30e6),'var(--c3)'],['VHF',L(30e6),L(3e8),'var(--c4)'],['UHF',L(3e8),L(3e9),'var(--c2)'],['SHF',L(3e9),11,'var(--c5)']];
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot"><text x="20" y="18" class="lab">Fréquence moyenne Fmoy (échelle logarithmique) →</text>`;
+ seg.forEach(([n,a,b,c])=>{s+=`<rect x="${p(a)}" y="30" width="${p(b)-p(a)}" height="36" style="fill:${c};fill-opacity:.28;stroke:${c}"/><text x="${(p(a)+p(b))/2}" y="53" text-anchor="middle" class="big2">${n}</text>`;});
+ [[3,'1 kHz'],[L(250e3),'250 kHz'],[L(30e6),'30 MHz'],[L(3e8),'300 MHz'],[L(3e9),'3 GHz'],[11,'100 GHz']].forEach(([l,t],i)=>{s+=`<line x1="${p(l)}" x2="${p(l)}" y1="66" y2="72" class="ax"/><text x="${p(l)}" y="86" text-anchor="${i==0?'start':i==5?'end':'middle'}" class="small">${t}</text>`;});
+ s+=`<text x="20" y="110" class="small">Exemples (en plus du cours) : radio FM ≈ 100 MHz → VHF ; Wi-Fi 2,4 GHz → UHF.</text>`;
+ return s+'</svg>';}
+function lambar(){const W=640,H=125,p=l=>20+(l+8)/4*600,l4=Math.log10(4e-7),l7=Math.log10(7e-7);
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot"><defs><linearGradient id="rb" x1="0" x2="1"><stop offset="0" stop-color="#7b2ff7"/><stop offset=".2" stop-color="#2f6bff"/><stop offset=".4" stop-color="#22b14c"/><stop offset=".6" stop-color="#f5e100"/><stop offset=".8" stop-color="#ff8c00"/><stop offset="1" stop-color="#e01b24"/></linearGradient></defs>`;
+ s+=`<text x="20" y="14" class="lab">Longueur d’onde λ (échelle logarithmique) →</text>`;
+ s+=`<rect x="${p(-8)}" y="34" width="${p(l4)-p(-8)}" height="34" style="fill:var(--c4);fill-opacity:.28;stroke:var(--c4)"/><text x="${(p(-8)+p(l4))/2}" y="56" text-anchor="middle" class="big2">UV</text>`;
+ s+=`<rect x="${p(l4)}" y="34" width="${p(l7)-p(l4)}" height="34" fill="url(#rb)"/><text x="${(p(l4)+p(l7))/2}" y="29" text-anchor="middle" class="small">visible</text>`;
+ s+=`<rect x="${p(l7)}" y="34" width="${p(-4)-p(l7)}" height="34" style="fill:var(--c2);fill-opacity:.28;stroke:var(--c2)"/><text x="${(p(l7)+p(-4))/2}" y="56" text-anchor="middle" class="big2">IR</text>`;
+ [[-8,'10 nm','start'],[l4,'400 nm','end'],[l7,'700 nm','start'],[-4,'0,1 mm','end']].forEach(([l,t,a])=>{s+=`<line x1="${p(l)}" x2="${p(l)}" y1="68" y2="74" class="ax"/><text x="${p(l)}" y="88" text-anchor="${a}" class="small">${t}</text>`;});
+ s+=`<text x="20" y="114" class="small">← fréquence plus grande (λ petite)</text><text x="620" y="114" text-anchor="end" class="small">fréquence plus petite (λ grande) →</text>`;
+ return s+'</svg>';}
+
+/* ---------- données communes ---------- */
+const g=t=>2.3+1.5*S(2*PI*1.1*t+0.3)+0.4*S(2*PI*3*t);
+const Te=1/16,xs=[];for(let k=0;k<=16;k++)xs.push(k*Te);
+const grid=[1,2,3,4].map(y=>({y})),yt4=[[1,'1'],[2,'2'],[3,'3'],[4,'4']];
+
+/* Partie 1 */
+fig('anadis',[
+ {x:[0,1],y:[-1.4,1.4],yl:'s(t)',s:[{f:t=>S(2*PI*2*t)}],cap:'<b>Signal analogique</b> : il a une valeur à chaque instant (trait continu).'},
+ {x:[0,1],y:[-1.4,1.4],yl:'s(n)',xl:'n',s:[{f:t=>S(2*PI*2*t),dash:1,op:.3},{type:'stem',xs:xs,f:t=>S(2*PI*2*t)}],cap:'<b>Signal discret</b> : des valeurs seulement à certains instants (des « bâtons »).'}
+],2);
+fig('num',[
+ {x:[0,1.05],y:[0,4.8],yl:'s(t)',yt:yt4,s:[{f:g}],cap:'① Le signal analogique de départ.'},
+ {x:[0,1.05],y:[0,4.8],yl:'s(nTe)',yt:yt4,xt:[[Te,'Te'],[4*Te,'4Te'],[8*Te,'8Te']],s:[{f:g,dash:1,op:.3},{type:'stem',xs:xs,f:g}],cap:'② <b>Échantillonnage</b> : on garde une valeur toutes les Te secondes (on découpe le temps).'},
+ {x:[0,1.05],y:[0,4.8],yl:'M·q',yt:yt4,hl:grid,s:[{f:g,dash:1,op:.3},{type:'stem',xs:xs,f:t=>R(g(t)),c:'var(--c2)'}],cap:'③ <b>Quantification</b> (q = 1) : chaque valeur est arrondie au niveau le plus proche (on découpe les amplitudes).'}
+]);
+(function(){const cd=document.getElementById('codage');if(!cd)return;
+ let r1='<tr><th>Échantillon n</th>',r2='<tr><th>Instant t = n·Te</th>',r3='<tr><th>Valeur exacte</th>',r4='<tr><th>Après quantification : M</th>',r5='<tr><th>Code binaire (3 bits)</th>',bits='';
+ for(let n=0;n<8;n++){const v=g(n*Te),M=R(v),b=M.toString(2).padStart(3,'0');bits+=b;r1+=`<td>${n}</td>`;r2+=`<td>${n===0?'0':n===1?'Te':n+'Te'}</td>`;r3+=`<td>${v.toFixed(2).replace('.',',')}</td>`;r4+=`<td>${M}</td>`;r5+=`<td><code>${b}</code></td>`;}
+ cd.innerHTML='<table>'+r1+'</tr>'+r2+'</tr>'+r3+'</tr>'+r4+'</tr>'+r5+'</tr></table><p class="figcap">④ <b>Codage</b> : on écrit chaque M en binaire, puis on colle les codes : <code>'+bits+'</code>. C’est le signal numérique.</p>';})();
+const sn=t=>S(2*PI*3*t);
+fig('bruit',[
+ {x:[0,1],y:[-3,3],yl:'s(t)',s:[{f:sn}],cap:'Signal propre, sans bruit.'},
+ {x:[0,1],y:[-3,3],yl:'s(t) + bruit',s:[{f:t=>sn(t)+0.15*noise(t,1),w:1.3}],cap:'Bruit faible : SNR ≈ 22, soit ≈ 13 dB. On reconnaît bien le signal.'},
+ {x:[0,1],y:[-3,3],yl:'s(t) + bruit',s:[{f:t=>sn(t)+0.8*noise(t,2),w:1.1}],cap:'Bruit fort : SNR ≈ 0,8, soit ≈ −1 dB. Le bruit domine, le signal est presque caché.'}
+]);
+
+/* Partie 2 */
+fig('schema',[{svg:schema,wide:true,cap:'Le schéma du cours redessiné : à gauche on <b>fabrique</b> le signal (les flèches entrent vers le signal), à droite on <b>exploite</b> le signal (les flèches sortent).'}],1);
+const k1=t=>S(2*PI*2*t),k2=t=>0.5*S(2*PI*9*t);
+fig('anasyn',[
+ {x:[0,1],y:[-1.7,1.7],yl:'s₁(t)',s:[{f:k1}],cap:'Composante 1 : basse fréquence.'},
+ {x:[0,1],y:[-1.7,1.7],yl:'s₂(t)',s:[{f:k2,c:'var(--c3)'}],cap:'Composante 2 : haute fréquence, plus petite.'},
+ {x:[0,1],y:[-1.7,1.7],yl:'s(t)',s:[{f:t=>k1(t)+k2(t),c:'var(--c2)'}],cap:'Le signal complet : s(t) = s₁(t) + s₂(t).'}
+]);
+const f3=t=>S(2*PI*3*t);
+fig('filtre',[
+ {x:[0,1],y:[-1.5,3.5],yl:'s(t)',hl:[{y:2,t:'DC = 2',c:'var(--c2)'}],s:[{f:t=>2+f3(t)}],cap:'Avant : sinusoïde + composante continue (DC = 2).'},
+ {x:[0,1],y:[-1.5,3.5],yl:'s(t)',s:[{f:f3,c:'var(--c3)'}],cap:'Après filtrage de la DC : le signal est recentré autour de 0.'},
+ {x:[0,1],y:[-2.2,2.2],yl:'s(t)',s:[{f:t=>f3(t)+0.35*noise(t,7),w:1.2}],cap:'Avant : signal bruité.'},
+ {x:[0,1],y:[-2.2,2.2],yl:'s(t)',s:[{f:t=>f3(t)+0.35*noise(t,7),c:'var(--muted)',w:1,op:.35},{f:f3,c:'var(--c3)',w:2.2}],cap:'Après filtrage du bruit : on retrouve la forme propre (en vert).'}
+],2);
+const w5=2*PI*2.5,sq=t=>S(w5*t+0.001)>=0?1:0,dist=t=>0.5+0.55*(S(w5*t)+S(3*w5*t)/3)+0.03*noise(t,9);
+fig('regen',[
+ {x:[0,1],y:[-0.4,1.5],yl:'émis',yt:[[1,'1']],s:[{f:sq,n:1000}],cap:'① Signal émis : des 0 et des 1 bien nets.'},
+ {x:[0,1],y:[-0.4,1.5],yl:'reçu',hl:[{y:0.5,t:'seuil',c:'var(--c2)'}],s:[{f:dist,w:1.3,c:'var(--c2)'}],cap:'② Signal reçu : déformé et un peu bruité pendant le trajet.'},
+ {x:[0,1],y:[-0.4,1.5],yl:'régénéré',yt:[[1,'1']],s:[{f:t=>dist(t)>0.5?1:0,c:'var(--c3)',n:1000}],cap:'③ Régénéré : au-dessus du seuil → 1, en dessous → 0. On retrouve la forme initiale.'}
+]);
+fig('detect',[{x:[0,1],y:[-1.3,2.3],yl:'s(t)',w:620,h:170,wide:true,s:[{f:t=>0.6*S(2*PI*4*t)+0.3*S(2*PI*9*t)+(A(t-0.62)<0.004?1.9:0),n:1500}],tx:[{x:0.64,y:1.95,t:'← craquement détecté !',c:'var(--c2)'}],cap:'Détection : on cherche, dans un enregistrement (ici de la musique), un événement anormal : un craquement très bref.'}],1);
+const mm=t=>S(2*PI*t);
+fig('modul',[
+ {x:[0,2],y:[-1.4,1.4],yl:'m(t)',s:[{f:mm}],cap:'Message (basse fréquence), par exemple la voix.'},
+ {x:[0,2],y:[-1.4,1.4],yl:'porteuse',s:[{f:t=>Co(2*PI*15*t),n:1200,w:1.1,c:'var(--c3)'}],cap:'Porteuse : une sinusoïde de haute fréquence.'},
+ {x:[0,2],y:[-1.8,1.8],yl:'s(t)',s:[{f:t=>(1+0.6*mm(t))*Co(2*PI*15*t),n:1200,w:1.1,c:'var(--c2)'},{f:t=>1+0.6*mm(t),dash:1},{f:t=>-(1+0.6*mm(t)),dash:1}],cap:'Signal modulé : la porteuse « transporte » le message dans son enveloppe (pointillés).'}
+]);
+
+/* Partie 3 */
+const v1=t=>S(2*PI*1.5*t),v2=t=>0.8*Co(2*PI*2.5*t),v3=t=>0.6*S(2*PI*t+1),Tm=1/12,m1=[],m2=[],m3=[];
+for(let k=0;k<12;k++){m1.push(k*Tm);m2.push(k*Tm+Tm/3);m3.push(k*Tm+2*Tm/3);}
+fig('mux',[{x:[0,1],y:[-1.4,1.6],yl:'canal',w:620,h:190,wide:true,s:[{f:v1,dash:1,op:.35},{f:v2,dash:1,op:.35,c:'var(--c2)'},{f:v3,dash:1,op:.35,c:'var(--c3)'},{type:'stem',xs:m1,f:v1},{type:'stem',xs:m2,f:v2,c:'var(--c2)'},{type:'stem',xs:m3,f:v3,c:'var(--c3)'}],tx:[{x:0.55,y:1.45,t:'■ voie 1',c:'var(--c1)'},{x:0.69,y:1.45,t:'■ voie 2',c:'var(--c2)'},{x:0.83,y:1.45,t:'■ voie 3',c:'var(--c3)'}],cap:'Multiplexage : on envoie un échantillon de la voie 1, puis un de la voie 2, puis un de la voie 3, et on recommence. Les 3 conversations partagent le même canal.'}],1);
+const vo=t=>(t>0&&t<0.35)?S(PI*t/0.35)*S(2*PI*12*t):0,tau=0.4;
+fig('echo',[
+ {x:[0,1],y:[-1.3,1.3],yl:'voix',s:[{f:vo,n:800}],cap:'① La voix émise.'},
+ {x:[0,1],y:[-1.3,1.3],yl:'reçu',vl:[{x:tau,t:'τ'}],s:[{f:vo,n:800},{f:t=>0.5*vo(t-tau),n:800,c:'var(--c2)'}],cap:'② On entend la voix puis son <b>écho</b> (orange), retardé de τ et plus faible.'},
+ {x:[0,1],y:[-1.3,1.3],yl:'anti-signal',s:[{f:t=>-0.5*vo(t-tau),n:800,c:'var(--c4)'}],cap:'③ Le DSP fabrique un <b>anti-signal</b> : l’écho à l’envers.'},
+ {x:[0,1],y:[-1.3,1.3],yl:'somme',s:[{f:vo,n:800,c:'var(--c3)'}],cap:'④ Écho + anti-signal = 0 : il ne reste que la voix.'}
+],2);
+const pl=t=>E(-(((t-0.1)/0.025)**2))*S(2*PI*60*(t-0.1));
+fig('radar',[{x:[0,1],y:[-1.3,1.5],yl:'s(t)',w:620,h:180,wide:true,vl:[{x:0.1,t:'émission'},{x:0.6,t:'écho reçu'}],s:[{f:pl,n:2000},{f:t=>0.4*pl(t-0.5)+0.04*noise(t,11),n:2000,c:'var(--c2)',w:1.3}],tx:[{x:0.35,y:1.05,t:'← τ (aller + retour) →',a:'middle'}],cap:'Radar, sonar, échographie : on envoie une impulsion (bleu). L’écho revient plus tard, plus faible et bruité (orange). Le retard τ donne la distance.'}],1);
+
+/* Partie 4 */
+fig('mathphys',[
+ {x:[-3,3],y:[-1.4,1.6],yl:'cos(ωt)',s:[{f:t=>Co(2*PI*0.8*t)}],tx:[{x:-2.95,y:1.3,t:'… −∞'},{x:2.95,y:1.3,t:'+∞ …',a:'end'}],cap:'<b>Mathématique</b> : le cosinus existe de −∞ à +∞ (durée infinie, énergie infinie).'},
+ {x:[-3,3],y:[-4,4],yl:'1/t',s:[{f:t=>A(t)<0.02?null:1/t}],cap:'<b>Mathématique</b> : l’amplitude part vers l’infini (non bornée), comme sur la diapo 32.'},
+ {x:[-1,4],y:[-0.2,0.8],yl:'s(t)',s:[{f:t=>t<0?0:4*t*E(-2.5*t)}],cap:'<b>Physique</b> : nul avant 0 (causal), borné, et il s’éteint (durée finie), comme sur la diapo 33.'}
+]);
+fig('perio',[
+ {x:[0,2],y:[-1.4,1.6],yl:'s(t)',xt:[[0.5,'T'],[1,'2T'],[1.5,'3T']],s:[{f:t=>Co(2*PI*2*t)}],cap:'<b>Périodique</b> : le même motif se répète toutes les T secondes.'},
+ {x:[0,2],y:[-2,2],yl:'s(t)',s:[{f:t=>S(2*PI*3*t)+0.7*S(2*PI*3*Math.SQRT2*t),n:800}],cap:'<b>Pseudo-périodique</b> : ça ressemble à une répétition, mais ce n’est jamais exactement pareil.'},
+ {x:[0,2],y:[-1.3,1.3],yl:'s(t)',xt:[[0.5,'t₁'],[1.5,'t₂']],s:[{f:t=>(t>0.5&&t<1.5)?S(PI*(t-0.5))**2*Co(2*PI*4*(t-0.5)):0,n:800}],cap:'<b>Transitoire</b> : nul avant t₁ et après t₂ (durée finie).'}
+]);
+fig('detalea',[
+ {x:[0,1],y:[-1.6,1.6],yl:'s(t)',s:[{f:t=>S(2*PI*3*t)}],cap:'<b>Déterministe</b> : on peut prévoir la suite (loi simple : une sinusoïde).'},
+ {x:[0,1],y:[-1.6,1.6],yl:'s(t)',s:[{f:t=>0.5*noise(t,3),w:1.1,c:'var(--c2)'}],cap:'<b>Aléatoire</b> : impossible de prévoir la valeur suivante. On ne peut donner que des statistiques (moyenne, variance…).'}
+],2);
+fig('station',[
+ {x:[0,1],y:[-2.6,2.6],yl:'s(t)',s:[{f:t=>0.5*noise(t,4),w:1.1},{f:()=>1,dash:1,c:'var(--c2)'},{f:()=>-1,dash:1,c:'var(--c2)'}],cap:'<b>Stationnaire</b> : la moyenne (0) et l’étalement restent les mêmes tout le temps.'},
+ {x:[0,1],y:[-2.6,2.6],yl:'s(t)',s:[{f:t=>(0.1+0.9*t)*noise(t,5),w:1.1},{f:t=>2*(0.1+0.9*t),dash:1,c:'var(--c2)'},{f:t=>-2*(0.1+0.9*t),dash:1,c:'var(--c2)'}],cap:'<b>Non stationnaire</b> : l’étalement grandit avec le temps, donc les statistiques changent.'}
+],2);
+fig('energie',[
+ {x:[-0.5,4],y:[-0.2,1.25],yl:'',s:[{type:'area',f:t=>t<0?0:E(-2*t),c:'var(--c2)',n:400},{f:t=>t<0?0:E(-t)},{f:t=>t<0?0:E(-2*t),c:'var(--c2)',dash:1}],tx:[{x:1.2,y:0.75,t:'s(t) = e⁻ᵗ·U(t)',c:'var(--c1)'},{x:2.0,y:0.3,t:'aire sous s² = E = 1/2',c:'var(--c2)'}],cap:'<b>Énergie finie</b> : l’aire sous s²(t) (en orange) est un nombre fini.'},
+ {x:[0,4],y:[-1.3,1.45],yl:'',hl:[{y:0.5,t:'moyenne de s² = P = 1/2',c:'var(--c2)'}],s:[{type:'area',f:t=>Co(PI*t)**2,c:'var(--c2)'},{f:t=>Co(PI*t),dash:1},{f:t=>Co(PI*t)**2,c:'var(--c2)'}],cap:'<b>Périodique</b> (cos, A = 1) : l’aire sous s² grandit sans fin (énergie infinie), mais sa moyenne reste 1/2 (puissance finie).'}
+],2);
+fig('dims',[
+ {x:[0,1],y:[-1.3,1.3],yl:'s(t)',s:[{f:t=>S(2*PI*3*t)*E(-1.5*t)}],cap:'<b>1D</b> : un son s(t), une seule variable.'},
+ {svg:img2d,cap:'<b>2D</b> : une image I(x, y). Chaque case (pixel) a un niveau de gris.'},
+ {svg:film,cap:'<b>3D</b> : un film I(x, y, t), c’est-à-dire des images qui changent avec le temps.'}
+]);
+fig('formes',[
+ {x:[0,1.05],y:[0,4.8],yl:'x(t)',s:[{f:g}],cap:'<b>Analogique</b> : temps continu, amplitude continue.'},
+ {x:[0,1.05],y:[0,4.8],yl:'x(t)',hl:grid,s:[{f:g,dash:1,op:.3},{f:t=>R(g(t)),n:1200,c:'var(--c4)'}],cap:'<b>Quantifié</b> : temps continu, amplitude discrète (escalier).'},
+ {x:[0,1.05],y:[0,4.8],yl:'x(n)',s:[{f:g,dash:1,op:.3},{type:'stem',xs:xs,f:g,c:'var(--c3)'}],cap:'<b>Échantillonné</b> : temps discret, amplitude continue.'},
+ {x:[0,1.05],y:[0,4.8],yl:'x(n)',hl:grid,s:[{f:g,dash:1,op:.3},{type:'stem',xs:xs,f:t=>R(g(t)),c:'var(--c2)'}],cap:'<b>Numérique</b> : temps discret, amplitude discrète.'}
+],2);
+fig('spectre',[
+ {x:[0,0.1],y:[-3.5,3.5],yl:'s(t)',xl:'t (s)',xt:[[0.05,'0,05']],s:[{f:t=>2*S(2*PI*50*t)+S(2*PI*120*t),n:1500}],cap:'Dans le temps : s(t) = 2·sin(2π·50t) + sin(2π·120t). Difficile de voir ce qu’il contient !'},
+ {x:[-150,150],y:[0,1.35],yl:'|S(f)|',xl:'f (Hz)',xt:[[-120,'−120'],[-50,'−50'],[50,'50'],[120,'120']],s:[{type:'dirac',xs:[-120,-50,50,120],h:[0.5,1,1,0.5],c:'var(--c2)'}],tx:[{x:50,y:1.13,t:'1',a:'middle'},{x:-50,y:1.13,t:'1',a:'middle'},{x:120,y:0.63,t:'0,5',a:'middle'},{x:-120,y:0.63,t:'0,5',a:'middle'}],cap:'Dans les fréquences : seulement 2 raies, à 50 Hz et 120 Hz (et leurs copies en négatif). Astuce : une sinusoïde d’amplitude A donne 2 raies de hauteur A/2.'}
+],2);
+const bump=(a,b)=>f=>(f>a&&f<b)?Math.sqrt(S(PI*(f-a)/(b-a))):0;
+fig('bandes',[
+ {x:[0,150],y:[0,1.35],yl:'|S(f)|',xl:'f (MHz)',xt:[[100,'Fmoy = 100']],s:[{type:'area',f:bump(95,105),n:1500},{f:bump(95,105),n:1500}],tx:[{x:100,y:1.12,t:'ΔF = 10',a:'middle'}],cap:'<b>Bande étroite</b> : Fmin = 95, Fmax = 105, donc ΔF/Fmoy = 10/100 = 0,1 (petit). On ne montre que les fréquences positives.'},
+ {x:[0,150],y:[0,1.35],yl:'|S(f)|',xl:'f (MHz)',xt:[[5,'Fmin'],[52.5,'Fmoy'],[100,'Fmax']],s:[{type:'area',f:bump(5,100),c:'var(--c2)'},{f:bump(5,100),c:'var(--c2)'}],cap:'<b>Large bande</b> : Fmin = 5, Fmax = 100, donc ΔF/Fmoy = 95/52,5 ≈ 1,8 (grand).'}
+],2);
+fig('freqbar',[{svg:freqbar,wide:true,cap:'Les bandes de fréquence du cours, placées sur une même règle.'}],1);
+fig('lambda',[{svg:lambar,wide:true,cap:'UV, visible et infrarouge rangés selon la longueur d’onde λ.'}],1);
+
+/* Partie 5 */
+fig('rect',[
+ {x:[-2.5,2.5],y:[-0.3,1.5],yl:'Rect(t/T)',xt:[[-1,'−T/2'],[1,'T/2']],yt:[[1,'1']],s:[{f:t=>A(t)<1?1:0,n:1000}],cap:'Porte : hauteur 1, largeur T (de −T/2 à T/2), aire = T.'},
+ {x:[-2.5,2.5],y:[-1.4,1.5],yl:'x(t)·Rect(t/T)',xt:[[-1,'−T/2'],[1,'T/2']],s:[{f:t=>S(2*PI*1.2*t),dash:1,op:.4},{f:t=>A(t)<1?S(2*PI*1.2*t):0,n:1000,c:'var(--c2)'}],cap:'Utilisation : multiplier par Rect, c’est garder le signal seulement pendant T (une « fenêtre »).'}
+],2);
+fig('sign',[{x:[-2.5,2.5],y:[-1.4,1.5],yl:'Sign(t)',yt:[[1,'+1'],[-1,'−1']],s:[{f:t=>t>0?1:-1,n:1000}],cap:'Sign(t) : −1 avant 0, +1 après 0.'}],1);
+fig('echelon',[
+ {x:[-2.5,2.5],y:[-0.3,1.5],yl:'U(t)',yt:[[1,'1']],s:[{f:t=>t>=0?1:0,n:1000}],cap:'U(t) : 0 avant 0, 1 à partir de 0 (« on allume »).'},
+ {x:[-2.5,2.5],y:[-1.4,1.5],yl:'x(t)·U(t)',s:[{f:t=>Co(2*PI*0.8*t),dash:1,op:.4},{f:t=>t>=0?Co(2*PI*0.8*t):0,n:1000,c:'var(--c2)'}],cap:'x(t)·U(t) : tout ce qui est avant 0 est effacé, le signal devient <b>causal</b>.'}
+],2);
+const prt=T=>t=>A(t)<T/2?1/T:0;
+fig('diracc',[
+ {x:[-1,1],y:[0,4.8],yl:'(1/T)·Rect(t/T)',s:[{f:prt(1),n:2000},{f:prt(0.5),n:2000,c:'var(--c3)'},{f:prt(0.25),n:2000,c:'var(--c2)'}],tx:[{x:0.55,y:1.15,t:'T = 1',c:'var(--c1)'},{x:0.3,y:2.15,t:'T = 0,5',c:'var(--c3)'},{x:0.17,y:4.15,t:'T = 0,25',c:'var(--c2)'}],cap:'On rétrécit la porte (T → 0) en la rendant plus haute (1/T) : l’aire reste toujours égale à 1.'},
+ {x:[-1,1],y:[0,4.8],yl:'δ(t)',s:[{type:'dirac',xs:[0],h:3.6,c:'var(--c2)'}],tx:[{x:0.08,y:3.6,t:'δ(t), aire = 1'}],cap:'À la limite : l’impulsion de Dirac, dessinée comme une flèche en t = 0.'},
+ {x:[-1,1.3],y:[0,4.8],yl:'',xt:[[0.7,'t₀']],s:[{type:'dirac',xs:[0.7],h:3.6,c:'var(--c2)'}],tx:[{x:0.78,y:3.6,t:'δ(t − t₀)'}],cap:'Dirac décalé : la flèche est placée en t = t₀.'}
+]);
+const xx=t=>1+0.5*S(2*PI*0.8*t);
+fig('diracp',[
+ {x:[-2,2],y:[-0.3,1.5],yl:'U(t)',yt:[[1,'1']],s:[{f:t=>t>=0?1:0,n:1000}],cap:'L’échelon U(t) : saut brutal de 0 à 1 en t = 0.'},
+ {x:[-2,2],y:[-0.3,1.5],yl:'dU/dt',s:[{type:'dirac',xs:[0],h:1.2,c:'var(--c2)'}],tx:[{x:0.1,y:1.2,t:'δ(t)'}],cap:'Sa dérivée (propriété 4) : nulle partout (U est plat), sauf en 0 où la pente est infinie, d’où δ(t).'},
+ {x:[-0.2,2.2],y:[0,1.95],yl:'',xt:[[1.2,'t₀']],s:[{f:xx,dash:1},{type:'dirac',xs:[1.2],h:xx(1.2),c:'var(--c2)'}],tx:[{x:0.05,y:1.7,t:'x(t)',c:'var(--c1)'},{x:1.25,y:1.8,t:'x(t₀)·δ(t − t₀)',c:'var(--c2)'}],cap:'Propriété 5 : x(t)·δ(t − t₀). Il ne reste qu’une flèche en t₀, de « force » x(t₀).'}
+]);
+const tri=t=>Math.max(0,1-A(t)/0.5),T0=1.5;
+fig('tri',[
+ {x:[-1.5,1.5],y:[-0.2,1.4],yl:'y(t)',xt:[[-0.5,'−T₁'],[0.5,'T₁']],yt:[[1,'1']],s:[{f:tri,c:'var(--c2)'}],cap:'Le motif y(t) = tri(t/T₁) : un triangle de hauteur 1 entre −T₁ et T₁.'},
+ {x:[-3.6,3.6],y:[-0.2,1.4],yl:'x(t)',xt:[[-3,'−2T₀'],[-1.5,'−T₀'],[1.5,'T₀'],[3,'2T₀']],s:[{f:t=>{let v=0;for(let k=-3;k<=3;k++)v+=tri(t-k*T0);return v;},n:1000},{f:tri,c:'var(--c2)',w:2.6,a:-0.6,b:0.6}],cap:'x(t) = rep<sub>T₀</sub>{y(t)} : le motif (orange, k = 0) recopié toutes les T₀ secondes.'}
+],2);
+const ks=[-3,-2,-1,0,1,2,3],xp=t=>1+0.6*S(2*PI*0.15*t+0.6);
+fig('peigne',[
+ {x:[-3.6,3.6],y:[0,1.5],yl:'Pgn(t)',xt:[[-1,'−T₀'],[1,'T₀'],[2,'2T₀'],[3,'3T₀']],s:[{type:'dirac',xs:ks,h:1,c:'var(--c2)'}],cap:'Le peigne de Dirac : une flèche (de poids 1) toutes les T₀ secondes.'},
+ {x:[-3.6,3.6],y:[0,1.9],yl:'',xt:[[-1,'−T₀'],[1,'T₀'],[2,'2T₀'],[3,'3T₀']],s:[{f:xp,dash:1},{type:'dirac',xs:ks,h:ks.map(xp),c:'var(--c2)'}],cap:'x(t) × peigne : des flèches de hauteur x(kT₀). C’est le signal <b>échantillonné</b> !'}
+],2);
+})();
+</script>
+</body>
+</html>

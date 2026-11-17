@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé Chapitre 3 – Systèmes linéaires</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<style>
+:root{
+  --paper:#F6F8FA;--sheet:#FFFFFF;--ink:#17202B;--ink-2:#4B5666;--rule:#D9E0E8;--grid:#EDF1F5;
+  --accent:#1D4E9E;--accent-soft:#E7EEF9;
+  --tip:#23744F;--tip-soft:#E9F4EE;--warn:#A9281F;--warn-soft:#FBEDEB;
+  --ex:#1D4E9E;--ex-soft:#EEF3FB;--key:#865800;--key-soft:#FBF3DF;
+  --c1:#1D4E9E;--c2:#D46B08;--c3:#23854F;--c4:#6D46B5;--c5:#0B8484;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --bg:var(--paper);--fg:var(--ink);--muted:var(--ink-2);--card:var(--sheet);--border:var(--rule);--th:var(--grid);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10141A;--sheet:#161B23;--ink:#E3E8EF;--ink-2:#A2ADBC;--rule:#2A323D;--grid:#1C232D;
+    --accent:#8DB2FF;--accent-soft:#1A263D;
+    --tip:#6CC79B;--tip-soft:#14251D;--warn:#F2877B;--warn-soft:#2A1716;
+    --ex:#8DB2FF;--ex-soft:#172238;--key:#E3B656;--key-soft:#292112;
+    --c1:#8DB2FF;--c2:#F5A04F;--c3:#62CF92;--c4:#B89CFF;--c5:#4FD1C5;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.7;font-optical-sizing:auto;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* Mise en page : sommaire fixe + colonne de lecture */
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1200px;margin:0 auto}
+.toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:48px 18px 48px 24px;border-right:1px solid var(--rule);font-family:var(--sans);font-size:14px;line-height:1.35}
+.toc-title{font:600 15px/1.2 var(--sans);color:var(--ink);margin:0 0 10px;padding-left:12px}
+.toc-toggle{display:none}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:0}
+.toc a{display:block;color:var(--ink-2);text-decoration:none;padding:5px 10px;border-left:2px solid transparent}
+.toc a.t2{color:var(--ink);font-weight:600;margin-top:14px}
+.toc a.t3{padding-left:22px}
+.toc a:hover{color:var(--accent)}
+.toc a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+
+main{padding:64px 56px 140px;min-width:0;counter-reset:fig}
+main > :not(.figs):not(.hero){max-width:68ch}
+
+/* En-tête */
+.hero{margin:0 0 40px;padding-bottom:32px;border-bottom:1px solid var(--rule)}
+.hero-chap{font:600 15px/1 var(--sans);color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,5vw,3.5rem);line-height:1.06;letter-spacing:-0.015em;margin:0 0 16px;max-width:17ch}
+.hero-sub{font-size:19px;color:var(--ink-2);margin:0 0 30px;max-width:54ch}
+#hero-wave svg{width:100%;height:auto;display:block}
+
+/* Titres */
+h2{font-family:var(--sans);font-weight:600;font-size:1.75rem;line-height:1.2;letter-spacing:-0.01em;margin:88px 0 20px;padding-top:26px;border-top:2px solid var(--ink)}
+h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;line-height:1.3;margin:48px 0 12px}
+h4{font-family:var(--sans);font-weight:600;font-size:1.02rem;margin:32px 0 8px}
+p,ul,ol{margin:0 0 14px}
+li{margin:4px 0}
+code{font-size:.85em;background:var(--grid);padding:1px 5px;border-radius:3px;word-break:break-all}
+.tag{font:600 12px/1 var(--sans);color:var(--key);background:var(--key-soft);border-radius:99px;padding:4px 9px;margin-left:10px;vertical-align:4px;white-space:nowrap}
+
+/* Tableaux */
+table{border-collapse:collapse;width:100%;margin:18px 0;display:block;overflow-x:auto;font-family:var(--sans);font-size:15px;line-height:1.45;position:relative}
+th,td{border-bottom:1px solid var(--rule);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--grid)}
+
+/* Encadrés */
+.box{position:relative;margin:22px 0;padding:14px 20px;border-left:3px solid var(--bc);background:var(--bs);border-radius:0 6px 6px 0}
+.box.tip{--bc:var(--tip);--bs:var(--tip-soft)}
+.box.warn{--bc:var(--warn);--bs:var(--warn-soft)}
+.box.ex{--bc:var(--ex);--bs:var(--ex-soft)}
+.box.key{--bc:var(--key);--bs:var(--key-soft)}
+.box > .lbl{display:block;font:600 14.5px/1.35 var(--sans);color:var(--bc);margin-bottom:6px}
+.box:not(:has(> .lbl))::before{display:block;font:600 14.5px/1.35 var(--sans);color:var(--bc);margin-bottom:6px;content:"Astuce"}
+.box.warn:not(:has(> .lbl))::before{content:"Attention"}
+.box.ex:not(:has(> .lbl))::before{content:"Exemple"}
+.box.key:not(:has(> .lbl))::before{content:"À retenir"}
+.box > :last-child{margin-bottom:0}
+.box table{background:var(--sheet)}
+
+/* Formules */
+.formula{margin:18px 0;overflow-x:auto;position:relative}
+.katex{font-size:1.06em}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:4px 0;position:relative}
+pre{font-family:Consolas,"Cascadia Mono",monospace;font-size:13.5px;line-height:1.4;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px;overflow-x:auto;position:relative}
+
+/* Figures sur papier millimétré */
+.figs{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:14px;margin:26px 0}
+.figs figure{margin:0;padding:10px 10px 12px;background-color:var(--sheet);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:16px 16px;border:1px solid var(--rule);border-radius:4px;counter-increment:fig}
+.figs figure.wide{grid-column:1/-1}
+.figs figcaption{font:13.5px/1.45 var(--sans);color:var(--ink-2);margin-top:8px;padding:6px 4px 0;background:var(--sheet)}
+.figs figcaption::before{content:"Figure " counter(fig) ". ";font-weight:600;color:var(--ink)}
+.figcap{font:14px/1.5 var(--sans);color:var(--ink-2);margin:-8px 0 18px}
+.plot{width:100%;height:auto;display:block}
+.plot text{font-family:var(--sans)}
+.plot .small{font-size:11px;fill:var(--ink-2)}
+.plot .lab{font-size:12px;fill:var(--ink);font-style:italic}
+.plot .mid{font-size:14px;fill:var(--ink)}
+.plot .big{font-size:20px;font-weight:700;fill:var(--ink)}
+.plot .big2{font-size:15px;font-weight:700;fill:var(--ink)}
+.plot .ax{stroke:var(--ink-2);stroke-width:1.2}
+.plot .guide{stroke:var(--ink-2);stroke-dasharray:3 3;stroke-width:.8;opacity:.6}
+
+/* Tableau des 4 formes */
+.grid4{display:grid;grid-template-columns:auto 1fr 1fr;border:1px solid var(--rule);margin:18px 0;font:15px/1.45 var(--sans)}
+.grid4 div{padding:10px 12px;border:1px solid var(--rule);background:var(--sheet)}
+.grid4 .h{background:var(--grid);font-weight:600}
+
+/* Curseur de la figure interactive */
+.slider{display:flex;gap:14px;align-items:center;font:14px/1.4 var(--sans);color:var(--ink-2);margin:10px 4px 0;padding:6px 4px;background:var(--sheet)}
+.slider span{min-width:68px;font-variant-numeric:tabular-nums}
+.slider input{flex:1;accent-color:var(--accent)}
+
+/* Checklist */
+ul.check{list-style:none;padding-left:0}
+ul.check li{position:relative;padding-left:30px;margin:8px 0}
+ul.check li::before{content:"";position:absolute;left:0;top:.38em;width:15px;height:15px;border:1.5px solid var(--ink-2);border-radius:3px}
+
+/* Écrans étroits */
+@media (max-width:960px){
+  .layout{display:block}
+  .toc{position:sticky;top:0;z-index:10;height:auto;max-height:100vh;border-right:0;border-bottom:1px solid var(--rule);background:var(--paper);padding:6px 16px}
+  .toc-title{display:none}
+  .toc-toggle{display:flex;width:100%;justify-content:space-between;align-items:center;font:600 15px/1 var(--sans);color:var(--ink);background:none;border:0;padding:12px 0;cursor:pointer}
+  .toc-state{font-weight:500;color:var(--accent)}
+  .toc ol{display:none;padding-bottom:12px}
+  .toc.open ol{display:block}
+  main{padding:32px 16px 100px}
+  body{font-size:17px}
+  h2{margin-top:64px}
+}
+@media (max-width:640px){.figs{grid-template-columns:1fr !important}}
+@media print{.toc{display:none}.layout{display:block}main{padding:0}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="toc" id="toc">
+<button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list"><span>Sommaire</span><span class="toc-state">Afficher</span></button>
+<p class="toc-title">Sommaire</p>
+<ol id="toc-list"></ol>
+</aside>
+<main>
+<header class="hero">
+<p class="hero-chap">Chapitre III</p>
+<h1>Systèmes linéaires continus invariants dans le temps</h1>
+<p class="hero-sub">Résumé du cours d'E. Abdelmounim (FST Settat), expliqué pas à pas pour débutant, avec tous les calculs détaillés. On étudie ce qu'un système fait subir à un signal.</p>
+<div id="hero-wave"></div>
+</header>
+
+<h2 id="plan">Le fil du chapitre</h2>
+<p>Les chapitres 1 et 2 parlaient des <b>signaux</b>. Ce chapitre parle des <b>systèmes</b> : ce qui reçoit un signal et en fabrique un autre (un circuit, un amplificateur, un câble, un filtre). Le chapitre suit quatre étapes :</p>
+<ol>
+<li><b>Généralités</b> : ce qu'est un système, et les notations.</li>
+<li><b>Exemples</b> : un circuit RLC, une diode, un modulateur AM.</li>
+<li><b>Classification</b> : six propriétés pour trier les systèmes (linéaire, invariant, sans mémoire, causal, inversible, stable). On apprend à les <b>vérifier par le calcul</b>.</li>
+<li><b>Analyse</b> des systèmes linéaires invariants (SLIT) :
+ <ul>
+ <li>le décibel et la bande passante ;</li>
+ <li>la réponse impulsionnelle et la convolution ;</li>
+ <li>le théorème de Plancherel, qui relie la convolution aux spectres du chapitre 2.</li>
+ </ul></li>
+</ol>
+<div class="box key"><b class="lbl">Le résultat le plus important du chapitre</b>
+<p>Un SLIT est entièrement décrit par une seule fonction, sa <b>réponse impulsionnelle</b> \(h(t)\). La sortie se calcule de deux façons équivalentes :</p>
+\[ s(t) = e(t) * h(t) \quad\text{(dans le temps)} \qquad\Longleftrightarrow\qquad S(f) = E(f)\cdot H(f) \quad\text{(dans les fréquences)} \]</div>
+
+<!-- ============ PARTIE 0 ============ -->
+<h2 id="p0">Partie 0 : Les rappels utiles</h2>
+<p>Seuls les outils mathématiques nouveaux de ce chapitre sont rappelés ici.</p>
+
+<h3>0.1 Le logarithme décimal</h3>
+<p>\(\log_{10}(x)\) est le nombre \(y\) tel que \(10^y = x\). Par exemple \(\log_{10}(100) = 2\), car \(10^2 = 100\). Règles utiles :</p>
+<table>
+<tr><th>Règle</th><th>Exemple</th></tr>
+<tr><td>\(\log_{10}(a\cdot b) = \log_{10}a + \log_{10}b\)</td><td>\(\log_{10}(200) = \log_{10}2 + \log_{10}100 = 0{,}301 + 2 = 2{,}301\)</td></tr>
+<tr><td>\(\log_{10}\!\left(\frac ab\right) = \log_{10}a - \log_{10}b\)</td><td>\(\log_{10}\!\left(\frac12\right) = 0 - 0{,}301 = -0{,}301\)</td></tr>
+<tr><td>\(\log_{10}(a^n) = n\,\log_{10}a\)</td><td>\(\log_{10}(v^2) = 2\log_{10}v\)</td></tr>
+<tr><td>\(\log_{10}1 = 0\), &nbsp;\(\log_{10}10 = 1\)</td><td>\(\log_{10}2 \approx 0{,}301\) (à connaître)</td></tr>
+</table>
+
+<h3>0.2 Les règles de l'exponentielle</h3>
+<div class="formula">\[ e^{a+b} = e^a\cdot e^b \qquad\qquad e^{\alpha a} = \left(e^{a}\right)^{\alpha} \qquad\qquad e^0 = 1 \]</div>
+
+<h3>0.3 L'impulsion de Dirac (rappel du chapitre 1)</h3>
+<ul>
+<li>\(\delta(t)\) est une impulsion infiniment brève en \(t = 0\), d'aire 1. \(\delta(t - \tau)\) est la même impulsion placée en \(t = \tau\).</li>
+<li><b>Propriété d'échantillonnage</b> : dans une intégrale, \(\delta(t - \tau)\) « sélectionne » la valeur de la fonction au point où le Dirac est placé :
+\[ \int_{-\infty}^{+\infty} x(\tau)\,\delta(t - \tau)\,d\tau = x(t) \]</li>
+</ul>
+
+<h3>0.4 L'échelon unité</h3>
+<p>\(u(t)\) (noté aussi \(U(t)\) ou \(\epsilon(t)\)) vaut 0 pour \(t &lt; 0\) et 1 pour \(t \geq 0\). Multiplier un signal par \(u(t)\) le rend <b>causal</b> (nul avant 0).</p>
+
+<h3>0.5 Le changement de variable dans une intégrale</h3>
+<p>On remplace la variable d'intégration par une autre, en changeant <b>trois</b> choses : la fonction, le \(d\) et les bornes. Exemple avec \(u = t - \tau\) (où \(t\) est fixé) :</p>
+<ul>
+<li>\(\tau = t - u\) ;</li>
+<li>\(d\tau = -du\) (on dérive : \(du = -d\tau\)) ;</li>
+<li>quand \(\tau\) va de \(-\infty\) à \(+\infty\), \(u = t - \tau\) va de \(+\infty\) à \(-\infty\).</li>
+</ul>
+<p>Le signe moins de \(d\tau = -du\) sert ensuite à remettre les bornes dans l'ordre : \(\int_{+\infty}^{-\infty}(\ldots)(-du) = \int_{-\infty}^{+\infty}(\ldots)\,du\). Ce calcul revient deux fois dans le chapitre.</p>
+
+<!-- ============ PARTIE 1 ============ -->
+<h2 id="p1">Partie 1 : Généralités sur les systèmes</h2>
+
+<h3>1.1 Qu'est-ce qu'un système ?</h3>
+<p>Un système modélise en général un <b>processus physique</b> qui interagit avec un signal. Il accepte des <b>signaux d'entrée</b> \(x_i\) et produit des <b>signaux de sortie</b> \(y_i\). Les sorties sont la <b>réponse</b> du système aux entrées.</p>
+<p>Autrement dit, un système établit une <b>relation</b> entre l'ensemble des entrées et l'ensemble des sorties correspondantes.</p>
+
+<h3>1.2 MIMO et SISO</h3>
+<ul>
+<li><b>MIMO</b> (Multiple Input Multiple Output) : plusieurs entrées \(x_1(t), \ldots, x_m(t)\), plusieurs sorties \(y_1(t), \ldots, y_n(t)\). La plupart des processus physiques sont de ce type.</li>
+<li><b>SISO</b> (Single Input Single Output) : une seule entrée \(x(t)\), une seule sortie \(y(t)\).</li>
+</ul>
+<p>Grâce au <b>principe de superposition</b> (partie 3.1), un système MIMO est souvent approché par une combinaison de plusieurs systèmes SISO. Le cours étudie donc uniquement les systèmes <b>SISO</b>. Les principes vus se généralisent aux systèmes MIMO.</p>
+<div class="figs" data-fig="blocs"></div>
+
+<h3>1.3 Temps continu (TC) et temps discret (TD)</h3>
+<ul>
+<li>Un <b>système TC</b> transforme un signal d'entrée à temps continu en signal de sortie à temps continu. Notation : \(x(t) \to y(t)\).</li>
+<li>Un <b>système TD</b> (ou <b>système échantillonné</b>) transforme des signaux à temps discret, souvent des <b>séquences</b> de nombres. Notation avec des crochets : \(x[k] \to y[k]\).</li>
+</ul>
+
+<h3>1.4 Comment décrit-on un système ?</h3>
+<ul>
+<li>Système TC : par une <b>équation différentielle linéaire à coefficients constants</b> entre \(x(t)\) et \(y(t)\).</li>
+<li>Système TD : par une <b>équation de différence linéaire à coefficients constants</b> entre \(x[k]\) et \(y[k]\).</li>
+</ul>
+<div class="box key"><p>La relation entre l'entrée et la sortie <b>caractérise complètement</b> le système physique. Une fois qu'on la connaît, on n'a besoin d'aucune autre information pour analyser le système.</p></div>
+
+<!-- ============ PARTIE 2 ============ -->
+<h2 id="p2">Partie 2 : Exemples de systèmes</h2>
+
+<h3>2.1 Le circuit RLC</h3>
+<p>Le circuit contient une résistance \(R\), une bobine \(L\) et un condensateur \(C\). L'entrée est la tension \(v(t)\) du générateur. La sortie \(y(t)\) est la tension aux bornes du condensateur.</p>
+<div class="figs" data-fig="rlc"></div>
+<p><b>Les trois courants qui partent du nœud 1.</b> Le nœud 1 est à la tension \(y(t)\). Les trois éléments obéissent à leurs lois :</p>
+<ul>
+<li><b>Résistance</b> (loi d'Ohm). La tension à ses bornes est \(y(t) - v(t)\), donc :
+\[ i_R = \frac{y(t) - v(t)}{R} \]</li>
+<li><b>Bobine</b>. Sa tension est \(y = L\,\frac{di_L}{dt}\). Pour avoir le courant, on intègre :
+\[ i_L = \frac{1}{L}\int_{-\infty}^{t} y(\tau)\,d\tau \]</li>
+<li><b>Condensateur</b> :
+\[ i_C = C\,\frac{dy}{dt} \]</li>
+</ul>
+<p><b>Loi de Kirchhoff au nœud 1.</b> La somme des courants entrants est égale à la somme des courants sortants. Ici les trois courants sont orientés en sortant du nœud, donc leur somme est nulle :</p>
+<div class="formula">\[ \frac{y(t) - v(t)}{R} + \frac{1}{L}\int_{-\infty}^{t} y(\tau)\,d\tau + C\,\frac{dy}{dt} = 0 \]</div>
+<p><b>Se débarrasser de l'intégrale.</b> On dérive toute l'équation par rapport à \(t\). La dérivée de \(\int_{-\infty}^{t} y(\tau)\,d\tau\) est simplement \(y(t)\) :</p>
+<div class="formula">\[ \frac{1}{R}\left(\frac{dy}{dt} - \frac{dv}{dt}\right) + \frac{1}{L}\,y(t) + C\,\frac{d^2y}{dt^2} = 0 \]</div>
+<p><b>Mettre en forme.</b> On divise tout par \(C\), puis on passe le terme en \(v\) à droite :</p>
+<div class="formula">\[ \frac{d^2y}{dt^2} + \frac{1}{RC}\,\frac{dy}{dt} + \frac{1}{LC}\,y(t) = \frac{1}{RC}\,\frac{dv}{dt} \]</div>
+<p>C'est une <b>équation différentielle linéaire à coefficients constants</b> (\(\frac{1}{RC}\) et \(\frac{1}{LC}\) ne dépendent pas du temps). Le circuit RLC est donc un exemple de <b>système linéaire TC</b>.</p>
+<div class="box warn"><p>Pour résoudre cette équation, il faut aussi tenir compte des <b>conditions initiales</b> \(y(0)\) et \(y'(0)\) (état de charge du condensateur, courant dans la bobine au départ).</p></div>
+
+<h3>2.2 La diode</h3>
+<p>La diode est l'élément de base de nombreux dispositifs à semi-conducteurs. C'est une jonction PN, qui fonctionne selon deux conditions de polarisation :</p>
+<ul>
+<li><b>Polarisation directe</b> : la borne + de \(v\) est reliée à la région P, la borne − à la région N. Un courant relativement fort traverse la jonction :
+\[ i = I_s\left[\exp\!\left(\frac{v}{V_T}\right) - 1\right] \]
+ <ul>
+ <li>\(I_s\) est le <b>courant de saturation</b> : \(I_s = 4{,}2\times10^{-15}\) A pour le silicium.</li>
+ <li>\(V_T = \frac{kT}{e}\), avec \(k = 1{,}38\times10^{-23}\) J/K (constante de Boltzmann), \(T\) la température en kelvins et \(e = 1{,}6\times10^{-19}\) C.</li>
+ </ul></li>
+<li><b>Polarisation inverse</b> (\(v &lt; 0\)) : le courant est négligeable. Quand \(v\) est très négatif, \(\exp(v/V_T) \approx 0\), donc \(i \approx -I_s\), un courant minuscule.</li>
+</ul>
+<p><b>Calcul de \(V_T\) à \(T = 300\) K :</b></p>
+<div class="formula">\[ V_T = \frac{1{,}38\times10^{-23}\times300}{1{,}6\times10^{-19}} = \frac{4{,}14\times10^{-21}}{1{,}6\times10^{-19}} = 0{,}0259 \approx 0{,}026\ \text{V} \]</div>
+<p>D'où la relation numérique : \(i = 4{,}2\times10^{-15}\left[\exp\!\left(\frac{v}{0{,}026}\right) - 1\right]\) A.</p>
+<div class="figs" data-fig="diode"></div>
+<div class="box ex"><b class="lbl">Exemple chiffré : pourquoi la diode n'est pas linéaire</b>
+<p>On calcule le courant pour \(v = 0{,}35\) V puis pour le double, \(v = 0{,}7\) V :</p>
+<ul>
+<li>\(v = 0{,}35\) V : \(\frac{0{,}35}{0{,}026} = 13{,}46\), et \(e^{13{,}46} \approx 7{,}0\times10^{5}\). Donc \(i \approx 4{,}2\times10^{-15}\times7{,}0\times10^{5} \approx 3\times10^{-9}\) A, soit 3 nA.</li>
+<li>\(v = 0{,}7\) V : \(\frac{0{,}7}{0{,}026} = 26{,}92\), et \(e^{26{,}92} \approx 4{,}9\times10^{11}\). Donc \(i \approx 4{,}2\times10^{-15}\times4{,}9\times10^{11} \approx 2\times10^{-3}\) A, soit 2 mA.</li>
+</ul>
+<p>La tension a doublé, mais le courant a été multiplié par environ 700 000. Pour un système linéaire, il aurait dû doubler. La relation entrée-sortie de la diode est donc <b>non linéaire</b>.</p></div>
+
+<h3>2.3 Le modulateur d'amplitude (AM)</h3>
+<p>Il sert à transmettre un signal basse fréquence (BF) \(m(t)\), par exemple la voix, sur une onde haute fréquence (HF) :</p>
+<ul>
+<li>\(m(t)\) : le signal <b>informatif</b> (signal modulant) ;</li>
+<li>\(f_c\) : la fréquence de la <b>porteuse</b> HF ;</li>
+<li>\(A\) : l'amplitude de la porteuse.</li>
+</ul>
+<p>Le schéma a trois blocs :</p>
+<ol>
+<li>un <b>atténuateur</b> multiplie \(m(t)\) par \(k\), avec \(k &lt; 1\) ;</li>
+<li>on <b>ajoute 1</b> (offset), ce qui donne \(1 + k\,m(t)\) ;</li>
+<li>le <b>modulateur</b> multiplie le résultat par la porteuse \(A\cos(2\pi f_ct)\).</li>
+</ol>
+<div class="formula">\[ s(t) = A\,\big[1 + k\,m(t)\big]\cos(2\pi f_ct) \]</div>
+<div class="figs" data-fig="am"></div>
+<p>L'information \(m(t)\) se retrouve dans l'<b>enveloppe</b> (les bords) du signal HF. Le « 1 + » garde \(1 + k\,m(t)\) positif, pour que l'enveloppe suive fidèlement \(m(t)\).</p>
+<div class="box tip"><b class="lbl">Astuce (lien avec la partie 3)</b>
+<p>Ce système n'est pas linéaire, à cause du « 1 + » : c'est le même défaut que l'amplificateur avec offset (partie 3.1). Il n'est pas non plus invariant dans le temps, car le facteur \(\cos(2\pi f_ct)\) change avec \(t\) (même raisonnement que \(A(t)\,x(t)\) en partie 3.2).</p></div>
+
+<!-- ============ PARTIE 3 ============ -->
+<h2 id="p3">Partie 3 : Classification des systèmes</h2>
+<p>Pour analyser et concevoir des systèmes, on les classe selon des propriétés. Une propriété doit être vraie <b>pour tous les signaux d'entrée possibles</b>. Un seul contre-exemple suffit pour dire qu'un système ne l'a pas. Il y a six catégories de base :</p>
+<table>
+<tr><th></th><th>Propriété</th><th>Son contraire</th></tr>
+<tr><td>a</td><td>linéaire</td><td>non linéaire</td></tr>
+<tr><td>b</td><td>invariant dans le temps</td><td>variant dans le temps</td></tr>
+<tr><td>c</td><td>sans mémoire</td><td>avec mémoire (dynamique)</td></tr>
+<tr><td>d</td><td>causal</td><td>non causal (anticipatif)</td></tr>
+<tr><td>e</td><td>inversible</td><td>non inversible</td></tr>
+<tr><td>f</td><td>stable</td><td>instable</td></tr>
+</table>
+
+<h3>3.1 Systèmes linéaires <span class="tag">essentiel</span></h3>
+<p>Soit deux entrées et leurs sorties : \(x_1 \to y_1\) et \(x_2 \to y_2\). Le système est <b>linéaire</b> s'il vérifie deux propriétés :</p>
+<ul>
+<li><b>Additivité</b> : \(x_1 + x_2 \to y_1 + y_2\) (la somme des entrées donne la somme des sorties).</li>
+<li><b>Homogénéité</b> : \(\alpha\,x_1 \to \alpha\,y_1\) (multiplier l'entrée par \(\alpha\) multiplie la sortie par \(\alpha\)).</li>
+</ul>
+<p>Les deux ensemble forment le <b>principe de superposition</b>, pour tous nombres \(\alpha\) et \(\beta\) :</p>
+<div class="formula">\[ \alpha\,x_1 + \beta\,x_2 \;\longrightarrow\; \alpha\,y_1 + \beta\,y_2 \]</div>
+<div class="box key"><b class="lbl">La méthode pour vérifier la linéarité</b>
+<ol>
+<li>Écrire \(y_1\) (la sortie pour \(x_1\)) et \(y_2\) (la sortie pour \(x_2\)).</li>
+<li>Calculer la sortie quand l'entrée est \(\alpha x_1 + \beta x_2\) : on remplace \(x\) par \(\alpha x_1 + \beta x_2\) dans la formule du système.</li>
+<li>Comparer avec \(\alpha y_1 + \beta y_2\). Égalité pour tous \(\alpha, \beta\) : linéaire. Sinon : non linéaire.</li>
+</ol></div>
+
+<h4>Exemple 1 : le dérivateur \(y(t) = \frac{dx(t)}{dt}\)</h4>
+<ol>
+<li>\(x_1 \to y_1 = \frac{dx_1}{dt}\) et \(x_2 \to y_2 = \frac{dx_2}{dt}\).</li>
+<li>Entrée \(\alpha x_1 + \beta x_2\). La dérivée d'une somme est la somme des dérivées, et les constantes sortent de la dérivée :
+\[ \frac{d}{dt}\big\{\alpha x_1(t) + \beta x_2(t)\big\} = \alpha\,\frac{dx_1}{dt} + \beta\,\frac{dx_2}{dt} \]</li>
+<li>Cela vaut exactement \(\alpha\,y_1(t) + \beta\,y_2(t)\).</li>
+</ol>
+<p><b>Le dérivateur est linéaire.</b></p>
+
+<h4>Exemple 2 : l'amplificateur exponentiel \(y(t) = e^{x(t)}\)</h4>
+<ol>
+<li>\(y_1 = e^{x_1(t)}\) et \(y_2 = e^{x_2(t)}\).</li>
+<li>Entrée \(\alpha x_1 + \beta x_2\). On utilise \(e^{a+b} = e^a e^b\), puis \(e^{\alpha a} = (e^a)^\alpha\) :
+\[ e^{\alpha x_1(t) + \beta x_2(t)} = e^{\alpha x_1(t)}\cdot e^{\beta x_2(t)} = \big[y_1(t)\big]^{\alpha}\cdot\big[y_2(t)\big]^{\beta} \]</li>
+<li>On obtient un <b>produit de puissances</b>, et pas la somme \(\alpha y_1 + \beta y_2\) :
+\[ \big[y_1\big]^{\alpha}\big[y_2\big]^{\beta} \neq \alpha\,y_1(t) + \beta\,y_2(t) \]</li>
+</ol>
+<p><b>L'amplificateur exponentiel n'est pas linéaire.</b> Contre-exemple chiffré : l'entrée \(x = 0\) donne \(e^0 = 1\). L'entrée \(2\times0 = 0\) donne encore 1, et non \(2\times1 = 2\).</p>
+
+<h4>Exemple 3 : l'amplificateur \(y(t) = 5\,x(t)\)</h4>
+<ol>
+<li>\(y_1 = 5x_1(t)\) et \(y_2 = 5x_2(t)\).</li>
+<li>Entrée \(\alpha x_1 + \beta x_2\). On développe :
+\[ 5\big\{\alpha x_1(t) + \beta x_2(t)\big\} = \alpha\,\big(5x_1(t)\big) + \beta\,\big(5x_2(t)\big) \]</li>
+<li>Cela vaut \(\alpha\,y_1(t) + \beta\,y_2(t)\).</li>
+</ol>
+<p><b>L'amplificateur est linéaire.</b> (La diapo fait le calcul avec un gain de 3 au lieu de 5. C'est le même raisonnement, quel que soit le gain.)</p>
+
+<h4>Exemple 4 : l'amplificateur avec offset \(y(t) = 3\,x(t) + 5\)</h4>
+<ol>
+<li>\(y_1 = 3x_1(t) + 5\) et \(y_2 = 3x_2(t) + 5\).</li>
+<li>Entrée \(\alpha x_1 + \beta x_2\) : la sortie est
+\[ 3\big[\alpha x_1(t) + \beta x_2(t)\big] + 5 = 3\alpha x_1 + 3\beta x_2 + 5 \]</li>
+<li>Ce qu'il faudrait pour être linéaire :
+\[ \alpha y_1 + \beta y_2 = \alpha(3x_1 + 5) + \beta(3x_2 + 5) = 3\alpha x_1 + 3\beta x_2 + 5\alpha + 5\beta \]</li>
+<li>On compare. Les deux expressions diffèrent par la constante : \(5\) d'un côté, \(5(\alpha + \beta)\) de l'autre. Elles ne sont pas égales en général (par exemple pour \(\alpha = \beta = 1\), on a 5 d'un côté et 10 de l'autre).</li>
+</ol>
+<p><b>L'amplificateur avec offset n'est pas linéaire.</b> La diapo écrit le résultat avec \(\alpha = \beta = 1\) : \(3[\alpha x_1 + \beta x_2] + 5 = \alpha y_1 + \beta y_2 - 5\).</p>
+<div class="figs" data-fig="carac"></div>
+<div class="box tip"><b class="lbl">Astuce : le test rapide de l'entrée nulle</b>
+<p>Pour un système linéaire, l'entrée nulle donne <b>forcément</b> une sortie nulle (on prend \(\alpha = 0\) : \(0\cdot x_1 \to 0\cdot y_1 = 0\)). Donc :</p>
+<ul>
+<li>si \(x = 0\) donne \(y \neq 0\), le système est <b>non linéaire</b>, sans autre calcul. C'est le cas de \(3x + 5\) (sortie 5) et de \(e^x\) (sortie 1) ;</li>
+<li>si \(x = 0\) donne \(y = 0\), on ne peut encore rien conclure : il faut faire le calcul complet (\(x^2\) passe ce test sans être linéaire).</li>
+</ul>
+<p>Pour un système sans mémoire \(y = g(x)\), il y a aussi un test visuel : il est linéaire seulement si la courbe de \(g\) est une <b>droite qui passe par l'origine</b> (figure ci-dessus).</p></div>
+<p><b>La sortie à entrée nulle.</b> Le système avec offset peut s'écrire comme un système linéaire suivi d'un ajout constant \(y_{zi}(t)\), la « réponse à entrée nulle » (zero input). Ici \(y_{zi} = 5\) : c'est ce que donne le système quand l'entrée vaut 0.</p>
+<div class="figs" data-fig="yzi"></div>
+
+<h3>3.2 Systèmes invariants dans le temps</h3>
+<p>Un système est <b>invariant dans le temps</b> (ou <b>stationnaire</b>) si son comportement ne dépend pas de l'origine du temps :</p>
+<div class="formula">\[ \text{si } e(t) \to s(t), \quad\text{alors}\quad e(t - t_0) \to s(t - t_0) \quad\text{pour tout retard } t_0 \]</div>
+<p>En mots : le même signal d'entrée donne la même sortie, quel que soit le moment où on l'applique. Le système doit répondre de la même manière maintenant ou dans un an. Un système peut <b>vieillir</b> et ne plus répondre pareil : on doit donc l'utiliser pendant sa période d'invariance.</p>
+<div class="box key"><b class="lbl">La méthode pour vérifier l'invariance</b>
+<ol>
+<li>Calculer \(y_2(t)\), la sortie quand on applique l'entrée retardée \(x(t - t_0)\).</li>
+<li>Calculer \(y(t - t_0)\) : on prend la formule de \(y(t)\) et on remplace <b>chaque</b> \(t\) par \(t - t_0\).</li>
+<li>Comparer. Égalité : invariant. Sinon : variant.</li>
+</ol></div>
+
+<h4>Système 1 : \(y(t) = \sin\big(x(t)\big)\)</h4>
+<ol>
+<li>Entrée retardée \(x(t - t_0)\) : le système prend le sinus de son entrée, donc \(y_2(t) = \sin\big(x(t - t_0)\big)\).</li>
+<li>Sortie retardée : on remplace \(t\) par \(t - t_0\) dans \(y(t) = \sin(x(t))\), donc \(y(t - t_0) = \sin\big(x(t - t_0)\big)\).</li>
+<li>Les deux sont identiques.</li>
+</ol>
+<p><b>Ce système est invariant dans le temps</b> : son comportement est indépendant de l'origine du temps.</p>
+
+<h4>Système 2 : \(y(t) = A(t)\,x(t)\)</h4>
+<p>C'est un amplificateur (ou atténuateur) dont le gain \(A(t)\) change avec le temps. Sa valeur au temps \(t\) est différente de sa valeur au temps \(t - t_0\).</p>
+<ol>
+<li>Entrée retardée \(x(t - t_0)\) : le gain appliqué est celui du moment présent, donc \(y_2(t) = A(t)\,x(t - t_0)\).</li>
+<li>Sortie retardée : on remplace chaque \(t\) par \(t - t_0\), donc \(y(t - t_0) = A(t - t_0)\,x(t - t_0)\).</li>
+<li>\(A(t) \neq A(t - t_0)\), donc les deux sont différents.</li>
+</ol>
+<div class="box ex"><b class="lbl">Exemple chiffré du cours</b>
+<p>Aujourd'hui le gain vaut 10. On applique 5 V : la sortie vaut \(y = 10\times5 = 50\) V.</p>
+<p>Dix jours plus tard, le gain vaut 8. On applique la même tension de 5 V : la sortie vaut \(y = 8\times5 = 40\) V.</p>
+<p>Même entrée, sorties différentes. <b>Le système est variant dans le temps</b> : son comportement dépend de l'origine du temps.</p></div>
+<p>Les figures suivantes montrent la différence. L'entrée est un triangle \(x(t)\), puis le même triangle retardé de 1, \(x(t - 1)\).</p>
+<div class="figs" data-fig="invar"></div>
+<div class="figs" data-fig="var"></div>
+<div class="box tip"><b class="lbl">Astuce</b>
+<p>Si la variable \(t\) apparaît <b>en dehors</b> de \(x(\ldots)\) (comme dans \(A(t)\,x(t)\), \(t\,x(t)\) ou \(\cos(2\pi f_ct)\,x(t)\)), le système est presque toujours variant.</p>
+<p>Attention aussi au changement d'échelle : \(y(t) = x(2t)\) est variant. L'entrée retardée donne \(x(2t - t_0)\), alors que la sortie retardée est \(x(2(t - t_0)) = x(2t - 2t_0)\).</p></div>
+
+<h3>3.3 Systèmes sans mémoire</h3>
+<ul>
+<li><b>Sans mémoire</b> : la sortie \(y(t_0)\) dépend <b>uniquement</b> de l'entrée au même instant, \(x(t_0)\).</li>
+<li><b>Avec mémoire</b> (ou <b>dynamique</b>) : la sortie à l'instant \(t\) dépend aussi des valeurs <b>passées</b> \(x(t - t_i)\) ou <b>futures</b> \(x(t + t_j)\) de l'entrée.</li>
+</ul>
+<h4>Exemple 1 : le diviseur de tension (sans mémoire)</h4>
+<p>Deux résistances en série, alimentées par \(v(t)\). On prend la sortie \(y(t)\) aux bornes de \(R_1\).</p>
+<div class="figs" data-fig="memo"></div>
+<ul>
+<li>Le courant dans le circuit est \(i(t) = \frac{v(t)}{R_1 + R_2}\) (loi d'Ohm, les résistances en série s'additionnent).</li>
+<li>La tension aux bornes de \(R_1\) est :
+\[ y(t) = R_1\,i(t) = \frac{R_1}{R_1 + R_2}\,v(t) \]</li>
+</ul>
+<p>La sortie à \(t = t_0\) dépend uniquement de \(v(t_0)\). <b>Ce système est sans mémoire.</b></p>
+<h4>Exemple 2 : le circuit RLC alimenté par un courant (avec mémoire)</h4>
+<p>Le générateur impose le courant \(i(t)\). La sortie est la tension aux bornes du condensateur :</p>
+<div class="formula">\[ y(t) = \frac{1}{C}\int_{-\infty}^{t} i(\tau)\,d\tau \]</div>
+<p>Pour calculer \(y(t_0)\), il faut <b>toutes les valeurs passées</b> du courant avant \(t_0\) (l'intégrale les additionne toutes). <b>Ce système a de la mémoire.</b> Physiquement, le condensateur « se souvient » de la charge reçue.</p>
+<h4>Autres exemples (systèmes TC)</h4>
+<table>
+<tr><th>Sans mémoire</th><th>Pourquoi</th><th>Avec mémoire</th><th>Pourquoi</th></tr>
+<tr><td>\(y(t) = 3x(t) + 5\)</td><td>seulement \(x(t)\)</td><td>\(y(t) = x(t - 5)\)</td><td>besoin de \(x\) 5 s avant (passé)</td></tr>
+<tr><td>\(y(t) = \sin\{x(t)\} + 5\)</td><td>seulement \(x(t)\)</td><td>\(y(t) = x(t + 2)\)</td><td>besoin de \(x\) 2 s après (futur)</td></tr>
+<tr><td>\(y(t) = e^{x(t)}\)</td><td>seulement \(x(t)\)</td><td>\(y(t) = x(2t)\)</td><td>à \(t = 1\), besoin de \(x(2)\)</td></tr>
+<tr><td>\(y(t) = x^2(t)\)</td><td>seulement \(x(t)\)</td><td>\(y(t) = x(t/2)\)</td><td>à \(t = 2\), besoin de \(x(1)\)</td></tr>
+</table>
+<div class="box tip"><b class="lbl">Astuce</b>
+<p>Regarde l'argument de \(x\). S'il vaut exactement \(t\) partout, sans intégrale ni dérivée, le système est sans mémoire. Sinon, il a de la mémoire. Une dérivée suffit : \(\frac{dx}{dt}\) a besoin de valeurs voisines de \(t\).</p></div>
+
+<h3>3.4 Systèmes causals</h3>
+<p>Un système est <b>causal</b> si la sortie \(y(t_0)\) dépend uniquement des entrées \(x(t)\) pour \(t \leq t_0\) (le présent et le passé). Si la sortie à \(t_0\) dépend d'<b>au moins une valeur future</b> de l'entrée, le système est <b>non causal</b>, ou <b>anticipatif</b>.</p>
+<p>C'est le principe de cause à effet : les conséquences ne doivent pas précéder les causes. D'abord la cause, ensuite les effets.</p>
+<div class="box key"><p>La causalité est une <b>condition nécessaire</b> pour qu'un système soit <b>physiquement réalisable</b> en temps réel. Aucun appareil ne peut réagir à une entrée qui n'est pas encore arrivée.</p></div>
+<div class="figs" data-fig="causal"></div>
+<table>
+<tr><th>Causal</th><th>Non causal</th><th>Pourquoi non causal</th></tr>
+<tr><td>\(y(t) = x(t - 5)\)</td><td>\(y(t) = x(t + 2)\)</td><td>à \(t\), on a besoin de \(x(t + 2)\), futur</td></tr>
+<tr><td>\(y(t) = \sin\{x(t - 4)\} + 3\)</td><td>\(y(t) = \sin\{x(t + 4)\} + 3\)</td><td>besoin de \(x(t + 4)\), futur</td></tr>
+<tr><td>\(y(t) = e^{x(t-2)}\)</td><td>\(y(t) = x(2t)\)</td><td>à \(t = 1\), on a besoin de \(x(2)\) : futur</td></tr>
+<tr><td>\(y(t) = x^2(t - 2)\)</td><td>\(y(t) = x(t/2)\)</td><td>à \(t = -2\), on a besoin de \(x(-1)\) : futur</td></tr>
+<tr><td>\(y(t) = x(t - 2) + x(t - 5)\)</td><td>\(y(t) = x(t - 2) + x(t + 2)\)</td><td>un seul terme futur suffit</td></tr>
+</table>
+<div class="box warn"><b class="lbl">Attention aux pièges \(x(2t)\) et \(x(t/2)\)</b>
+<p>Il faut tester <b>tous</b> les instants \(t\), positifs et négatifs :</p>
+<ul>
+<li>\(x(2t)\) est sans problème pour \(t &lt; 0\) (\(2t &lt; t\)), mais pas pour \(t &gt; 0\) : \(2t &gt; t\), c'est le futur.</li>
+<li>\(x(t/2)\) est sans problème pour \(t &gt; 0\), mais pas pour \(t &lt; 0\) : par exemple \(-1 &gt; -2\), c'est le futur.</li>
+</ul>
+<p>Un seul instant problématique suffit pour que le système soit non causal.</p></div>
+
+<h3>3.5 Systèmes inversibles</h3>
+<p>Un système est <b>inversible</b> si l'entrée \(x(t)\) peut être retrouvée <b>de façon unique</b> à partir de la sortie \(y(t)\), pour tout \(t\). Autrement dit, deux entrées différentes ne peuvent jamais produire la même sortie.</p>
+<p>Conséquence : il existe un <b>deuxième système</b>, appelé <b>système inverse</b>, qui restaure l'entrée d'origine. On applique la sortie du premier système à l'entrée du second, et on récupère \(x(t)\).</p>
+<div class="figs" data-fig="inverse"></div>
+<div class="box key"><b class="lbl">La méthode</b>
+<p>On essaie d'isoler \(x(t)\) dans la formule \(y = \ldots\). Une seule solution : inversible. Plusieurs solutions possibles : non inversible.</p></div>
+<h4>Exemple 1 : l'amplificateur avec offset \(y(t) = 3x(t) + 5\)</h4>
+<p>On isole \(x\) : on retire 5 des deux côtés, puis on divise par 3.</p>
+<div class="formula">\[ y(t) - 5 = 3\,x(t) \quad\Longrightarrow\quad x(t) = \frac{y(t) - 5}{3} = \frac13\big[y(t) - 5\big] \]</div>
+<p>\(x(t)\) est déterminé de façon unique : <b>ce système est inversible</b>, et son inverse est \(x = \frac13(y - 5)\).</p>
+<div class="box warn"><b class="lbl">Correction de la diapo</b>
+<p>La diapo écrit \(x(t) = \frac15[y(t) - 3]\), avec 3 et 5 inversés. Vérification avec \(x = 2\) : \(y = 3\times2 + 5 = 11\). La bonne formule redonne \(\frac{11 - 5}{3} = 2\), alors que celle de la diapo donne \(\frac{11 - 3}{5} = 1{,}6\). La conclusion (inversible) reste juste.</p></div>
+<h4>Exemple 2 : le système cosinus \(y(t) = \cos\big[x(t)\big]\)</h4>
+<p>Le cosinus est périodique (période \(2\pi\)) et pair : beaucoup d'angles ont le même cosinus. Toutes les solutions sont :</p>
+<div class="formula">\[ x(t) = \pm\arccos\big[y(t)\big] + 2\pi m, \qquad m \text{ entier relatif} \]</div>
+<p>Pour une valeur de \(y(t)\), il y a une infinité de valeurs de \(x(t)\). Par exemple, \(x = 0\) et \(x = 2\pi\) donnent tous les deux \(y = 1\). <b>Ce système n'est pas inversible.</b> (La diapo écrit seulement \(+\arccos\) ; le \(\pm\) ajoute encore d'autres solutions.)</p>
+<h4>Exemple 3 : le quadrateur \(y(t) = \big[x(t)\big]^2\)</h4>
+<div class="formula">\[ x(t) = \pm\sqrt{y(t)} \]</div>
+<p>Deux valeurs possibles de l'entrée pour la même sortie : \(x = 2\) et \(x = -2\) donnent tous les deux \(y = 4\). <b>Ce système n'est pas inversible.</b></p>
+<div class="figs" data-fig="invcarac"></div>
+<div class="box tip"><b class="lbl">Astuce visuelle</b>
+<p>Pour un système sans mémoire \(y = g(x)\), on trace la courbe de \(g\). Si une ligne horizontale coupe la courbe plus d'une fois, deux entrées donnent la même sortie : le système n'est pas inversible.</p></div>
+
+<h3>3.6 Systèmes stables (BIBO)</h3>
+<p>D'abord, un <b>signal borné</b> : \(x(t)\) est borné par la borne \(B_x\) si</p>
+<div class="formula">\[ |x(t)| \leq B_x &lt; \infty \qquad\text{pour tout } t \in (-\infty, \infty) \]</div>
+<p>En mots, le signal ne dépasse jamais une certaine valeur finie, ni vers le haut ni vers le bas.</p>
+<p>Un système est <b>stable au sens BIBO</b> (Bounded Input Bounded Output) si <b>toute</b> entrée bornée donne une sortie bornée :</p>
+<div class="formula">\[ |y(t)| \leq B_y &lt; \infty \qquad\text{pour tout } t \in (-\infty, \infty) \]</div>
+<div class="box key"><b class="lbl">La méthode</b>
+<ul>
+<li>Pour montrer qu'un système est <b>stable</b>, on part de \(|x(t)| \leq B_x\) et on trouve une borne finie \(B_y\) pour \(|y(t)|\).</li>
+<li>Pour montrer qu'il est <b>instable</b>, il suffit de trouver <b>une seule</b> entrée bornée dont la sortie ne l'est pas.</li>
+</ul></div>
+<h4>Exemple 1 : l'amplificateur avec offset \(y(t) = 50\,x(t) + 10\)</h4>
+<p>On suppose \(|x(t)| \leq B_x\). La valeur absolue d'une somme est au plus la somme des valeurs absolues :</p>
+<div class="formula">\[ |y(t)| = |50\,x(t) + 10| \leq 50\,|x(t)| + 10 \leq 50\,B_x + 10 = B_y \]</div>
+<p>Si \(B_x\) est fini, alors \(B_y = 50B_x + 10\) est fini aussi. <b>Ce système est stable.</b> Par exemple, une entrée qui reste entre −1 et 1 donne une sortie qui reste entre −40 et 60.</p>
+<h4>Exemple 2 : l'intégrateur \(y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau\)</h4>
+<p>On essaie l'échelon unité \(x(t) = u(t)\). Il est borné, avec \(B_x = 1\). On calcule la sortie :</p>
+<ul>
+<li>pour \(t &lt; 0\) : on intègre des zéros, donc \(y(t) = 0\) ;</li>
+<li>pour \(t &gt; 0\) : \(y(t) = \int_{-\infty}^{0} 0\,d\tau + \int_{0}^{t} 1\,d\tau = 0 + \big[\tau\big]_0^t = t\).</li>
+</ul>
+<div class="formula">\[ y(t) = t\,u(t) = \begin{cases} 0 & t &lt; 0 \\ t & t &gt; 0 \end{cases} \]</div>
+<p>C'est une <b>rampe</b>, qui monte sans fin : elle n'est pas bornée. Une entrée bornée a donné une sortie non bornée. <b>Ce système est instable.</b></p>
+<div class="figs" data-fig="stab"></div>
+
+<h3>3.7 Bilan des exemples</h3>
+<p>Le tableau regroupe les systèmes vus plus haut. « oui » veut dire que le système a la propriété.</p>
+<table>
+<tr><th>Système</th><th>Linéaire</th><th>Invariant</th><th>Sans mémoire</th><th>Causal</th><th>Inversible</th><th>Stable</th></tr>
+<tr><td>\(y = 5x\)</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td></tr>
+<tr><td>\(y = 3x + 5\)</td><td>non</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td></tr>
+<tr><td>\(y = e^{x}\)</td><td>non</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td><td>oui</td></tr>
+<tr><td>\(y = x^2\)</td><td>non</td><td>oui</td><td>oui</td><td>oui</td><td>non</td><td>oui</td></tr>
+<tr><td>\(y = \frac{dx}{dt}\)</td><td>oui</td><td>oui</td><td>non</td><td>oui</td><td>non</td><td>non</td></tr>
+<tr><td>\(y = \int_{-\infty}^t x\,d\tau\)</td><td>oui</td><td>oui</td><td>non</td><td>oui</td><td>oui</td><td>non</td></tr>
+<tr><td>\(y = A(t)\,x\)</td><td>oui</td><td>non</td><td>oui</td><td>oui</td><td>si \(A(t) \neq 0\)</td><td>si \(A\) bornée</td></tr>
+</table>
+<div class="box tip"><b class="lbl">Explication des cases moins évidentes</b>
+<ul>
+<li>\(e^x\) est inversible avec \(x = \ln y\), et stable car \(|x| \leq B_x\) donne \(0 &lt; y \leq e^{B_x}\).</li>
+<li>\(\frac{dx}{dt}\) est non inversible : \(x\) et \(x + 3\) ont la même dérivée.</li>
+<li>\(\frac{dx}{dt}\) est instable : \(\sin(\omega t)\) est bornée par 1, mais sa dérivée \(\omega\cos(\omega t)\) peut devenir aussi grande qu'on veut quand \(\omega\) augmente. Un saut brusque donne même un Dirac.</li>
+</ul>
+<p>Ces raisonnements utilisent exactement les méthodes ci-dessus.</p></div>
+
+<!-- ============ PARTIE 4 ============ -->
+<h2 id="p4">Partie 4 : Analyse des systèmes</h2>
+<p>On s'intéresse maintenant aux <b>systèmes électriques linéaires, continus et invariants dans le temps</b> (SLIT), et à leur interaction avec des signaux déterministes. On note l'entrée \(e(t)\) et la sortie \(s(t)\). Le cours fait le parallèle :</p>
+<ul>
+<li>un <b>signal</b> se décrit dans le domaine fréquentiel par son <b>spectre</b> (chapitre 2) ;</li>
+<li>un <b>système</b> se décrit dans le domaine fréquentiel par sa <b>bande passante</b> (les fréquences qu'il laisse passer).</li>
+</ul>
+
+<h3>4.1 Le décibel : comparer l'entrée et la sortie</h3>
+<p>La sortie \(s(t)\) dépend de l'entrée \(e(t)\) et des caractéristiques du système. Pour les comparer, on fait en général le <b>rapport des puissances</b> (deux grandeurs de même nature), exprimé en <b>décibels</b> (dB).</p>
+<h4>Gain en puissance</h4>
+<div class="formula">\[ A_P\,(\text{dB}) = 10\,\log_{10}\!\left(\frac{P_s}{P_e}\right) \]</div>
+<ul>
+<li>\(A &gt; 0\) : <b>gain</b> (la sortie est plus puissante que l'entrée, ex. un amplificateur).</li>
+<li>\(A &lt; 0\) : <b>atténuation</b> (la sortie est plus faible, ex. un câble).</li>
+<li>\(A = 0\) dB : \(P_s = P_e\), car \(\log_{10}1 = 0\).</li>
+</ul>
+<table>
+<tr><th>\(P_s/P_e\)</th><th>Calcul</th><th>\(A_P\)</th></tr>
+<tr><td>2</td><td>\(10\times\log_{10}2 = 10\times0{,}301\)</td><td>+3 dB</td></tr>
+<tr><td>10</td><td>\(10\times\log_{10}10 = 10\times1\)</td><td>+10 dB</td></tr>
+<tr><td>100</td><td>\(10\times\log_{10}100 = 10\times2\)</td><td>+20 dB</td></tr>
+<tr><td>1/2</td><td>\(10\times\log_{10}0{,}5 = 10\times(-0{,}301)\)</td><td>−3 dB</td></tr>
+<tr><td>1/4</td><td>\(10\times\log_{10}0{,}25 = 10\times(-0{,}602)\)</td><td>−6 dB</td></tr>
+<tr><td>1/10</td><td>\(10\times\log_{10}0{,}1 = 10\times(-1)\)</td><td>−10 dB</td></tr>
+</table>
+<div class="box tip"><b class="lbl">Astuce</b>
+<p>Multiplier la puissance par 2 ajoute 3 dB. La multiplier par 10 ajoute 10 dB. Les gains en dB s'<b>additionnent</b> quand on met des systèmes à la suite (car le log transforme les produits en sommes). Exemple : un ampli de +20 dB suivi d'un câble de −3 dB donne +17 dB.</p></div>
+<h4>Cas des charges résistives : passer aux tensions</h4>
+<p>Pour une résistance, \(P = \frac{v^2}{R} = R\,I^2\). On remplace dans la formule. D'abord avec les tensions :</p>
+<div class="formula">\[ A_P = 10\log_{10}\!\left(\frac{v_s^2/R_s}{v_e^2/R_e}\right) = 10\log_{10}\!\left[\left(\frac{v_s}{v_e}\right)^{2}\frac{R_e}{R_s}\right] \]</div>
+<p>De même avec les courants : \(A_P = 10\log_{10}\!\left[\left(\frac{I_s}{I_e}\right)^{2}\frac{R_s}{R_e}\right]\).</p>
+<p><b>Si \(R_e = R_s\)</b>, le rapport des résistances vaut 1 et disparaît. On utilise ensuite \(\log_{10}(a^2) = 2\log_{10}a\) :</p>
+<div class="formula">\[ A_P = 10\log_{10}\!\left(\frac{v_s}{v_e}\right)^{2} = 2\times10\log_{10}\!\left(\frac{v_s}{v_e}\right) = 20\log_{10}\!\left(\frac{v_s}{v_e}\right) = 20\log_{10}\!\left(\frac{I_s}{I_e}\right) \]</div>
+<h4>Gain en tension</h4>
+<p>Par convention, on définit toujours le gain en tension avec le facteur 20 (même si les résistances diffèrent) :</p>
+<div class="formula">\[ A_V\,(\text{dB}) = 20\,\log_{10}\!\left(\frac{v_s}{v_e}\right) \]</div>
+<div class="box warn"><b class="lbl">Ne pas confondre 10 et 20</b>
+<p><b>10</b> log pour un rapport de <b>puissances</b>, <b>20</b> log pour un rapport de <b>tensions</b> ou de <b>courants</b>. Le 20 vient du carré de \(P = v^2/R\). Ainsi un rapport de tensions de 10 donne +20 dB, et un rapport de puissances de 10 donne +10 dB.</p></div>
+
+<h3>4.2 La bande passante <span class="tag">important</span></h3>
+<p>La bande passante sert à étudier le <b>comportement fréquentiel</b> d'un système. C'est la bande de fréquences des signaux sinusoïdaux qu'un appareil (un amplificateur) ou un milieu (un câble, une fibre optique, l'atmosphère) peut transmettre avec un gain ou une atténuation qui reste dans un intervalle donné, en général exprimé en dB.</p>
+<h4>La bande passante à −3 dB</h4>
+<p>C'est la valeur implicite quand rien n'est précisé. C'est la gamme de fréquences où la puissance de sortie reste entre une valeur nominale \(P_n\) et \(P_n/2\).</p>
+<p><b>Pourquoi −3 dB ?</b> Car \(10\log_{10}(0{,}5) = 10\times(-0{,}301) = -3\) dB.</p>
+<p><b>Et pour la tension ?</b> La puissance est proportionnelle au carré de la tension (\(P = v^2/R\)). On cherche la tension \(V\) qui donne la moitié de la puissance nominale :</p>
+<div class="formula">\[ \frac{V^2}{R} = \frac12\cdot\frac{V_n^2}{R} \;\Longrightarrow\; V^2 = \frac{V_n^2}{2} \;\Longrightarrow\; V = \frac{V_n}{\sqrt2} \approx 0{,}707\,V_n \]</div>
+<p>La tension reste donc entre \(V_n\) et \(\frac{V_n}{\sqrt2}\). Vérification en dB : \(20\log_{10}\frac{1}{\sqrt2} = 20\times(-0{,}1505) = -3\) dB. On trouve bien la même valeur.</p>
+<h4>La bande passante à −6 dB</h4>
+<p>La puissance reste entre \(P_n\) et \(\frac{P_n}{4}\), car \(10\log_{10}\frac14 = -6\) dB. La tension reste entre \(V_n\) et \(\frac{V_n}{2}\), car \(20\log_{10}\frac12 = -6\) dB.</p>
+<h4>Comment on la mesure</h4>
+<ol>
+<li>On applique une tension sinusoïdale qui fournit à l'entrée (résistive) une <b>puissance moyenne constante</b> \(P_e\), quelle que soit la fréquence.</li>
+<li>On mesure la puissance de sortie \(P_s(f)\) pour chaque fréquence. Elle passe par un maximum \(P_{sm}\), pris comme <b>référence</b>.</li>
+<li>La bande passante est la zone de fréquences où :
+\[ \frac{P_{sm}}{2} \leq P_s \leq P_{sm} \]</li>
+</ol>
+<p>En dB, avec \(P_{sm}\) comme référence :</p>
+<ul>
+<li>quand \(P_s = P_{sm}\) : \(A_P = 10\log_{10}(1) = 0\) dB ;</li>
+<li>quand \(P_s = P_{sm}/2\) : \(A_P = 10\log_{10}\!\left(\frac{P_{sm}/2}{P_{sm}}\right) = 10\log_{10}\!\left(\frac12\right) = -3\) dB.</li>
+</ul>
+<p>La bande passante est donc la gamme de fréquences \([f_{\min}, f_{\max}]\) où le gain en puissance est compris entre <b>0 dB et −3 dB</b>. Sa largeur est \(f_{\max} - f_{\min}\).</p>
+<div class="figs" data-fig="bp"></div>
+<h4>Pourquoi c'est important</h4>
+<p>D'après Fourier (chapitre 2), un signal de forme complexe est une somme de sinusoïdes de différentes fréquences : son <b>spectre</b>. Le système traite chaque sinusoïde selon sa fréquence :</p>
+<ul>
+<li>les sinusoïdes dont la fréquence est <b>dans</b> la bande passante passent ;</li>
+<li>celles qui sont <b>en dehors</b> sont fortement atténuées.</li>
+</ul>
+<div class="box key"><p>Plus la bande passante d'un système est proche de la largeur du spectre d'un signal (ou plus large), plus le système transmet ce signal <b>fidèlement</b>, c'est-à-dire sans déformation.</p></div>
+<div class="figs" data-fig="bpspec"></div>
+
+<h3>4.3 La réponse impulsionnelle \(h(t)\) <span class="tag">essentiel</span></h3>
+<p>On injecte une impulsion très brève (un Dirac \(\delta(t)\)) à l'entrée d'un SLIT. La sortie n'est <b>jamais</b> une impulsion infiniment brève : c'est un signal de durée finie, à cause du temps de réponse et de la bande passante limitée du système.</p>
+<div class="box key"><p>Cette sortie s'appelle la <b>réponse impulsionnelle</b> du système, notée \(h(t)\) :</p>
+\[ \delta(t) \;\longrightarrow\; h(t) \]</div>
+<p>Question : pour une entrée <b>quelconque</b> \(e(t)\), comment calculer la sortie \(s(t)\) à partir de \(h(t)\) ? La réponse se construit en trois étapes.</p>
+
+<h3>4.4 De la réponse impulsionnelle à la convolution</h3>
+<h4>Étape 1 : utiliser l'invariance</h4>
+<p>Le système est invariant. Une impulsion appliquée plus tard donne la même réponse, simplement décalée :</p>
+<div class="formula">\[ \delta(t) \to h(t) \qquad\Longrightarrow\qquad \delta(t - \tau) \to h(t - \tau) \]</div>
+<p>Une impulsion appliquée à l'instant \(t_0\) donne en sortie \(h(t - t_0)\) : la réponse commence à \(t_0\).</p>
+<div class="figs" data-fig="ri"></div>
+<h4>Étape 2 : découper l'entrée en impulsions</h4>
+<p>On découpe \(e(t)\) en une suite de rectangles étroits de largeur \(\Delta t\). Le rectangle numéro \(i\) est placé à l'instant \(i\Delta t\), et sa hauteur est la valeur du signal à cet instant : \(e(0)\), \(e(\Delta t)\), \(\ldots\), \(e(i\Delta t)\). Le signal est approximativement la somme de tous ces rectangles :</p>
+<div class="formula">\[ e(t) \approx \sum_i \big(\text{rectangle de hauteur } e(i\Delta t) \text{ placé en } i\Delta t\big) \]</div>
+<div class="figs" data-fig="escalier3"></div>
+<h4>Étape 3 : la réponse à chaque rectangle</h4>
+<p>On cherche la réponse à un seul rectangle, en trois petits pas :</p>
+<table>
+<tr><th>Entrée</th><th>Réponse</th><th>Raison</th></tr>
+<tr><td>\(\delta(t)\)</td><td>\(h(t)\)</td><td>définition</td></tr>
+<tr><td>rectangle de largeur \(\Delta t\), hauteur \(\frac{1}{\Delta t}\) (aire 1)</td><td>\(h_{\Delta t}(t)\)</td><td>quand \(\Delta t \to 0\), ce rectangle devient \(\delta(t)\), donc \(h_{\Delta t}(t) \to h(t)\)</td></tr>
+<tr><td>rectangle de largeur \(\Delta t\), hauteur 1</td><td>\(h_{\Delta t}(t)\,\Delta t\)</td><td><b>linéarité</b> : la hauteur est multipliée par \(\Delta t\), donc la réponse aussi</td></tr>
+<tr><td>rectangle de hauteur \(e(i\Delta t)\), placé en \(i\Delta t\)</td><td>\(e(i\Delta t)\,\big[h_{\Delta t}(t - i\Delta t)\,\Delta t\big]\)</td><td><b>linéarité</b> (× \(e(i\Delta t)\)) et <b>invariance</b> (décalage de \(i\Delta t\))</td></tr>
+</table>
+<p>La diapo note \(s(i\Delta t)\) la contribution du rectangle numéro \(i\) à la sortie :</p>
+<div class="formula">\[ s(i\Delta t) = e(i\Delta t)\,\big[h_{\Delta t}(t - i\Delta t)\,\Delta t\big] \]</div>
+<div class="figs" data-fig="contrib"></div>
+<h4>Étape 4 : additionner, puis passer à la limite</h4>
+<p>Par <b>linéarité</b> encore, la réponse à la somme des rectangles est la somme des réponses. Pour un signal causal (qui commence à \(t = 0\)) :</p>
+<div class="formula">\[ s(t) = \sum_{i=0}^{\infty} s(i\Delta t) = \sum_{i=0}^{\infty} e(i\Delta t)\,h_{\Delta t}(t - i\Delta t)\,\Delta t \]</div>
+<p>On fait tendre \(\Delta t \to 0\). Chaque morceau change de nom :</p>
+<ul>
+<li>\(h_{\Delta t} \to h\) ;</li>
+<li>l'instant \(i\Delta t\) devient une variable continue \(\tau\) ;</li>
+<li>\(\Delta t\) devient \(d\tau\) ;</li>
+<li>la somme \(\sum\) devient une intégrale \(\int\). C'est la définition même de l'intégrale, comme somme d'aires de rectangles de plus en plus fins.</li>
+</ul>
+<div class="formula">\[ s(t) = \int_{0}^{\infty} e(\tau)\,h(t - \tau)\,d\tau \qquad\text{(signal causal)} \]</div>
+<p>Pour un signal qui existe aussi avant 0, on intègre sur tout l'axe. C'est l'opération de <b>convolution</b>, notée \(*\) :</p>
+<div class="formula">\[ \boxed{\;s(t) = e(t) * h(t) = \int_{-\infty}^{+\infty} e(\tau)\,h(t - \tau)\,d\tau\;} \]</div>
+<div class="box key"><b class="lbl">Ce que dit la convolution</b>
+<ul>
+<li>La réponse à un signal quelconque se calcule à partir de la seule réponse impulsionnelle \(h(t)\).</li>
+<li>La sortie dépend du système (à travers \(h\)) et de <b>l'histoire</b> du signal : toutes les valeurs passées \(e(\tau)\) contribuent.</li>
+<li>Chaque valeur passée \(e(\tau)\) est <b>pondérée</b> par \(h(t - \tau)\). Le cours parle de <b>mémoire pondérée</b> : le système se souvient du passé, avec un poids donné par \(h\).</li>
+<li>Les SLIT sont des <b>systèmes de convolution</b>.</li>
+</ul></div>
+<div class="box warn"><p>Dans \(\int e(\tau)\,h(t - \tau)\,d\tau\), la variable d'intégration est \(\tau\). Le temps \(t\) est <b>fixé</b> pendant le calcul de l'intégrale : on calcule une intégrale différente pour chaque valeur de \(t\).</p></div>
+
+<h3>4.5 Propriétés de la convolution</h3>
+<table>
+<tr><th>Propriété</th><th>Formule</th></tr>
+<tr><td>Commutativité</td><td>\(x * y = y * x\)</td></tr>
+<tr><td>Distributivité</td><td>\(x * (y + z) = x * y + x * z\)</td></tr>
+<tr><td>Associativité</td><td>\(x * (y * z) = (x * y) * z = x * y * z\)</td></tr>
+<tr><td>Élément neutre : \(\delta\)</td><td>\(x * \delta = \delta * x = x\)</td></tr>
+</table>
+<h4>Démonstration de la commutativité</h4>
+<p>On part de \(x * y(t) = \int_{-\infty}^{+\infty} x(\tau)\,y(t - \tau)\,d\tau\) et on fait le changement de variable \(u = t - \tau\) (rappel 0.5) : \(\tau = t - u\), \(d\tau = -du\), et les bornes s'inversent.</p>
+<div class="formula">\[ x * y(t) = \int_{+\infty}^{-\infty} x(t - u)\,y(u)\,(-du) = \int_{-\infty}^{+\infty} y(u)\,x(t - u)\,du = y * x(t) \]</div>
+<p>Le signe moins a servi à remettre les bornes dans l'ordre. Conséquence pratique : on peut retourner <b>celui des deux signaux qu'on veut</b> (\(s = \int e(\tau)h(t - \tau)d\tau = \int h(\tau)e(t - \tau)d\tau\)). On choisit le plus simple.</p>
+<h4>Démonstration de l'élément neutre</h4>
+<p>Avec la propriété d'échantillonnage du Dirac (rappel 0.3) :</p>
+<div class="formula">\[ x * \delta(t) = \int_{-\infty}^{+\infty} x(\tau)\,\delta(t - \tau)\,d\tau = x(t) \]</div>
+<p>Cela confirme la définition de \(h\) : si l'entrée est \(\delta\), la sortie est \(\delta * h = h\).</p>
+<h4>Distributivité et associativité</h4>
+<ul>
+<li><b>Distributivité</b> : elle vient de la linéarité de l'intégrale. On a \(x(\tau)[y + z](t - \tau) = x(\tau)y(t - \tau) + x(\tau)z(t - \tau)\), et l'intégrale d'une somme est la somme des intégrales.</li>
+<li><b>Associativité</b> : la démonstration directe avec des intégrales doubles est longue. Avec le théorème de Plancherel (partie 4.8), elle devient évidente : \(X(YZ) = (XY)Z\).</li>
+</ul>
+<div class="box tip"><b class="lbl">Astuce (systèmes en série)</b>
+<p>L'associativité dit que deux systèmes en cascade, de réponses \(h_1\) puis \(h_2\), équivalent à un seul système de réponse \(h_1 * h_2\). La commutativité dit en plus que l'ordre des deux systèmes ne change pas le résultat.</p></div>
+
+<h3>4.6 Calcul pratique de la convolution <span class="tag">important</span></h3>
+<p>Pour calculer \(s(t) = \int e(\tau)\,h(t - \tau)\,d\tau\) <b>pour une valeur de \(t\)</b>, on suit quatre étapes :</p>
+<ol>
+<li><b>Tracer</b> \(h(\tau)\) en fonction de \(\tau\).</li>
+<li><b>Retourner</b> : \(h(-\tau)\) est le symétrique de \(h(\tau)\) par rapport à l'axe vertical.</li>
+<li><b>Décaler</b> : \(h(t - \tau) = h\big(-(\tau - t)\big)\) est \(h(-\tau)\) déplacé de \(t\) vers la droite. Son « bord avant » est en \(\tau = t\).</li>
+<li><b>Multiplier puis intégrer</b> : on multiplie \(e(\tau)\) par \(h(t - \tau)\), et l'aire sous ce produit est la valeur \(s(t)\).</li>
+</ol>
+<p>Puis on recommence pour chaque valeur de \(t\) : en faisant glisser \(h(t - \tau)\), on obtient tous les points de la courbe \(s(t)\).</p>
+<div class="figs" data-fig="convpra"></div>
+<p>La figure interactive suivante montre ce glissement. Déplace le curseur pour changer \(t\) : l'aire colorée (le produit) est égale à la hauteur du point sur la courbe \(s(t)\).</p>
+<div class="figs" data-fig="convlive"></div>
+
+<h3>4.7 Deux convolutions calculées en détail</h3>
+<h4>Exemple 1 : un échelon dans un système de réponse \(h(t) = e^{-at}u(t)\)</h4>
+<p>Entrée \(e(t) = u(t)\), réponse impulsionnelle \(h(t) = e^{-at}u(t)\) avec \(a &gt; 0\). C'est la forme de la réponse d'un circuit RC (partie 4.9).</p>
+<div class="formula">\[ s(t) = \int_{-\infty}^{+\infty} u(\tau)\;e^{-a(t-\tau)}\,u(t - \tau)\,d\tau \]</div>
+<p><b>Où le produit n'est pas nul ?</b></p>
+<ul>
+<li>\(u(\tau) = 1\) seulement si \(\tau \geq 0\) ;</li>
+<li>\(u(t - \tau) = 1\) seulement si \(t - \tau \geq 0\), c'est-à-dire \(\tau \leq t\).</li>
+</ul>
+<p>Il faut donc \(0 \leq \tau \leq t\). Deux cas :</p>
+<p><b>Cas \(t &lt; 0\)</b> : aucun \(\tau\) ne vérifie \(0 \leq \tau \leq t\). Le produit est nul partout, donc \(s(t) = 0\).</p>
+<p><b>Cas \(t \geq 0\)</b> : on intègre de 0 à \(t\). On sort \(e^{-at}\), qui ne dépend pas de \(\tau\) (on utilise \(e^{-a(t-\tau)} = e^{-at}e^{a\tau}\)) :</p>
+<div class="formula">\[ s(t) = \int_0^t e^{-at}\,e^{a\tau}\,d\tau = e^{-at}\int_0^t e^{a\tau}\,d\tau = e^{-at}\left[\frac{e^{a\tau}}{a}\right]_0^t = e^{-at}\cdot\frac{e^{at} - 1}{a} = \frac{1 - e^{-at}}{a} \]</div>
+<div class="formula">\[ s(t) = \frac{1}{a}\big(1 - e^{-at}\big)\,u(t) \]</div>
+<p>La sortie part de 0 et monte doucement vers \(\frac1a\). Le système ne suit pas le saut brusque de l'entrée : c'est l'effet de sa mémoire (et de sa bande passante limitée).</p>
+<div class="figs" data-fig="convrc"></div>
+<h4>Exemple 2 : deux portes identiques donnent un triangle</h4>
+<p>\(e(t)\) et \(h(t)\) valent 1 entre 0 et 1, et 0 ailleurs.</p>
+<ul>
+<li>\(e(\tau) = 1\) pour \(0 \leq \tau \leq 1\) ;</li>
+<li>\(h(t - \tau) = 1\) pour \(0 \leq t - \tau \leq 1\), c'est-à-dire \(t - 1 \leq \tau \leq t\).</li>
+</ul>
+<p>Le produit vaut 1 là où les deux intervalles \([0, 1]\) et \([t - 1, t]\) se chevauchent, et 0 ailleurs. Donc \(s(t)\) est la <b>longueur du chevauchement</b> :</p>
+<table>
+<tr><th>Cas</th><th>Chevauchement</th><th>\(s(t)\)</th></tr>
+<tr><td>\(t &lt; 0\)</td><td>aucun (la porte glissante est encore à gauche)</td><td>0</td></tr>
+<tr><td>\(0 \leq t \leq 1\)</td><td>de 0 à \(t\)</td><td>\(\int_0^t 1\,d\tau = t\)</td></tr>
+<tr><td>\(1 \leq t \leq 2\)</td><td>de \(t - 1\) à 1</td><td>\(\int_{t-1}^{1} 1\,d\tau = 1 - (t - 1) = 2 - t\)</td></tr>
+<tr><td>\(t &gt; 2\)</td><td>aucun (la porte est passée)</td><td>0</td></tr>
+</table>
+<p>Le résultat est un <b>triangle</b> de base \([0, 2]\) et de hauteur 1 (atteinte en \(t = 1\), quand les deux portes se superposent exactement).</p>
+<div class="figs" data-fig="convrect"></div>
+<div class="box tip"><b class="lbl">Astuces de calcul</b>
+<ul>
+<li>La durée du résultat est la <b>somme des durées</b> : 1 + 1 = 2 ici.</li>
+<li>Le résultat commence à la somme des débuts (0 + 0) et finit à la somme des fins (1 + 1).</li>
+<li>Pour trouver les cas, repère les instants où un bord de la porte glissante croise un bord de l'autre signal.</li>
+</ul></div>
+
+<h3>4.8 Théorème de Plancherel <span class="tag">essentiel</span></h3>
+<div class="box key"><p>La transformée de Fourier d'un produit de convolution est un produit simple, et réciproquement :</p>
+\[ x(t) * y(t) \;\xrightarrow{\ \text{TF}\ }\; X(f)\cdot Y(f) \qquad\qquad x(t)\cdot y(t) \;\xrightarrow{\ \text{TF}\ }\; X(f) * Y(f) \]</div>
+<h4>Démonstration (pas à pas)</h4>
+<p>On note \(z(t) = x(t) * y(t)\), et on calcule sa transformée de Fourier \(Z(f)\). Rappel : \(X(f) = \int x(t)\,e^{-j2\pi ft}\,dt\) et \(Y(f) = \int y(t)\,e^{-j2\pi ft}\,dt\).</p>
+<ol>
+<li><b>Définition de la TF</b> :
+\[ Z(f) = \int_{-\infty}^{+\infty} z(t)\,e^{-j2\pi ft}\,dt = \int_{-\infty}^{+\infty}\big[x * y\big](t)\,e^{-j2\pi ft}\,dt \]</li>
+<li><b>On remplace la convolution par son intégrale</b> :
+\[ Z(f) = \int_{-\infty}^{+\infty}\left[\int_{-\infty}^{+\infty} x(\tau)\,y(t - \tau)\,d\tau\right] e^{-j2\pi ft}\,dt \]</li>
+<li><b>On découpe l'exponentielle</b>. L'astuce est d'écrire \(t = \tau + (t - \tau)\) :
+\[ e^{-j2\pi ft} = e^{-j2\pi f\tau}\cdot e^{-j2\pi f(t - \tau)} \]</li>
+<li><b>On échange l'ordre des intégrales</b> (on intègre d'abord en \(t\), puis en \(\tau\)) :
+\[ Z(f) = \int_{-\infty}^{+\infty} x(\tau)\,e^{-j2\pi f\tau}\left[\int_{-\infty}^{+\infty} y(t - \tau)\,e^{-j2\pi f(t - \tau)}\,dt\right] d\tau \]
+On a pu sortir \(x(\tau)\,e^{-j2\pi f\tau}\) de l'intégrale en \(t\), car ce terme ne dépend pas de \(t\).</li>
+<li><b>Changement de variable</b> \(t' = t - \tau\) dans l'intégrale entre crochets (\(\tau\) est fixé, donc \(dt' = dt\), et les bornes restent \(-\infty\) et \(+\infty\)) :
+\[ \int_{-\infty}^{+\infty} y(t')\,e^{-j2\pi ft'}\,dt' = Y(f) \]
+C'est exactement la définition de \(Y(f)\).</li>
+<li><b>On remplace</b>. \(Y(f)\) ne dépend pas de \(\tau\), donc il sort de l'intégrale :
+\[ Z(f) = Y(f)\int_{-\infty}^{+\infty} x(\tau)\,e^{-j2\pi f\tau}\,d\tau = Y(f)\cdot X(f) \]</li>
+</ol>
+<div class="formula">\[ \boxed{\;Z(f) = X(f)\cdot Y(f)\;} \]</div>
+<p>La deuxième relation (le produit devient une convolution) se démontre de la même façon, en partant de la TF inverse.</p>
+<div class="box tip"><b class="lbl">Astuce : pourquoi ce théorème est précieux</b>
+<p>Une convolution est une intégrale, à refaire pour chaque \(t\). Avec Plancherel, on la remplace par une <b>simple multiplication</b> dans le domaine fréquentiel : on calcule les TF, on multiplie, puis on revient au temps avec la TF inverse.</p>
+<p>Vérification sur l'exemple des deux portes : la TF d'une porte est un sinc (chapitre 2). Le produit des deux TF est donc un sinc², et la TF d'un triangle est bien un sinc² (table du chapitre 2).</p></div>
+
+<h3>4.9 Les deux descriptions d'un SLIT</h3>
+<p>On applique Plancherel à \(s = e * h\). On note \(H(f) = \mathrm{TF}[h(t)]\), la <b>fonction de transfert</b> du système. Un SLIT est alors décrit par deux équations qui lient la sortie à l'entrée :</p>
+<table>
+<tr><th>Domaine temporel</th><th>Domaine fréquentiel</th></tr>
+<tr><td>\(s(t) = e(t) * h(t)\)</td><td>\(S(f) = E(f)\cdot H(f)\)</td></tr>
+<tr><td>convolution avec la réponse impulsionnelle</td><td>produit par la fonction de transfert</td></tr>
+<tr><td>(ou une équation différentielle, partie 1.4)</td><td>(chaque fréquence est multipliée par \(H(f)\))</td></tr>
+</table>
+<p>Dans les fréquences, le système agit séparément sur chaque fréquence : la composante \(E(f)\) est multipliée par \(H(f)\). Là où \(|H(f)|\) est grand, la fréquence passe. Là où il est petit, elle est atténuée. C'est exactement l'idée de la <b>bande passante</b> : on la lit directement sur \(|H(f)|\).</p>
+<div class="figs" data-fig="plancherel"></div>
+<div class="box ex"><b class="lbl">Exemple de synthèse : le circuit RC (il relie tout le chapitre)</b>
+<p>La diapo de bilan laisse une question ouverte : comment passer de l'équation différentielle au domaine fréquentiel ? Cet exemple y répond. Il n'est pas sur les diapos, mais il n'utilise que des outils du cours.</p>
+<p><b>Le circuit.</b> Une résistance \(R\) en série, puis un condensateur \(C\) ; la sortie \(s(t)\) est la tension aux bornes de \(C\).</p>
+<div class="figs" data-fig="rccirc"></div>
+<ol>
+<li><b>Équation différentielle</b>. La loi des mailles donne \(e = R\,i + s\). Le courant du condensateur est \(i = C\,\frac{ds}{dt}\). On remplace :
+\[ RC\,\frac{ds}{dt} + s(t) = e(t) \]</li>
+<li><b>Passage aux fréquences</b>. On prend la TF de chaque terme. On utilise la propriété de dérivation de la TF (chapitre 2) : \(\mathrm{TF}\!\left[\frac{ds}{dt}\right] = j2\pi f\,S(f)\).
+\[ RC\,j2\pi f\,S(f) + S(f) = E(f) \;\Longrightarrow\; S(f)\big(1 + j2\pi fRC\big) = E(f) \]</li>
+<li><b>Fonction de transfert</b>. Puisque \(S = E\cdot H\) :
+\[ H(f) = \frac{S(f)}{E(f)} = \frac{1}{1 + j2\pi fRC} \]</li>
+<li><b>Gain en puissance</b>. La puissance est proportionnelle au carré du module, et \(|1 + jb|^2 = 1 + b^2\) :
+\[ |H(f)|^2 = \frac{1}{1 + (2\pi fRC)^2} \]
+En \(f = 0\), il vaut 1 (le maximum, 0 dB). Il diminue quand \(f\) augmente.</li>
+<li><b>Bande passante à −3 dB</b>. On cherche \(f_c\) où la puissance est divisée par 2 :
+\[ \frac{1}{1 + (2\pi f_cRC)^2} = \frac12 \;\Longrightarrow\; (2\pi f_cRC)^2 = 1 \;\Longrightarrow\; f_c = \frac{1}{2\pi RC} \]
+La bande passante va de \(f_{\min} = 0\) à \(f_{\max} = f_c\). Avec \(R = 1\) kΩ et \(C = 1\) µF : \(RC = 10^{-3}\) s, et \(f_c = \frac{1}{2\pi\times10^{-3}} \approx 159\) Hz.</li>
+<li><b>Réponse impulsionnelle</b>. On cherche \(h\) dont la TF est \(H\). On réécrit \(H\) en divisant le haut et le bas par \(RC\) :
+\[ H(f) = \frac{1}{RC}\cdot\frac{1}{\frac{1}{RC} + j2\pi f} \]
+Or la table du chapitre 2 donne \(e^{-at}u(t) \to \frac{1}{a + j2\pi f}\). Avec \(a = \frac{1}{RC}\) :
+\[ h(t) = \frac{1}{RC}\,e^{-t/RC}\,u(t) \]</li>
+</ol>
+<p>On retrouve la réponse impulsionnelle de l'exemple 1 de la partie 4.7 (à un facteur près). La réponse à un échelon est donc \(s(t) = \big(1 - e^{-t/RC}\big)u(t)\) : le condensateur se charge progressivement.</p></div>
+<div class="figs" data-fig="rc"></div>
+
+<!-- ============ FIN ============ -->
+<h2 id="fin">Ce qu'il faut retenir</h2>
+<table>
+<tr><th>Notion</th><th>Formule ou test clé</th></tr>
+<tr><td>Linéaire</td><td>\(\alpha x_1 + \beta x_2 \to \alpha y_1 + \beta y_2\) &nbsp; (test rapide : \(x = 0\) doit donner \(y = 0\))</td></tr>
+<tr><td>Invariant</td><td>\(x(t - t_0) \to y(t - t_0)\)</td></tr>
+<tr><td>Sans mémoire</td><td>\(y(t_0)\) ne dépend que de \(x(t_0)\)</td></tr>
+<tr><td>Causal</td><td>\(y(t_0)\) ne dépend que de \(x(t)\) pour \(t \leq t_0\)</td></tr>
+<tr><td>Inversible</td><td>on peut isoler \(x\) de façon unique</td></tr>
+<tr><td>Stable (BIBO)</td><td>\(|x| \leq B_x \Rightarrow |y| \leq B_y\), toutes deux finies</td></tr>
+<tr><td>Gain</td><td>\(A_P = 10\log_{10}\frac{P_s}{P_e}\), &nbsp; \(A_V = 20\log_{10}\frac{v_s}{v_e}\)</td></tr>
+<tr><td>Bande passante à −3 dB</td><td>\(P_{sm}/2 \leq P_s \leq P_{sm}\), soit \(V_{sm}/\sqrt2 \leq V_s \leq V_{sm}\)</td></tr>
+<tr><td>Réponse impulsionnelle</td><td>\(\delta(t) \to h(t)\)</td></tr>
+<tr><td>Convolution</td><td>\(s(t) = \int e(\tau)\,h(t - \tau)\,d\tau\)</td></tr>
+<tr><td>Plancherel</td><td>\(x * y \to X\cdot Y\), &nbsp; \(x\cdot y \to X * Y\)</td></tr>
+<tr><td>SLIT en fréquence</td><td>\(S(f) = E(f)\,H(f)\), &nbsp; \(H = \mathrm{TF}[h]\)</td></tr>
+</table>
+<ul class="check">
+<li>Je sais ce qu'est un système, la différence SISO / MIMO et TC / TD.</li>
+<li>Je sais établir l'équation différentielle du circuit RLC avec la loi des nœuds.</li>
+<li>Je sais expliquer pourquoi la diode est non linéaire, et calculer \(V_T\).</li>
+<li>Je connais l'expression du signal AM et le rôle de chaque bloc.</li>
+<li>Je sais vérifier la linéarité avec \(\alpha x_1 + \beta x_2\), et j'utilise le test de l'entrée nulle.</li>
+<li>Je sais vérifier l'invariance en comparant \(y_2(t)\) et \(y(t - t_0)\).</li>
+<li>Je sais reconnaître un système sans mémoire et un système causal, y compris les pièges \(x(2t)\) et \(x(t/2)\).</li>
+<li>Je sais tester l'inversibilité (isoler \(x\)) et la stabilité BIBO (borne, ou contre-exemple).</li>
+<li>Je sais calculer un gain en dB, et je ne confonds pas 10 log et 20 log.</li>
+<li>Je sais pourquoi −3 dB correspond à \(P/2\) et à \(V/\sqrt2\), et lire une bande passante sur une courbe.</li>
+<li>Je sais retrouver la formule de convolution à partir de \(h(t)\), avec la linéarité et l'invariance.</li>
+<li>Je sais calculer une convolution graphiquement : tracer, retourner, décaler, multiplier, intégrer.</li>
+<li>Je connais les propriétés de la convolution et la démonstration de la commutativité.</li>
+<li>Je connais le théorème de Plancherel et sa démonstration.</li>
+</ul>
+
+</main>
+</div>
+
+<script>
+(function(){
+const PI=Math.PI,S=Math.sin,Co=Math.cos,E=Math.exp,R=Math.round,A=Math.abs,SQ=Math.sqrt;
+let uid=0;
+function hash(k){let h=Math.imul(k^0x9e3779b9,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;return (h>>>0)/4294967296;}
+function noise(t,seed){const k=R(t*997)+seed*100003;const u1=Math.max(hash(2*k+1),1e-9),u2=hash(2*k+7);return SQ(-2*Math.log(u1))*Co(2*PI*u2);}
+function head(x,y,ang,c,sz){sz=sz||6;c=c||'var(--muted)';return `<path d="M0 0L${-sz} ${-sz/2}L${-sz} ${sz/2}Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang})" style="fill:${c}"/>`;}
+function plot(o){
+ const W=o.w||300,H=o.h||170,ml=30,mr=16,mt=18,mb=26;
+ const xa=o.x[0],xb=o.x[1],ya=o.y[0],yb=o.y[1];
+ const X=x=>ml+(x-xa)/(xb-xa)*(W-ml-mr),Y=y=>mt+(yb-y)/(yb-ya)*(H-mt-mb);
+ const id='clip'+(uid++);
+ const y0=Y(Math.min(Math.max(0,ya),yb)),x0=X(Math.min(Math.max(0,xa),xb));
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot"><defs><clipPath id="${id}"><rect x="${ml-4}" y="${mt-10}" width="${W-ml-mr+8}" height="${H-mt-mb+12}"/></clipPath></defs>`;
+ (o.hl||[]).forEach(h=>{s+=`<line x1="${ml}" x2="${W-mr}" y1="${Y(h.y)}" y2="${Y(h.y)}" class="guide"/>`;if(h.t)s+=`<text x="${W-mr}" y="${Y(h.y)-3}" text-anchor="end" class="small" style="fill:${h.c||'var(--muted)'}">${h.t}</text>`;});
+ (o.vl||[]).forEach(v=>{s+=`<line y1="${mt-8}" y2="${H-mb}" x1="${X(v.x)}" x2="${X(v.x)}" class="guide"/>`;if(v.t)s+=`<text x="${X(v.x)+3}" y="${mt-2}" class="small" style="fill:${v.c||'var(--muted)'}">${v.t}</text>`;});
+ s+=`<line x1="${ml-6}" y1="${y0}" x2="${W-6}" y2="${y0}" class="ax"/>`+head(W-6,y0,0);
+ s+=`<line x1="${x0}" y1="${H-mb+4}" x2="${x0}" y2="4" class="ax"/>`+head(x0,4,-90);
+ s+=`<text x="${x0+6}" y="12" class="lab">${o.yl||''}</text><text x="${W-8}" y="${y0-6}" text-anchor="end" class="lab">${o.xl===undefined?'t':o.xl}</text>`;
+ (o.xt||[]).forEach(([v,l])=>{s+=`<line x1="${X(v)}" x2="${X(v)}" y1="${y0-3}" y2="${y0+3}" class="ax"/><text x="${X(v)}" y="${y0+14}" text-anchor="middle" class="small">${l}</text>`;});
+ (o.yt||[]).forEach(([v,l])=>{s+=`<line x1="${x0-3}" x2="${x0+3}" y1="${Y(v)}" y2="${Y(v)}" class="ax"/><text x="${x0-5}" y="${Y(v)+4}" text-anchor="end" class="small">${l}</text>`;});
+ s+=`<g clip-path="url(#${id})">`;
+ (o.s||[]).forEach(z=>{
+  const c=z.c||'var(--c1)';
+  if(z.type==='stem'){z.xs.forEach((x,i)=>{const v=z.ys?z.ys[i]:z.f(x);s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)}" style="stroke:${c};stroke-width:1.6"/><circle cx="${X(x)}" cy="${Y(v)}" r="2.6" style="fill:${c}"/>`;});}
+  else if(z.type==='dirac'){z.xs.forEach((x,i)=>{const v=Array.isArray(z.h)?z.h[i]:(typeof z.h==='function'?z.h(x):z.h);const up=v>=0;s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)+(up?6:-6)}" style="stroke:${c};stroke-width:${z.w||2.2}"/>`+head(X(x),Y(v),up?-90:90,c,z.sz||8);});}
+  else{const a=z.a===undefined?xa:z.a,b=z.b===undefined?xb:z.b,N=z.n||500;let d='',pen=false,pts=[];
+   for(let i=0;i<=N;i++){const x=a+(b-a)*i/N;const v=z.f(x);if(v==null||!isFinite(v)){pen=false;continue;}const yy=Math.max(-60,Math.min(H+60,Y(v)));d+=(pen?'L':'M')+X(x).toFixed(1)+' '+yy.toFixed(1);pen=true;pts.push(X(x).toFixed(1)+' '+yy.toFixed(1));}
+   if(z.type==='area')s+=`<path d="M${X(a)} ${y0}L${pts.join('L')}L${X(b)} ${y0}Z" style="fill:${c};fill-opacity:.25;stroke:none"/>`;
+   else s+=`<path d="${d}" style="fill:none;stroke:${c};stroke-width:${z.w||1.8};opacity:${z.op||1}${z.dash?';stroke-dasharray:4 3':''}"/>`;}
+ });
+ s+='</g>';
+ (o.tx||[]).forEach(t=>{s+=`<text x="${X(t.x)}" y="${Y(t.y)}" text-anchor="${t.a||'start'}" class="small" style="fill:${t.c||'var(--fg)'}">${t.t}</text>`;});
+ return s+'</svg>';
+}
+function fig(name,panels,cols){
+ const el=document.querySelector('[data-fig="'+name+'"]');if(!el)return;
+ try{
+  const n=cols||Math.min(3,panels.length);el.style.setProperty('--cols',n);
+  if(panels.length===1&&!panels[0].wide)el.style.maxWidth='440px';
+  el.innerHTML=panels.map(p=>`<figure${p.wide?' class="wide"':''}>${p.svg?p.svg():plot(p)}${p.cap?`<figcaption>${p.cap}</figcaption>`:''}</figure>`).join('');
+ }catch(e){console.error(name,e);}
+}
+const sinc=x=>A(x)<1e-9?1:S(PI*x)/(PI*x);
+const rect=(t,T)=>A(t)<T/2?1:0;
+const tri=(t,T)=>Math.max(0,1-A(t)/T);
+const ln=(x1,y1,x2,y2,c,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:${c||'var(--ink-2)'};stroke-width:${w||1.6}"/>`;
+const arr=(x1,y1,x2,y2,c,w)=>ln(x1,y1,x2,y2,c,w)+head(x2,y2,Math.atan2(y2-y1,x2-x1)*180/PI,c||'var(--ink-2)',7);
+const tx=(x,y,t,cls,anc,c)=>`<text x="${x}" y="${y}" text-anchor="${anc||'middle'}" class="${cls||'mid'}"${c?` style="fill:${c}"`:''}>${t}</text>`;
+
+/* ---------- outils : schémas ---------- */
+const ST='stroke:var(--ink-2);stroke-width:1.6;fill:none';
+const box=(x,y,w,h,lines,c)=>{let o=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="fill:var(--sheet);stroke:${c||'var(--ink-2)'};stroke-width:1.6"/>`;const n=lines.length;lines.forEach((l,i)=>{o+=tx(x+w/2,y+h/2+5+(i-(n-1)/2)*18,l,'mid');});return o;};
+const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" style="fill:var(--ink-2)"/>`;
+const term=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.5" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.4"/>`;
+const sumc=(x,y)=>`<circle cx="${x}" cy="${y}" r="13" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+tx(x,y+5,'+','mid');
+function resH(x1,x2,y){const m=(x1+x2)/2,w=40;let d=`M${x1} ${y}L${m-w/2} ${y}`;for(let i=0;i<6;i++)d+=`L${m-w/2+(i+0.5)*w/6} ${y+(i%2?7:-7)}`;d+=`L${m+w/2} ${y}L${x2} ${y}`;return `<path d="${d}" style="${ST}"/>`;}
+function resV(x,y1,y2){const m=(y1+y2)/2,w=40;let d=`M${x} ${y1}L${x} ${m-w/2}`;for(let i=0;i<6;i++)d+=`L${x+(i%2?7:-7)} ${m-w/2+(i+0.5)*w/6}`;d+=`L${x} ${m+w/2}L${x} ${y2}`;return `<path d="${d}" style="${ST}"/>`;}
+function indV(x,y1,y2){const m=(y1+y2)/2;let d=`M${x} ${y1}L${x} ${m-24}`;for(let i=0;i<4;i++)d+='a6 6 0 0 1 0 12';d+=`L${x} ${y2}`;return `<path d="${d}" style="${ST}"/>`;}
+function indH(x1,x2,y){const m=(x1+x2)/2;let d=`M${x1} ${y}L${m-24} ${y}`;for(let i=0;i<4;i++)d+='a6 6 0 0 1 12 0';d+=`L${x2} ${y}`;return `<path d="${d}" style="${ST}"/>`;}
+function capV(x,y1,y2){const m=(y1+y2)/2;return ln(x,y1,x,m-5)+ln(x-15,m-5,x+15,m-5,'var(--ink-2)',2.2)+ln(x-15,m+5,x+15,m+5,'var(--ink-2)',2.2)+ln(x,m+5,x,y2);}
+function vsrc(x,y1,y2,lab){const m=(y1+y2)/2;return ln(x,y1,x,m-16)+ln(x,m+16,x,y2)+`<circle cx="${x}" cy="${m}" r="16" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+tx(x,m-3,'+','small')+tx(x,m+11,'−','small')+tx(x-22,m+5,lab,'mid','end');}
+function isrc(x,y1,y2,lab){const m=(y1+y2)/2;return ln(x,y1,x,m-16)+ln(x,m+16,x,y2)+`<circle cx="${x}" cy="${m}" r="16" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+arr(x,m+9,x,m-9,'var(--ink-2)',1.4)+tx(x-22,m+5,lab,'mid','end');}
+function vout(x,y1,y2,lab,c){c=c||'var(--c2)';const m=(y1+y2)/2;return arr(x,y2-4,x,y1+6,c,1.4)+tx(x+8,m+5,lab,'mid','start',c)+tx(x+8,y1+16,'+','small','start')+tx(x+8,y2-6,'−','small','start');}
+
+/* ---------- Partie 1 : schémas fonctionnels ---------- */
+function blk(ins,outs,lines){return function(){
+ const W=380,H=170,bx=130,bw=120;let o=`<svg viewBox="0 0 ${W} ${H}" class="plot">`+box(bx,25,bw,120,lines);
+ const place=(arrL,side)=>{const n=arrL.length;arrL.forEach((l,i)=>{const y=n===1?85:40+i*(90/(n-1));
+  if(l==='⋮'){o+=tx(side?bx+bw+40:bx-40,y+4,'⋮','mid');return;}
+  if(side){o+=arr(bx+bw,y,bx+bw+50,y,'var(--c2)');o+=tx(bx+bw+56,y+5,l,'mid','start','var(--c2)');}
+  else{o+=arr(bx-50,y,bx,y,'var(--c1)');o+=tx(bx-56,y+5,l,'mid','end','var(--c1)');}});};
+ place(ins,0);place(outs,1);return o+'</svg>';};}
+fig('blocs',[
+ {svg:blk(['x₁(t)','x₂(t)','⋮','xₘ(t)'],['y₁(t)','y₂(t)','⋮','yₙ(t)'],['Système','TC']),cap:'Système MIMO à temps continu : m entrées, n sorties.'},
+ {svg:blk(['x(t)'],['y(t)'],['Système','TC']),cap:'Système SISO à temps continu : une entrée, une sortie. C’est le cas étudié dans le cours.'},
+ {svg:blk(['x₁[k]','x₂[k]','⋮','xₘ[k]'],['y₁[k]','y₂[k]','⋮','yₙ[k]'],['Système','TD']),cap:'Système MIMO à temps discret (échantillonné).'},
+ {svg:blk(['x[k]'],['y[k]'],['Système','TD']),cap:'Système SISO à temps discret. Les crochets [k] indiquent une séquence de nombres.'}
+],2);
+
+/* ---------- Partie 2 ---------- */
+function rlcCirc(){let o='<svg viewBox="0 0 440 230" class="plot">';
+ const T=45,B=190;
+ o+=vsrc(60,T,B,'v(t)')+resH(60,200,T)+ln(200,T,380,T)+dot(240,T)+tx(240,T-12,'nœud 1','mid');
+ o+=tx(130,T-14,'R','mid')+arr(160,T+20,105,T+20,'var(--c4)',1.3)+tx(132,T+40,'i<tspan baseline-shift="sub" font-size="75%">R</tspan>(t)','mid','middle','var(--c4)');
+ o+=indV(240,T,B)+tx(256,124,'L','mid','start')+arr(240,152,240,176,'var(--c4)',1.4)+tx(232,168,'i<tspan baseline-shift="sub" font-size="75%">L</tspan>','mid','end','var(--c4)');
+ o+=capV(320,T,B)+tx(342,124,'C','mid','start')+arr(320,152,320,176,'var(--c4)',1.4)+tx(312,168,'i<tspan baseline-shift="sub" font-size="75%">C</tspan>','mid','end','var(--c4)');
+ o+=ln(60,B,380,B)+term(380,T)+term(380,B)+vout(400,T,B,'y(t)');
+ return o+'</svg>';}
+fig('rlc',[{svg:rlcCirc,cap:'Le circuit RLC. Entrée : la tension v(t) du générateur. Sortie : y(t), la tension aux bornes du condensateur. Les trois courants (violet) sont comptés en sortant du nœud 1.'}],1);
+
+const VT=0.026,idio=v=>4.2e-15*(E(v/VT)-1)*1000;
+fig('diode',[{x:[-0.35,0.78],y:[-0.6,4.6],w:440,h:220,yl:'i (mA)',xl:'v (V)',xt:[[0.35,'0,35'],[0.7,'0,7']],yt:[[2,'2']],hl:[{y:2}],vl:[{x:0.7}],s:[{f:idio,n:800,c:'var(--c1)',w:2.2}],tx:[{x:-0.32,y:1.5,t:'v < 0 : i ≈ −Iₛ'},{x:-0.32,y:1.15,t:'(quelques fA)'},{x:0.33,y:0.9,t:'0,35 V → 3 nA',a:'middle'},{x:0.66,y:2.5,t:'0,7 V → 2 mA',a:'end'}],cap:'Caractéristique de la diode au silicium (T = 300 K). Presque rien ne passe jusqu’à environ 0,6 V, puis le courant explose. Ce n’est pas une droite : la diode est non linéaire.'}],1);
+
+function amBlk(){let o='<svg viewBox="0 0 720 160" class="plot">';
+ o+=tx(10,58,'m(t)','mid','start','var(--c1)')+arr(50,54,100,54)+box(100,30,110,48,['atténuateur'])+tx(155,98,'× k  (k < 1)','small');
+ o+=arr(210,54,282,54)+tx(246,46,'k m(t)','small')+sumc(295,54)+arr(295,120,295,67)+tx(295,136,'+1 (offset)','small');
+ o+=arr(308,54,400,54)+tx(354,46,'1 + k m(t)','small')+box(400,30,120,48,['modulateur']);
+ o+=arr(460,128,460,78)+tx(460,146,'A cos(2π f<tspan baseline-shift="sub" font-size="75%">c</tspan> t)','small');
+ o+=arr(520,54,580,54)+tx(588,58,'s(t)','mid','start','var(--c2)');
+ return o+'</svg>';}
+const mm=t=>0.7*S(2*PI*t)+0.3*S(2*PI*2.3*t+1),kk=0.6,amS=t=>(1+kk*mm(t))*Co(2*PI*18*t);
+fig('am',[
+ {svg:amBlk,wide:true,cap:'Le schéma du modulateur AM : atténuation, ajout de l’offset, puis multiplication par la porteuse HF.'},
+ {x:[0,2],y:[-1.3,1.3],w:320,yl:'m(t)',s:[{f:mm,n:600}],cap:'Le signal informatif m(t), basse fréquence (par exemple la voix).'},
+ {x:[0,2],y:[-1.9,1.9],w:320,yl:'s(t)',s:[{f:amS,n:2400,c:'var(--c2)',w:1.1},{f:t=>1+kk*mm(t),n:600,c:'var(--c1)',dash:1},{f:t=>-(1+kk*mm(t)),n:600,c:'var(--c1)',dash:1}],cap:'Le signal modulé s(t) (orange). Son enveloppe (pointillés bleus) a la forme de 1 + k m(t) : l’information est « portée » par l’onde HF.'}
+],2);
+
+/* ---------- Partie 3 : linéarité ---------- */
+const caracP=(f,yl,cap,c,extra)=>Object.assign({x:[-2,2],y:[-3,9],xl:'x',yl,xt:[[-1,'−1'],[1,'1']],yt:[[5,'5']],s:[{f,c:c||'var(--c1)',w:2.2}],cap},extra||{});
+fig('carac',[
+ caracP(x=>5*x,'y = 5x','y = 5x : une droite qui passe par l’origine. Linéaire.','var(--c3)'),
+ caracP(x=>3*x+5,'y = 3x + 5','y = 3x + 5 : une droite, mais qui coupe l’axe à 5 et pas à 0. Non linéaire.','var(--c2)'),
+ caracP(x=>E(x),'y = eˣ','y = eˣ : une courbe, et elle vaut 1 en 0. Non linéaire.','var(--c2)',{yt:[[1,'1'],[5,'5']]})
+],3);
+function yziBlk(){let o='<svg viewBox="0 0 520 190" class="plot">';
+ o+=`<rect x="80" y="14" width="330" height="150" rx="4" style="fill:none;stroke:var(--ink-2);stroke-dasharray:5 4;stroke-width:1.2"/>`+tx(245,182,'le système complet (avec offset)','small');
+ o+=tx(10,74,'x(t)','mid','start','var(--c1)')+arr(48,70,120,70)+box(120,40,130,60,['système','linéaire'])+arr(250,70,322,70)+tx(286,62,'3x(t)','small');
+ o+=sumc(335,70)+arr(335,140,335,83)+tx(352,140,'y<tspan baseline-shift="sub" font-size="75%">zi</tspan>(t) = 5','small','start');
+ o+=arr(348,70,450,70)+tx(456,74,'y(t)','mid','start','var(--c2)');
+ return o+'</svg>';}
+fig('yzi',[{svg:yziBlk,cap:'L’amplificateur avec offset = un système linéaire (×3) suivi de l’ajout de la constante y<sub>zi</sub>(t) = 5. C’est cette constante qui casse la linéarité.'}],1);
+
+/* ---------- invariance ---------- */
+const triX=t=>t<0||t>2?0:2*(1-A(t-1));
+function lp(f,t){if(t<=0)return 0;let s=0,d=0.01;for(let u=0;u<=t;u+=d)s+=f(u)*2*E(-2*(t-u))*d;return s;}
+const cache={};const lpc=(k,f)=>{if(!cache[k]){const arrv=[];for(let i=0;i<=600;i++)arrv.push(lp(f,i/100));cache[k]=arrv;}return t=>t<0||t>6?0:cache[k][Math.round(t*100)];};
+const yInv=lpc('a',triX),yInv1=lpc('b',t=>triX(t-1));
+const P4=(f,yl,cap,c,extra)=>Object.assign({x:[-1,4.5],y:[-0.3,2.9],yl,xt:[[1,'1'],[2,'2'],[3,'3'],[4,'4']],yt:[[1,'1'],[2,'2']],s:[{f,c:c||'var(--c1)',w:2}],cap},extra||{});
+fig('invar',[
+ P4(triX,'x(t)','(a) L’entrée x(t).'),
+ P4(yInv,'y(t)','(b) La sortie y(t) d’un système invariant.','var(--c2)'),
+ P4(t=>triX(t-1),'x(t − 1)','(c) La même entrée, retardée de 1.'),
+ P4(yInv1,'y₂(t)','(d) La nouvelle sortie y₂(t) : c’est exactement y(t) retardée de 1 (pointillés). Système invariant.','var(--c2)',{s:[{f:t=>yInv(t-1),c:'var(--ink-2)',dash:1},{f:yInv1,c:'var(--c2)',w:2}]})
+],2);
+const At=t=>0.5+0.35*t,yVar=t=>At(t)*triX(t),yVar1=t=>At(t)*triX(t-1);
+fig('var',[
+ P4(triX,'x(t)','(a) L’entrée x(t).'),
+ P4(yVar,'y(t)','(b) La sortie de y(t) = A(t)x(t), avec un gain A(t) qui grandit avec le temps.','var(--c2)'),
+ P4(t=>triX(t-1),'x(t − 1)','(c) La même entrée, retardée de 1.'),
+ P4(yVar1,'y₂(t)','(d) La nouvelle sortie y₂(t) est plus haute que y(t − 1) (pointillés) : le gain a changé entre-temps. Système variant.','var(--c2)',{s:[{f:t=>yVar(t-1),c:'var(--ink-2)',dash:1},{f:yVar1,c:'var(--c2)',w:2}]})
+],2);
+
+/* ---------- mémoire : circuits ---------- */
+function divCirc(){let o='<svg viewBox="0 0 400 210" class="plot">';const T=40,B=175;
+ o+=vsrc(60,T,B,'v(t)')+resH(60,240,T)+tx(150,T-14,'R₂','mid')+dot(240,T)+resV(240,T,B)+tx(256,112,'R₁','mid','start');
+ o+=ln(240,T,330,T)+ln(60,B,330,B)+term(330,T)+term(330,B)+vout(350,T,B,'y(t)');
+ return o+'</svg>';}
+function rlciCirc(){let o='<svg viewBox="0 0 420 210" class="plot">';const T=40,B=175;
+ o+=isrc(60,T,B,'i(t)')+resH(60,150,T)+tx(105,T-14,'R','mid')+indH(150,250,T)+tx(200,T-14,'L','mid')+ln(250,T,350,T);
+ o+=capV(290,T,B)+tx(310,112,'C','mid','start')+ln(60,B,350,B)+term(350,T)+term(350,B)+vout(370,T,B,'y(t)');
+ return o+'</svg>';}
+fig('memo',[
+ {svg:divCirc,cap:'Exemple 1 : le diviseur de tension. y(t) = R₁ v(t)/(R₁ + R₂) ne dépend que de v au même instant : sans mémoire.'},
+ {svg:rlciCirc,cap:'Exemple 2 : le circuit alimenté par un courant i(t). Le condensateur accumule la charge : y(t) dépend de tout le passé de i. Avec mémoire.'}
+],2);
+
+/* ---------- causalité ---------- */
+const pul=t=>t<0||t>1?0:S(PI*t);
+const PC=(f,yl,cap,c)=>({x:[-3.2,4],y:[-0.2,1.4],yl,xt:[[-2,'−2'],[1,'1'],[2,'2'],[3,'3']],vl:[{x:0}],s:[{type:'area',f,c:c||'var(--c1)',n:600},{f,c:c||'var(--c1)',n:600}],cap});
+fig('causal',[
+ PC(pul,'x(t)','L’entrée commence à t = 0.'),
+ PC(t=>pul(t-2),'x(t − 2)','y(t) = x(t − 2) : la sortie arrive après l’entrée. Causal.','var(--c3)'),
+ PC(t=>pul(t+2),'x(t + 2)','y(t) = x(t + 2) : la sortie apparaît avant l’entrée. L’effet précède la cause : non causal.','var(--c2)')
+],3);
+
+/* ---------- inversibilité ---------- */
+function invBlk(){let o='<svg viewBox="0 0 560 110" class="plot">';
+ o+=tx(10,59,'x(t)','mid','start','var(--c1)')+arr(48,55,110,55)+box(110,28,120,54,['Système'])+arr(230,55,310,55)+tx(270,46,'y(t)','mid','middle','var(--c2)');
+ o+=box(310,28,140,54,['Système inverse'])+arr(450,55,505,55)+tx(510,59,'x(t)','mid','start','var(--c1)');
+ return o+'</svg>';}
+fig('inverse',[{svg:invBlk,wide:true,cap:'Un système inversible et son inverse : la cascade des deux redonne exactement l’entrée x(t).'}],1);
+fig('invcarac',[
+ {x:[-2.5,2.5],y:[-3,12],xl:'x',yl:'y = 3x + 5',xt:[[1,'1']],yt:[[8,'8']],hl:[{y:8}],s:[{f:x=>3*x+5,c:'var(--c3)',w:2.2},{type:'stem',xs:[1],ys:[8],c:'var(--c2)'}],cap:'y = 3x + 5 : la ligne y = 8 coupe la courbe une seule fois (x = 1). Inversible.'},
+ {x:[-2.6,2.6],y:[-1,6.5],xl:'x',yl:'y = x²',xt:[[-2,'−2'],[2,'2']],yt:[[4,'4']],hl:[{y:4}],s:[{f:x=>x*x,c:'var(--c2)',w:2.2},{type:'stem',xs:[-2,2],ys:[4,4],c:'var(--c2)'}],cap:'y = x² : la ligne y = 4 coupe deux fois (x = −2 et x = 2). Non inversible.'},
+ {x:[-7,7],y:[-1.5,1.6],xl:'x',yl:'y = cos x',xt:[[-2*PI,'−2π'],[2*PI,'2π']],yt:[[1,'1']],hl:[{y:0.5}],s:[{f:Co,c:'var(--c2)',w:2.2},{type:'stem',xs:[-2*PI-PI/3,-2*PI+PI/3,-PI/3,PI/3,2*PI-PI/3,2*PI+PI/3].filter(v=>A(v)<7),ys:[0.5,0.5,0.5,0.5,0.5,0.5],c:'var(--c2)'}],cap:'y = cos x : la ligne y = 0,5 coupe une infinité de fois. Non inversible.'}
+],3);
+
+/* ---------- stabilité ---------- */
+fig('stab',[
+ {x:[-1.5,4],y:[-0.3,4.2],yl:'x(t) = u(t)',xt:[[1,'1'],[3,'3']],yt:[[1,'1']],hl:[{y:1}],s:[{f:t=>t<0?0:1,n:800,w:2.2}],cap:'L’entrée : l’échelon unité, bornée par Bₓ = 1.'},
+ {x:[-1.5,4],y:[-0.3,4.2],yl:'y(t) = t u(t)',xt:[[1,'1'],[3,'3']],yt:[[1,'1'],[3,'3']],s:[{f:t=>t<0?0:t,n:800,c:'var(--c2)',w:2.2}],cap:'La sortie de l’intégrateur : une rampe qui monte sans fin. Elle n’est pas bornée : système instable.'}
+],2);
+
+/* ---------- Partie 4 : bande passante ---------- */
+const Q=1.2,Pbp=f=>f<=0?0:1/(1+Q*Q*(f-1/f)**2),fmn=2/3,fmx=1.5;
+fig('bp',[
+ {x:[0,3.2],y:[0,1.25],xl:'f',yl:'Pₛ / Pₛₘ',xt:[[fmn,'f<tspan baseline-shift="sub" font-size="75%">min</tspan>'],[1,'f₀'],[fmx,'f<tspan baseline-shift="sub" font-size="75%">max</tspan>']],yt:[[1,'1'],[0.5,'1/2']],hl:[{y:1},{y:0.5}],vl:[{x:fmn},{x:fmx}],s:[{type:'area',f:Pbp,a:fmn,b:fmx,c:'var(--c3)'},{f:Pbp,n:800,w:2.2}],cap:'En puissance : entre f<sub>min</sub> et f<sub>max</sub>, la puissance de sortie reste entre Pₛₘ et Pₛₘ/2 (zone verte).'},
+ {x:[0,3.2],y:[-13,1.6],xl:'f',yl:'A<tspan baseline-shift="sub" font-size="75%">P</tspan> (dB)',tx:[{x:fmn-0.04,y:-12.2,t:'f<tspan baseline-shift="sub" font-size="75%">min</tspan>',a:'end'},{x:fmx+0.04,y:-12.2,t:'f<tspan baseline-shift="sub" font-size="75%">max</tspan>'}],yt:[[0,'0'],[-3,'−3'],[-10,'−10']],hl:[{y:-3}],vl:[{x:fmn},{x:fmx}],s:[{type:'area',f:f=>10*Math.log10(Pbp(f)),a:fmn,b:fmx,c:'var(--c3)'},{f:f=>f<0.05?null:10*Math.log10(Pbp(f)),n:800,w:2.2}],cap:'La même courbe en dB : la bande passante est la zone où le gain est entre 0 dB et −3 dB.'}
+],2);
+const sq=t=>((t%1)+1)%1<0.5?1:-1,sqN=(t,N)=>{let s=0;for(let n=1;n<=N;n+=2)s+=4/(PI*n)*S(2*PI*n*t);return s;};
+fig('bpspec',[
+ {x:[0,20],y:[0,1.55],xl:'f',yl:'amplitude',xt:[[1,'F₀'],[4,'4F₀'],[16,'16F₀']],vl:[{x:16}],tx:[{x:2,y:1.25,t:'A',a:'middle',c:'var(--fg)'},{x:16.4,y:1.25,t:'B',c:'var(--c4)'}],s:[{type:'area',f:f=>f<=4?1.45:0,n:800,c:'var(--c3)'},{type:'stem',xs:[1,3,5,7,9,11,13,15,17,19],f:n=>4/(PI*n),c:'var(--c1)'}],cap:'Le spectre d’un signal carré (raies impaires) et deux systèmes : A laisse passer jusqu’à 4F₀ (vert), B jusqu’à 16F₀.'},
+ {x:[0,2],y:[-1.5,1.6],yl:'sortie A',xt:[[1,'T₀']],s:[{f:sq,n:1600,c:'var(--ink-2)',dash:1,w:1.2},{f:t=>sqN(t,3),n:800,c:'var(--c3)',w:2}],cap:'Système A, bande étroite : seules les raies F₀ et 3F₀ passent. Le carré est très déformé.'},
+ {x:[0,2],y:[-1.5,1.6],yl:'sortie B',xt:[[1,'T₀']],s:[{f:sq,n:1600,c:'var(--ink-2)',dash:1,w:1.2},{f:t=>sqN(t,15),n:1600,c:'var(--c4)',w:2}],cap:'Système B, bande large : 8 raies passent. La sortie ressemble beaucoup plus à l’entrée (pointillés).'}
+],3);
+
+/* ---------- réponse impulsionnelle ---------- */
+const hh=t=>t<0?0:2.6*(E(-t)-E(-3*t));
+fig('ri',[
+ {x:[-0.8,5],y:[-0.15,1.3],yl:'δ(t)',xt:[[2,'t₀']],s:[{type:'dirac',xs:[0],h:1.05}],cap:'Entrée : une impulsion de Dirac en t = 0.'},
+ {x:[-0.8,5],y:[-0.15,1.3],yl:'h(t)',xt:[[2,'t₀']],s:[{f:hh,n:600,c:'var(--c2)',w:2.2}],cap:'Sortie : la réponse impulsionnelle h(t). Elle dure un certain temps, elle n’est pas infiniment brève.'},
+ {x:[-0.8,5],y:[-0.15,1.3],yl:'δ(t − t₀)',xt:[[2,'t₀']],s:[{type:'dirac',xs:[2],h:1.05}],cap:'La même impulsion, appliquée à l’instant t₀.'},
+ {x:[-0.8,5],y:[-0.15,1.3],yl:'h(t − t₀)',xt:[[2,'t₀']],s:[{f:t=>hh(t-2),n:600,c:'var(--c2)',w:2.2}],cap:'Système invariant : la réponse est la même, décalée de t₀.'}
+],2);
+const ee=t=>t<0?0:0.75+0.4*S(1.1*t+0.2)+0.06*t,D=0.4,es=t=>t<0||t>=6.4?0:ee(Math.floor(t/D+1e-9)*D);
+fig('escalier3',[{x:[-0.3,6.8],y:[-0.1,1.6],w:640,h:200,wide:true,yl:'e(t)',xt:[[0.4,'Δt'],[3.2,'iΔt']],s:[{type:'area',f:es,b:6.4,n:2000,c:'var(--c1)'},{f:es,b:6.4,n:2000,c:'var(--c1)',w:1.2},{type:'area',f:t=>t>=3.2&&t<3.6?es(t):0,n:2000,c:'var(--c2)'},{type:'area',f:t=>t>=3.2&&t<3.6?es(t):0,n:2000,c:'var(--c2)'},{f:t=>t<0||t>6.4?null:ee(t),n:600,c:'var(--c2)',w:2}],tx:[{x:3.4,y:1.48,t:'e(iΔt)',a:'middle',c:'var(--c2)'},{x:0.05,y:0.2,t:'e(0)'}],cap:'Le signal e(t) (orange) découpé en rectangles de largeur Δt (bleu). Le rectangle numéro i (orange foncé) est placé en iΔt et a pour hauteur e(iΔt).'}],1);
+const DC=0.5,NC=8,ein=t=>t<0||t>=4?0:ee(t),cI=i=>t=>ein(i*DC)*hh(t-i*DC)*DC;
+const cols8=['var(--c1)','var(--c3)','var(--c4)','var(--c2)','var(--c5)','var(--c1)','var(--c3)','var(--c4)'];
+const exact=(()=>{const v=[];for(let i=0;i<=800;i++){const t=i/100;let s=0;for(let u=0;u<=t;u+=0.01)s+=ein(u)*hh(t-u)*0.01;v.push(s);}return t=>t<0||t>8?0:v[Math.round(t*100)];})();
+fig('contrib',[
+ {x:[-0.2,7.5],y:[-0.05,0.72],yl:'contributions',xt:[[1,'2Δt'],[2,'4Δt'],[3,'6Δt']],s:[...Array(NC).keys()].map(i=>({f:cI(i),n:700,c:cols8[i],w:1.5})),cap:'Avec Δt = 0,5 : chaque rectangle donne une copie de h, retardée de iΔt et multipliée par e(iΔt)Δt.'},
+ {x:[-0.2,7.5],y:[-0.1,2.3],yl:'s(t)',xt:[[2,'2'],[4,'4'],[6,'6']],s:[{f:t=>[...Array(NC).keys()].reduce((v,i)=>v+cI(i)(t),0),n:700,c:'var(--c2)',w:2},{f:exact,n:700,c:'var(--c1)',dash:1}],cap:'La somme des contributions (orange) est déjà proche de la vraie sortie (pointillés). Quand Δt → 0, elle devient exacte : c’est l’intégrale de convolution.'}
+],2);
+
+/* ---------- calcul pratique ---------- */
+const t0=2.5,eC=t=>t<0?0:0.55+0.3*S(0.9*t+0.4);
+const sC=(()=>{const v=[];for(let i=0;i<=700;i++){const t=i/100;let s=0;for(let u=0;u<=t;u+=0.01)s+=eC(u)*hh(t-u)*0.01;v.push(s);}return t=>t<0?0:t>7?null:v[Math.round(t*100)];})();
+const CP=(o)=>Object.assign({x:[-3.5,5],y:[-0.15,1.25],xl:'τ'},o);
+fig('convpra',[
+ CP({yl:'h(τ)',s:[{f:hh,n:600,w:2.2}],cap:'1. Tracer h(τ).'}),
+ CP({yl:'h(−τ)',s:[{f:t=>hh(-t),n:600,w:2.2}],cap:'2. Retourner : h(−τ) est le miroir de h(τ).'}),
+ CP({yl:'h(t − τ)',xt:[[t0,'t']],vl:[{x:t0}],s:[{f:t=>hh(t0-t),n:600,w:2.2}],cap:'3. Décaler de t vers la droite : h(t − τ). Le bord avant est en τ = t.'}),
+ CP({yl:'',xt:[[t0,'t']],vl:[{x:t0}],s:[{type:'area',f:u=>eC(u)*hh(t0-u),n:600,c:'var(--c3)'},{f:eC,n:600,c:'var(--c1)',w:2},{f:t=>hh(t0-t),n:600,c:'var(--c2)',w:2}],tx:[{x:-3.2,y:1.05,t:'e(τ)',c:'var(--c1)'},{x:-3.2,y:0.85,t:'h(t − τ)',c:'var(--c2)'},{x:-3.2,y:0.65,t:'produit',c:'var(--c3)'}],cap:'4. Multiplier e(τ) par h(t − τ). L’aire verte (l’intégrale) vaut s(t).'}),
+ {x:[-0.5,7.2],y:[-0.1,1.75],w:620,h:180,wide:true,yl:'s(t)',xt:[[t0,'t']],vl:[{x:t0}],s:[{f:sC,n:700,c:'var(--c2)',w:2},{type:'stem',xs:[t0],ys:[sC(t0)],c:'var(--c3)'}],tx:[{x:t0+0.12,y:sC(t0)+0.08,t:'s(t) = aire verte',c:'var(--c3)'}],cap:'5. Le point de s(t) à l’instant t est cette aire. En faisant glisser t, on obtient toute la courbe : c’est la « mémoire pondérée ».'}
+],2);
+
+/* ---------- convolution interactive ---------- */
+(function(){const el=document.querySelector('[data-fig="convlive"]');if(!el)return;
+ try{
+ const eL=t=>t>=0&&t<=2?1:0,hL=t=>t<0?0:E(-t),sL=t=>t<0?0:E(-t)*(E(Math.min(t,2))-1);
+ el.style.setProperty('--cols',1);
+ el.innerHTML='<figure class="wide"><div class="cl-top"></div><div class="cl-bot"></div><label class="slider"><span>t = <output>1,2</output></span><input type="range" min="-1.5" max="5.5" step="0.02" value="1.2" aria-label="Valeur de t"></label><figcaption>Convolution d’une porte e(τ) (bleu, de 0 à 2) avec h(t) = e<sup>−t</sup> u(t). En haut : h(t − τ) (orange) glisse avec t, et l’aire du produit est en vert. En bas : s(t), dont le point vaut cette aire. Tant que h(t − τ) ne touche pas la porte, l’aire est nulle.</figcaption></figure>';
+ const top=el.querySelector('.cl-top'),bot=el.querySelector('.cl-bot'),inp=el.querySelector('input'),out=el.querySelector('output');
+ const draw=()=>{const t=+inp.value;out.textContent=t.toFixed(2).replace('.',',');
+  top.innerHTML=plot({x:[-2,6],y:[-0.15,1.35],w:640,h:170,xl:'τ',yl:'',xt:[[2,'2']],yt:[[1,'1']],vl:[{x:t,t:'t'}],s:[{type:'area',f:u=>eL(u)*hL(t-u),n:800,c:'var(--c3)'},{f:eL,n:1200,c:'var(--c1)',w:2},{f:u=>hL(t-u),n:800,c:'var(--c2)',w:2}],tx:[{x:4.2,y:1.12,t:'aire = '+sL(t).toFixed(2).replace('.',','),c:'var(--c3)'}]});
+  bot.innerHTML=plot({x:[-2,6],y:[-0.1,1.05],w:640,h:150,xl:'t',yl:'s(t)',xt:[[2,'2']],yt:[[1-E(-2),'0,86']],s:[{f:sL,n:800,c:'var(--ink-2)',dash:1,w:1.2},{f:u=>u<=t?sL(u):null,n:800,c:'var(--c2)',w:2.2},{type:'stem',xs:[t],ys:[sL(t)],c:'var(--c3)'}]});};
+ inp.addEventListener('input',draw);draw();
+ }catch(e){console.error('convlive',e);}
+})();
+
+/* ---------- exemples détaillés ---------- */
+fig('convrc',[
+ {x:[-1,5],y:[-0.15,1.3],yl:'e(t) = u(t)',xt:[[1,'1']],yt:[[1,'1']],s:[{f:t=>t<0?0:1,n:800,w:2.2}],cap:'L’entrée : un échelon.'},
+ {x:[-1,5],y:[-0.15,1.3],yl:'h(t) = e<tspan baseline-shift="super" font-size="75%">−at</tspan> u(t)',xt:[[1,'1/a']],yt:[[1,'1']],s:[{f:t=>t<0?0:E(-t),n:800,c:'var(--c4)',w:2.2}],cap:'La réponse impulsionnelle (ici a = 1).'},
+ {x:[-1,5],y:[-0.15,1.3],yl:'s(t)',xt:[[1,'1/a']],yt:[[1,'1/a']],hl:[{y:1}],s:[{f:t=>t<0?0:1-E(-t),n:800,c:'var(--c2)',w:2.2}],cap:'La sortie s(t) = (1 − e<sup>−at</sup>)/a : elle monte doucement vers 1/a.'}
+],3);
+const pr=t=>t>=0&&t<=1?1:0;
+const CR=(t,lab)=>({x:[-2,3.3],y:[-0.2,1.5],xl:'τ',yl:'',xt:[[1,'1'],[t,'t']],vl:[{x:t}],s:[{type:'area',f:u=>pr(u)*pr(t-u),n:1200,c:'var(--c3)'},{f:pr,n:1200,c:'var(--c1)',w:2},{f:u=>pr(t-u),n:1200,c:'var(--c2)',w:2}],cap:lab});
+fig('convrect',[
+ CR(-0.6,'t < 0 : la porte orange [t − 1, t] ne touche pas la bleue. s(t) = 0.'),
+ CR(0.5,'0 ≤ t ≤ 1 : chevauchement de 0 à t (vert). s(t) = t.'),
+ CR(1.5,'1 ≤ t ≤ 2 : chevauchement de t − 1 à 1. s(t) = 2 − t.'),
+ CR(2.6,'t > 2 : la porte est passée. s(t) = 0.'),
+ {x:[-1.2,3.3],y:[-0.1,1.25],w:620,h:170,wide:true,yl:'s(t)',xt:[[1,'1'],[2,'2']],yt:[[1,'1']],s:[{f:t=>tri(t-1,1),n:800,c:'var(--c2)',w:2.2},{type:'stem',xs:[-0.6,0.5,1.5,2.6],ys:[0,0.5,0.5,0],c:'var(--c3)'}],cap:'Le résultat : un triangle de 0 à 2, de hauteur 1. Les points verts sont les quatre positions ci-dessus.'}
+],2);
+
+/* ---------- Plancherel et RC ---------- */
+const Ef=f=>tri(f,3),Hf=f=>1/SQ(1+(f/0.8)**2);
+fig('plancherel',[
+ {x:[-3.5,3.5],y:[0,1.25],xl:'f',yl:'|E(f)|',xt:[[-3,'−3'],[3,'3']],yt:[[1,'1']],s:[{type:'area',f:Ef,c:'var(--c1)'},{f:Ef,c:'var(--c1)'}],cap:'Le spectre de l’entrée.'},
+ {x:[-3.5,3.5],y:[0,1.25],xl:'f',yl:'|H(f)|',xt:[[-3,'−3'],[3,'3']],yt:[[1,'1']],s:[{f:Hf,c:'var(--c4)',w:2.2}],cap:'Le système : il laisse passer les basses fréquences et atténue les hautes.'},
+ {x:[-3.5,3.5],y:[0,1.25],xl:'f',yl:'|S(f)|',xt:[[-3,'−3'],[3,'3']],yt:[[1,'1']],s:[{f:Ef,c:'var(--ink-2)',dash:1,w:1.2},{type:'area',f:f=>Ef(f)*Hf(f),c:'var(--c2)'},{f:f=>Ef(f)*Hf(f),c:'var(--c2)'}],cap:'La sortie : S(f) = E(f)·H(f). Les hautes fréquences de l’entrée (pointillés) ont été réduites.'}
+],3);
+function rcCirc(){let o='<svg viewBox="0 0 360 200" class="plot">';const T=40,B=170;
+ o+=vsrc(60,T,B,'e(t)')+resH(60,210,T)+tx(135,T-14,'R','mid')+dot(230,T)+ln(210,T,290,T)+capV(230,T,B)+tx(252,110,'C','mid','start');
+ o+=ln(60,B,290,B)+term(290,T)+term(290,B)+vout(310,T,B,'s(t)');
+ return o+'</svg>';}
+fig('rccirc',[{svg:rcCirc,cap:'Le circuit RC : R en série, sortie aux bornes de C.'}],1);
+fig('rc',[
+ {x:[0,4.2],y:[0,1.25],xl:'f',yl:'|H(f)|²',xt:[[1,'f<tspan baseline-shift="sub" font-size="75%">c</tspan>']],yt:[[1,'1'],[0.5,'1/2']],hl:[{y:0.5,t:'−3 dB'}],vl:[{x:1}],s:[{type:'area',f:f=>1/(1+f*f),a:0,b:1,c:'var(--c3)'},{f:f=>1/(1+f*f),c:'var(--c1)',w:2.2}],cap:'Le gain en puissance du RC. Bande passante (vert) : de 0 à f<sub>c</sub> = 1/(2πRC). C’est un filtre passe-bas.'},
+ {x:[-0.5,4.5],y:[-0.1,1.25],yl:'h(t)',xt:[[1,'RC']],yt:[[1,'1/RC']],s:[{f:t=>t<0?0:E(-t),n:800,c:'var(--c4)',w:2.2}],cap:'La réponse impulsionnelle h(t) = (1/RC) e<sup>−t/RC</sup> u(t).'},
+ {x:[-0.5,4.5],y:[-0.1,1.25],yl:'réponse à u(t)',xt:[[1,'RC']],yt:[[1,'1'],[1-E(-1),'0,63']],hl:[{y:1}],vl:[{x:1}],s:[{f:t=>t<0?0:1-E(-t),n:800,c:'var(--c2)',w:2.2}],cap:'La réponse à un échelon : (1 − e<sup>−t/RC</sup>) u(t). À t = RC, elle atteint 63 % de sa valeur finale.'}
+],3);
+
+})();
+</script>
+<script>
+(function(){
+ const list=document.getElementById('toc-list'),toc=document.getElementById('toc');
+ const clean=s=>s.replace(/\\\((.*?)\\\)/g,(m,x)=>x.replace(/\\mathrm\{(.*?)\}/g,'$1').replace(/\\delta/g,'δ').replace(/\\log_\{10\}/g,'log₁₀').replace(/_\{T_0\}/g,'').replace(/\^2/g,'²').replace(/\\!/g,'').replace(/[\\{}]/g,'')).replace(/\s+/g,' ').trim();
+ const heads=[...document.querySelectorAll('main h2, main h3')];
+ const links=[];
+ heads.forEach((h,i)=>{
+  if(!h.id)h.id='s'+i;
+  const c=h.cloneNode(true);c.querySelectorAll('.tag').forEach(t=>t.remove());
+  const li=document.createElement('li'),a=document.createElement('a');
+  a.href='#'+h.id;a.textContent=clean(c.textContent);a.className=h.tagName==='H2'?'t2':'t3';
+  li.appendChild(a);list.appendChild(li);links.push([h,a]);
+ });
+ const btn=toc.querySelector('.toc-toggle'),state=toc.querySelector('.toc-state');
+ const setOpen=o=>{toc.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);state.textContent=o?'Masquer':'Afficher';};
+ btn.addEventListener('click',()=>setOpen(!toc.classList.contains('open')));
+ list.addEventListener('click',e=>{if(e.target.tagName==='A')setOpen(false);});
+ let current=null;
+ const mark=a=>{if(current===a)return;if(current)current.classList.remove('active');current=a;a.classList.add('active');if(getComputedStyle(btn).display==='none'){const r=a.getBoundingClientRect(),tr=toc.getBoundingClientRect();if(r.top<tr.top+40||r.bottom>tr.bottom-40)a.scrollIntoView({block:'center'});}};
+ const spy=()=>{let best=links[0];for(const l of links){if(l[0].getBoundingClientRect().top<120)best=l;else break;}if(best)mark(best[1]);};
+ addEventListener('scroll',spy,{passive:true});spy();
+
+ const el=document.getElementById('hero-wave');if(!el)return;
+ const W=1000,H=190,PI=Math.PI,base=H-48,top=34;
+ const pulse=t=>t>=0.25&&t<0.65?1:0,RCk=0.09,resp=t=>t<0.25?0:t<0.65?1-Math.exp(-(t-0.25)/RCk):(1-Math.exp(-0.4/RCk))*Math.exp(-(t-0.65)/RCk);
+ const X1=t=>20+t*290,X3=t=>690+t*295,Y=v=>base-v*(base-top);
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Une impulsion entre dans un système et en ressort arrondie">`;
+ let d='',d2='';for(let i=0;i<=600;i++){const t=i/600;d+=(i?'L':'M')+X1(t).toFixed(1)+' '+Y(pulse(t)).toFixed(1);d2+=(i?'L':'M')+X3(t).toFixed(1)+' '+Y(resp(t)).toFixed(1);}
+ s+=`<line x1="20" x2="310" y1="${base}" y2="${base}" style="stroke:var(--rule);stroke-width:1.5"/><line x1="690" x2="985" y1="${base}" y2="${base}" style="stroke:var(--rule);stroke-width:1.5"/>`;
+ s+=`<path d="${d.replace(/L([\d.]+) ([\d.]+)/g,(m,x,y)=>'L'+x+' '+y)}" style="fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linejoin:round"/>`;
+ s+=`<path d="${d2}" style="fill:none;stroke:var(--c2);stroke-width:2.6;stroke-linejoin:round"/>`;
+ const ar=(x1,x2,y)=>`<line x1="${x1}" x2="${x2-10}" y1="${y}" y2="${y}" style="stroke:var(--ink-2);stroke-width:1.8"/><path d="M${x2} ${y}l-11 -6v12z" style="fill:var(--ink-2)"/>`;
+ s+=ar(340,420,88)+ar(580,660,88);
+ s+=`<rect x="420" y="40" width="160" height="96" rx="4" style="fill:var(--sheet);stroke:var(--ink);stroke-width:1.8"/>`;
+ s+=`<text x="500" y="82" text-anchor="middle" style="font-family:var(--sans);font-size:20px;font-weight:600;fill:var(--ink)">SLIT</text><text x="500" y="110" text-anchor="middle" style="font-family:var(--serif);font-style:italic;font-size:19px;fill:var(--ink-2)">h(t)</text>`;
+ [[20,'l’entrée e(t)'],[420,'le système'],[690,'la sortie s(t) = e ∗ h']].forEach(([x,l])=>{s+=`<text x="${x}" y="${H-3}" style="font-family:var(--sans);font-size:15px;font-weight:500;fill:var(--ink-2)">${l}</text>`;});
+ el.innerHTML=s+'</svg>';
+})();
+
+</script>
+</body>
+</html>

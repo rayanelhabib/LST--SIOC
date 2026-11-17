@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé Chapitre 4 – Filtrage analogique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<style>
+:root{
+  --paper:#F6F8FA;--sheet:#FFFFFF;--ink:#17202B;--ink-2:#4B5666;--rule:#D9E0E8;--grid:#EDF1F5;
+  --accent:#1D4E9E;--accent-soft:#E7EEF9;
+  --tip:#23744F;--tip-soft:#E9F4EE;--warn:#A9281F;--warn-soft:#FBEDEB;
+  --ex:#1D4E9E;--ex-soft:#EEF3FB;--key:#865800;--key-soft:#FBF3DF;
+  --c1:#1D4E9E;--c2:#D46B08;--c3:#23854F;--c4:#6D46B5;--c5:#0B8484;--mem:#6D46B5;--mem-soft:#F1ECFA;--idea:#0B6E7A;--idea-soft:#E5F3F4;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+  --bg:var(--paper);--fg:var(--ink);--muted:var(--ink-2);--card:var(--sheet);--border:var(--rule);--th:var(--grid);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10141A;--sheet:#161B23;--ink:#E3E8EF;--ink-2:#A2ADBC;--rule:#2A323D;--grid:#1C232D;
+    --accent:#8DB2FF;--accent-soft:#1A263D;
+    --tip:#6CC79B;--tip-soft:#14251D;--warn:#F2877B;--warn-soft:#2A1716;
+    --ex:#8DB2FF;--ex-soft:#172238;--key:#E3B656;--key-soft:#292112;
+    --c1:#8DB2FF;--c2:#F5A04F;--c3:#62CF92;--c4:#B89CFF;--c5:#4FD1C5;--mem:#C4ADFF;--mem-soft:#221B35;--idea:#5FCFDC;--idea-soft:#102629;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.7;font-optical-sizing:auto;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* Mise en page : sommaire fixe + colonne de lecture */
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1200px;margin:0 auto}
+.toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:48px 18px 48px 24px;border-right:1px solid var(--rule);font-family:var(--sans);font-size:14px;line-height:1.35}
+.toc-title{font:600 15px/1.2 var(--sans);color:var(--ink);margin:0 0 10px;padding-left:12px}
+.toc-toggle{display:none}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:0}
+.toc a{display:block;color:var(--ink-2);text-decoration:none;padding:5px 10px;border-left:2px solid transparent}
+.toc a.t2{color:var(--ink);font-weight:600;margin-top:14px}
+.toc a.t3{padding-left:22px}
+.toc a:hover{color:var(--accent)}
+.toc a.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft)}
+
+main{padding:64px 56px 140px;min-width:0;counter-reset:fig}
+main > :not(.figs):not(.hero){max-width:68ch}
+
+/* En-tête */
+.hero{margin:0 0 40px;padding-bottom:32px;border-bottom:1px solid var(--rule)}
+.hero-chap{font:600 15px/1 var(--sans);color:var(--accent);margin:0 0 14px}
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,5vw,3.5rem);line-height:1.06;letter-spacing:-0.015em;margin:0 0 16px;max-width:17ch}
+.hero-sub{font-size:19px;color:var(--ink-2);margin:0 0 30px;max-width:54ch}
+#hero-wave svg{width:100%;height:auto;display:block}
+
+/* Titres */
+h2{font-family:var(--sans);font-weight:600;font-size:1.75rem;line-height:1.2;letter-spacing:-0.01em;margin:88px 0 20px;padding-top:26px;border-top:2px solid var(--ink)}
+h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;line-height:1.3;margin:48px 0 12px}
+h4{font-family:var(--sans);font-weight:600;font-size:1.02rem;margin:32px 0 8px}
+p,ul,ol{margin:0 0 14px}
+li{margin:4px 0}
+code{font-size:.85em;background:var(--grid);padding:1px 5px;border-radius:3px;word-break:break-all}
+.tag{font:600 12px/1 var(--sans);color:var(--key);background:var(--key-soft);border-radius:99px;padding:4px 9px;margin-left:10px;vertical-align:4px;white-space:nowrap}
+
+/* Tableaux */
+table{border-collapse:collapse;width:100%;margin:18px 0;display:block;overflow-x:auto;font-family:var(--sans);font-size:15px;line-height:1.45;position:relative}
+th,td{border-bottom:1px solid var(--rule);padding:9px 12px;text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--grid)}
+
+/* Encadrés */
+.box{position:relative;margin:22px 0;padding:14px 20px;border-left:3px solid var(--bc);background:var(--bs);border-radius:0 6px 6px 0}
+.box.tip{--bc:var(--tip);--bs:var(--tip-soft)}
+.box.warn{--bc:var(--warn);--bs:var(--warn-soft)}
+.box.ex{--bc:var(--ex);--bs:var(--ex-soft)}
+.box.key{--bc:var(--key);--bs:var(--key-soft)}
+.box > .lbl{display:block;font:600 14.5px/1.35 var(--sans);color:var(--bc);margin-bottom:6px}
+.box:not(:has(> .lbl))::before{display:block;font:600 14.5px/1.35 var(--sans);color:var(--bc);margin-bottom:6px;content:"Astuce"}
+.box.warn:not(:has(> .lbl))::before{content:"Attention"}
+.box.ex:not(:has(> .lbl))::before{content:"Exemple"}
+.box.key:not(:has(> .lbl))::before{content:"À retenir"}
+.box > :last-child{margin-bottom:0}
+.box table{background:var(--sheet)}
+
+/* Formules */
+.formula{margin:18px 0;overflow-x:auto;position:relative}
+.katex{font-size:1.06em}
+.katex-display{overflow-x:auto;overflow-y:hidden;padding:4px 0;position:relative}
+pre{font-family:Consolas,"Cascadia Mono",monospace;font-size:13.5px;line-height:1.4;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px;overflow-x:auto;position:relative}
+
+/* Figures sur papier millimétré */
+.figs{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:14px;margin:26px 0}
+.figs figure{margin:0;padding:10px 10px 12px;background-color:var(--sheet);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:16px 16px;border:1px solid var(--rule);border-radius:4px;counter-increment:fig}
+.figs figure.wide{grid-column:1/-1}
+.figs figcaption{font:13.5px/1.45 var(--sans);color:var(--ink-2);margin-top:8px;padding:6px 4px 0;background:var(--sheet)}
+.figs figcaption::before{content:"Figure " counter(fig) ". ";font-weight:600;color:var(--ink)}
+.figcap{font:14px/1.5 var(--sans);color:var(--ink-2);margin:-8px 0 18px}
+.plot{width:100%;height:auto;display:block}
+.plot text{font-family:var(--sans)}
+.plot .small{font-size:11px;fill:var(--ink-2)}
+.plot .lab{font-size:12px;fill:var(--ink);font-style:italic}
+.plot .mid{font-size:14px;fill:var(--ink)}
+.plot .big{font-size:20px;font-weight:700;fill:var(--ink)}
+.plot .big2{font-size:15px;font-weight:700;fill:var(--ink)}
+.plot .ax{stroke:var(--ink-2);stroke-width:1.2}
+.plot .guide{stroke:var(--ink-2);stroke-dasharray:3 3;stroke-width:.8;opacity:.6}
+
+/* Tableau des 4 formes */
+.grid4{display:grid;grid-template-columns:auto 1fr 1fr;border:1px solid var(--rule);margin:18px 0;font:15px/1.45 var(--sans)}
+.grid4 div{padding:10px 12px;border:1px solid var(--rule);background:var(--sheet)}
+.grid4 .h{background:var(--grid);font-weight:600}
+
+/* Curseur de la figure interactive */
+.slider{display:flex;gap:14px;align-items:center;font:14px/1.4 var(--sans);color:var(--ink-2);margin:10px 4px 0;padding:6px 4px;background:var(--sheet)}
+.slider span{min-width:68px;font-variant-numeric:tabular-nums}
+.slider input{flex:1;accent-color:var(--accent)}
+
+/* Intuition d'abord */
+.box.idea{--bc:var(--idea);--bs:var(--idea-soft)}
+.box.idea:not(:has(> .lbl))::before{content:"L'intuition d'abord"}
+.box.idea .goal{font:15px/1.5 var(--sans);color:var(--ink-2);margin-top:10px;padding-top:8px;border-top:1px solid var(--rule)}
+/* Figures interactives */
+.slider{display:flex;gap:14px;align-items:center;font:14px/1.4 var(--sans);color:var(--ink-2);margin:10px 4px 0;padding:6px 4px;background:var(--sheet)}
+.slider span{min-width:150px;font-variant-numeric:tabular-nums}
+.slider input{flex:1;accent-color:var(--accent)}
+.lv-grid{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:10px}
+@media (max-width:640px){.lv-grid{grid-template-columns:1fr}.slider span{min-width:110px}}
+/* Fiche méthode */
+ol.steps{counter-reset:st;list-style:none;padding-left:0}
+ol.steps > li{counter-increment:st;position:relative;padding-left:38px;margin:10px 0}
+ol.steps > li::before{content:counter(st);position:absolute;left:0;top:.1em;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 14px/26px var(--sans);text-align:center}
+.lv-info{font:14px/1.5 var(--sans);color:var(--ink);margin:8px 4px 0}
+.methref{font:14px/1.4 var(--sans);color:var(--ink-2);margin:-6px 0 10px}
+
+/* Formules à mémoriser */
+.must{background:var(--mem-soft);border-left:3px solid var(--mem);border-radius:0 6px 6px 0;padding:8px 16px 6px;margin:18px 0}
+.must::before{content:"À mémoriser";display:block;font:600 13px/1.3 var(--sans);color:var(--mem);margin-bottom:2px}
+.must > table{margin:6px 0 4px;background:var(--sheet)}
+li > .must{margin:10px 0}
+.memo{margin:14px 0 8px}
+.memo > div{min-width:0}
+.memo .f{background:var(--mem-soft);border-left:3px solid var(--mem);border-radius:0 6px 0 0;padding:4px 16px;overflow-x:auto;margin-top:14px}
+.memo .f .katex-display{margin:6px 0}
+.memo .d{font:15px/1.5 var(--sans);color:var(--ink-2);padding:6px 16px 10px 19px;border-bottom:1px solid var(--rule)}
+
+/* Checklist */
+ul.check{list-style:none;padding-left:0}
+ul.check li{position:relative;padding-left:30px;margin:8px 0}
+ul.check li::before{content:"";position:absolute;left:0;top:.38em;width:15px;height:15px;border:1.5px solid var(--ink-2);border-radius:3px}
+
+/* Écrans étroits */
+@media (max-width:960px){
+  .layout{display:block}
+  .toc{position:sticky;top:0;z-index:10;height:auto;max-height:100vh;border-right:0;border-bottom:1px solid var(--rule);background:var(--paper);padding:6px 16px}
+  .toc-title{display:none}
+  .toc-toggle{display:flex;width:100%;justify-content:space-between;align-items:center;font:600 15px/1 var(--sans);color:var(--ink);background:none;border:0;padding:12px 0;cursor:pointer}
+  .toc-state{font-weight:500;color:var(--accent)}
+  .toc ol{display:none;padding-bottom:12px}
+  .toc.open ol{display:block}
+  main{padding:32px 16px 100px}
+  body{font-size:17px}
+  h2{margin-top:64px}
+}
+@media (max-width:640px){.figs{grid-template-columns:1fr !important}}
+@media print{.toc{display:none}.layout{display:block}main{padding:0}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="toc" id="toc">
+<button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list"><span>Sommaire</span><span class="toc-state">Afficher</span></button>
+<p class="toc-title">Sommaire</p>
+<ol id="toc-list"></ol>
+</aside>
+<main>
+<header class="hero">
+<p class="hero-chap">Chapitre IV</p>
+<h1>Filtrage des signaux analogiques</h1>
+<p class="hero-sub">Résumé du cours d'E. Abdelmounim (FST Settat), expliqué pas à pas pour débutant, avec tous les calculs détaillés. On apprend à décrire, choisir et dimensionner un filtre.</p>
+<div id="hero-wave"></div>
+</header>
+
+<h2 id="plan">Le fil du chapitre</h2>
+<p>Au chapitre 3, on a vu qu'un système linéaire agit sur chaque fréquence d'un signal. Un <b>filtre</b>, c'est un système qu'on construit exprès pour garder certaines fréquences et en supprimer d'autres. Le chapitre suit quatre étapes :</p>
+<ol>
+<li><b>La transformée de Laplace</b> : une version « renforcée » de Fourier, qui transforme les équations différentielles en simples équations algébriques.</li>
+<li><b>Le fenêtrage</b> : ce qui arrive au spectre quand on n'observe un signal que pendant une durée limitée.</li>
+<li><b>Les filtres analogiques</b> : fonction de transfert, gabarit, types de filtres, transpositions, puis les deux grandes familles de réponses (Butterworth et Tchebychev) et leur dimensionnement.</li>
+<li><b>La stabilité</b> : lire sur les pôles de \(H(p)\) si un filtre est stable.</li>
+</ol>
+<div class="box key"><b class="lbl">Comment ce résumé est construit</b>
+<p>Chaque partie suit le même ordre, pour <b>comprendre avant d'apprendre</b> :</p>
+<ol>
+<li><b>L'intuition d'abord</b> (encadré turquoise) : l'idée en mots simples, avec une image de la vie courante, avant toute formule. L'encadré dit aussi ce que tu sauras faire à la fin de la partie.</li>
+<li><b>L'explication pas à pas</b>, avec les calculs détaillés et les graphiques.</li>
+<li><b>Les formules à mémoriser</b>, surlignées en violet avec la mention « À mémoriser ».</li>
+<li><b>Les astuces</b> (vert), <b>les pièges</b> (rouge), <b>les exemples</b> (bleu) et <b>l'essentiel</b> (jaune).</li>
+<li><b>Les figures interactives</b> : bouge les curseurs pour voir l'effet de chaque paramètre.</li>
+</ol>
+<p>À la fin du chapitre : une <a href="#fiche">fiche méthode</a> (les calculs types, étape par étape), les <a href="#pieges">pièges classiques</a>, puis <a href="#parcoeur">toutes les formules à connaître par cœur</a>.</p></div>
+<div class="box key"><b class="lbl">Le résultat le plus important du chapitre</b>
+<p>Un filtre est entièrement décrit par sa <b>fonction de transfert</b>, qui est la transformée de Laplace de sa réponse impulsionnelle :</p>
+\[ y(t) = h(t) * x(t) \quad\Longleftrightarrow\quad Y(p) = H(p)\cdot X(p), \qquad H(p) = \frac{b_mp^m + \cdots + b_0}{a_np^n + \cdots + a_0} \]
+<p>Le filtre est stable si tous les pôles de \(H(p)\) ont une partie réelle négative.</p></div>
+
+<!-- ============ PARTIE 0 ============ -->
+<h2 id="p0">Partie 0 : Les rappels utiles</h2>
+<div class="box idea">
+<p>Ce chapitre manipule beaucoup de fractions de nombres complexes et de décibels. Voici les quatre outils qui reviennent tout le temps. Le plus important est le <b>module d'une fraction complexe</b> : c'est lui qui donne le gain d'un filtre.</p>
+<p class="goal"><b>À la fin de cette partie, tu sais :</b> calculer le module d'un nombre complexe et d'une fraction, utiliser décade et octave, et calculer \(\mathrm{ch}\) et \(\mathrm{argch}\).</p></div>
+
+<h3>0.1 Module d'un nombre complexe et d'une fraction</h3>
+<ul>
+<li>Pour \(z = a + jb\) : \(|z| = \sqrt{a^2 + b^2}\).</li>
+<li>Le module d'un produit est le produit des modules, et le module d'une fraction est la fraction des modules :
+\[ \left|\frac{z_1}{z_2}\right| = \frac{|z_1|}{|z_2|} \]</li>
+</ul>
+<div class="box ex"><b class="lbl">Exemple qui revient partout</b>
+<p>\(H(j\Omega) = \dfrac{1}{1 + j\Omega}\). Le module du numérateur vaut 1, celui du dénominateur \(\sqrt{1 + \Omega^2}\). Donc :</p>
+\[ |H(j\Omega)| = \frac{1}{\sqrt{1 + \Omega^2}} \qquad\text{et en } \Omega = 1 : \ |H| = \frac{1}{\sqrt2} \;\Rightarrow\; 20\log_{10}\frac{1}{\sqrt2} = -3\ \text{dB} \]</div>
+
+<h3>0.2 Décibels, décade et octave</h3>
+<ul>
+<li>Gain en dB d'un filtre : \(G_{dB} = 20\log_{10}|H|\) (rapport de tensions, chapitre 3).</li>
+<li>Une <b>décade</b> : on multiplie la fréquence par <b>10</b>. Une <b>octave</b> : on la multiplie par <b>2</b>.</li>
+<li>Sur un axe en \(\log_{10}\), passer d'une décade à la suivante fait avancer de 1 (\(\log_{10}10 = 1\)), et une octave de 0,301 (\(\log_{10}2\)).</li>
+</ul>
+
+<h3>0.3 Les fonctions hyperboliques (pour Tchebychev)</h3>
+<p>Le cosinus hyperbolique et sa réciproque :</p>
+<div class="formula">\[ \mathrm{ch}(x) = \frac{e^x + e^{-x}}{2} \qquad\qquad \mathrm{argch}(y) = \ln\!\left(y + \sqrt{y^2 - 1}\right) \quad (y \geq 1) \]</div>
+<p>Par exemple \(\mathrm{argch}(3) = \ln\!\left(3 + \sqrt8\right) = \ln(5{,}828) = 1{,}763\). On s'en sert seulement pour calculer l'ordre d'un filtre de Tchebychev.</p>
+
+<h3>0.4 Décomposer une fraction en éléments simples</h3>
+<p>On écrit une fraction compliquée comme une somme de fractions simples, faciles à retrouver dans une table. Exemple :</p>
+<div class="formula">\[ \frac{1}{(p + 1)(p + 2)} = \frac{A}{p + 1} + \frac{B}{p + 2} \]</div>
+<ul>
+<li>Pour trouver \(A\) : on multiplie tout par \((p + 1)\), puis on pose \(p = -1\) : \(A = \frac{1}{-1 + 2} = 1\).</li>
+<li>Pour trouver \(B\) : on multiplie par \((p + 2)\), puis on pose \(p = -2\) : \(B = \frac{1}{-2 + 1} = -1\).</li>
+</ul>
+<p>Donc \(\dfrac{1}{(p + 1)(p + 2)} = \dfrac{1}{p + 1} - \dfrac{1}{p + 2}\). On s'en sert pour revenir de Laplace au temps (partie 1.6) et pour la stabilité (partie 4).</p>
+
+<!-- ============ PARTIE 1 ============ -->
+<h2 id="p1">Partie 1 : La transformée de Laplace</h2>
+<div class="box idea">
+<p>La transformée de Fourier décompose un signal en sinusoïdes « éternelles », qui oscillent sans jamais s'amortir. Problème : si le signal grandit (comme \(e^{t}\)), l'intégrale de Fourier explose. Laplace ajoute un <b>amortisseur</b> \(e^{-\sigma t}\) qui écrase le signal avant de faire le calcul : l'intégrale redevient finie.</p>
+<p>Son grand avantage pour l'ingénieur : une <b>dérivée devient une multiplication par \(p\)</b> et une intégrale une division par \(p\). Une équation différentielle devient une simple équation algébrique, comme le logarithme transforme une multiplication en addition.</p>
+<p class="goal"><b>À la fin de cette partie, tu sais :</b> calculer une transformée de Laplace simple, utiliser ses propriétés et sa table, revenir au temps, et utiliser les théorèmes de la valeur initiale et finale.</p></div>
+
+<h3>1.1 Pourquoi une nouvelle transformée ?</h3>
+<p>La transformée de Fourier de \(s(t)\) est :</p>
+<div class="formula">\[ \mathcal F[s(t)] = S(f) = \int_{-\infty}^{+\infty} s(t)\,e^{-j2\pi ft}\,dt \]</div>
+<p>\(S(f)\) n'existe que si cette intégrale a une valeur finie (on dit qu'elle <b>converge</b>). Sinon, on peut la rendre convergente en multipliant \(s(t)\) par \(e^{-\sigma t}\), avec \(\sigma\) réel positif. Le cours appelle \(\sigma\) le « rayon de convergence ». On regroupe les deux exponentielles :</p>
+<div class="formula">\[ s(t)\,e^{-\sigma t}\,e^{-j2\pi ft} = s(t)\,e^{-(\sigma + j2\pi f)t} = s(t)\,e^{-pt} \qquad\text{avec}\qquad p = \sigma + j2\pi f = \sigma + j\omega \]</div>
+<p>\(p\) s'appelle la <b>fréquence complexe</b>. Sa partie réelle \(\sigma\) amortit, sa partie imaginaire \(\omega\) fait osciller.</p>
+<div class="figs" data-fig="lapdamp"></div>
+
+<h3>1.2 Définition <span class="tag">essentiel</span></h3>
+<p>On considère en plus un signal <b>causal</b> (nul pour \(t &lt; 0\)) : l'intégrale commence donc à 0. La transformée de Laplace d'un signal \(s(t)\) de la variable réelle \(t\) est la fonction \(S(p)\) de la variable complexe \(p\) :</p>
+<div class="formula must">\[ \mathcal L[s(t)] = S(p) = \int_{0}^{\infty} s(t)\,e^{-pt}\,dt \]</div>
+<ul>
+<li>Dans les pays anglo-saxons, la variable s'appelle souvent \(s\) au lieu de \(p\) (c'est le cas dans la table de la partie 1.6).</li>
+<li>La transformée de Laplace s'applique <b>obligatoirement à des signaux causals</b>. (Pour les signaux non causals, il existe des astuces de décalage.)</li>
+</ul>
+
+<h4>Trois transformées calculées en détail</h4>
+<p><b>L'échelon</b> \(u(t)\) (qui vaut 1 pour \(t \geq 0\)) :</p>
+<div class="formula">\[ \mathcal L[u(t)] = \int_0^{\infty} e^{-pt}\,dt = \left[\frac{e^{-pt}}{-p}\right]_0^{\infty} = 0 - \frac{1}{-p} = \frac1p \]</div>
+<p>(En \(t \to \infty\), \(e^{-pt} \to 0\) car la partie réelle de \(p\) est positive : c'est l'amortisseur qui agit.)</p>
+<p><b>L'exponentielle</b> \(e^{-at}\) : on regroupe les exponentielles, puis on fait le même calcul avec \(p + a\) à la place de \(p\) :</p>
+<div class="formula">\[ \mathcal L[e^{-at}] = \int_0^{\infty} e^{-at}e^{-pt}\,dt = \int_0^{\infty} e^{-(p + a)t}\,dt = \frac{1}{p + a} \]</div>
+<p><b>Le cosinus</b> \(\cos(\omega t)\) : on utilise Euler, \(\cos(\omega t) = \frac12\left(e^{j\omega t} + e^{-j\omega t}\right)\), puis le résultat précédent avec \(a = -j\omega\) et \(a = +j\omega\) :</p>
+<div class="formula">\[ \mathcal L[\cos\omega t] = \frac12\left(\frac{1}{p - j\omega} + \frac{1}{p + j\omega}\right) = \frac12\cdot\frac{(p + j\omega) + (p - j\omega)}{(p - j\omega)(p + j\omega)} = \frac12\cdot\frac{2p}{p^2 + \omega^2} = \frac{p}{p^2 + \omega^2} \]</div>
+<p>(Au dénominateur, \((p - j\omega)(p + j\omega) = p^2 - (j\omega)^2 = p^2 + \omega^2\), car \(j^2 = -1\).)</p>
+
+<h3>1.3 L'intérêt : les équations différentielles deviennent simples</h3>
+<p>La transformée de Laplace est très utile pour analyser les systèmes dynamiques linéaires. L'intégration et la dérivation deviennent une division et une multiplication par \(p\), de la même manière que le logarithme transforme la multiplication en addition. On ramène ainsi une équation différentielle linéaire à coefficients constants à une équation affine, dont les solutions sont des fractions rationnelles de \(p\).</p>
+<div class="box ex"><b class="lbl">Exemple du cours : la machine à courant continu</b>
+<p>Dans le domaine temporel, la tension et le courant de l'induit sont liés par :</p>
+\[ e(t) = R\,i(t) + L\,\frac{di(t)}{dt} \]
+<p>On prend la transformée de Laplace de chaque terme. Si les conditions initiales sont nulles (\(i(0) = 0\)), la dérivée devient une multiplication par \(p\) :</p>
+\[ E(p) = R\,I(p) + p\,L\,I(p) \]
+<p>On isole \(I(p)\), comme dans une équation du collège :</p>
+\[ E(p) = (R + Lp)\,I(p) \quad\Longrightarrow\quad I(p) = \frac{E(p)}{R + Lp} \]
+<p>Plus aucune dérivée : on a seulement divisé.</p></div>
+<div class="box tip"><b class="lbl">Astuce : retrouver Fourier</b>
+<p>En régime harmonique (sinusoïdal permanent), on peut remplacer \(p\) par \(j2\pi f\) ou \(j\omega\) dans la transformée de Laplace.</p></div>
+
+<h3>1.4 Lien entre Fourier et Laplace</h3>
+<p>Si \(s(t) = 0\) pour \(t &lt; 0\), les deux intégrales ont les mêmes bornes, et Fourier est Laplace avec \(\sigma = 0\) :</p>
+<div class="formula must">\[ \mathcal F\{s(t)\} = \mathcal L\{s(t)\}\big|_{p = j2\pi f} \]</div>
+<p>Exemple : \(\mathcal L[e^{-at}u(t)] = \frac{1}{p + a}\), donc \(\mathcal F[e^{-at}u(t)] = \frac{1}{a + j2\pi f}\). C'est bien le résultat de la table du chapitre 2.</p>
+
+<h3>1.5 Les propriétés <span class="tag">essentiel</span></h3>
+<p>On retrouve les mêmes propriétés que pour la transformée de Fourier. Dans tout le tableau, \(x(t) \to X(p)\) et \(y(t) \to Y(p)\).</p>
+<div class="must">
+<table>
+<tr><th>Propriété</th><th>Dans le temps</th><th>Dans Laplace</th></tr>
+<tr><td>Linéarité</td><td>\(a\,x(t) + b\,y(t)\)</td><td>\(a\,X(p) + b\,Y(p)\)</td></tr>
+<tr><td>Homothétie (\(a\) réel positif)</td><td>\(x(at)\)</td><td>\(\dfrac1a\,X\!\left(\dfrac pa\right)\)</td></tr>
+<tr><td>Retard</td><td>\(x(t - a)\)</td><td>\(X(p)\,e^{-ap}\)</td></tr>
+<tr><td>Multiplication par une exponentielle</td><td>\(x(t)\,e^{bt}\)</td><td>\(X(p - b)\)</td></tr>
+<tr><td>Dérivée</td><td>\(\dfrac{dx}{dt}\)</td><td>\(p\,X(p) - x(0)\)</td></tr>
+<tr><td>Dérivée \(n\)-ième</td><td>\(\dfrac{d^nx}{dt^n}\)</td><td>\(p^nX(p) - \Big[p^{n-1}x(0) + \displaystyle\sum_{i=2}^{n} p^{n-i}\,\frac{d^{i-1}x}{dt^{i-1}}(0)\Big]\)</td></tr>
+<tr><td>Multiplication par \(t^n\)</td><td>\((-1)^n\,t^n\,x(t)\)</td><td>\(\dfrac{d^nX(p)}{dp^n}\)</td></tr>
+<tr><td>Intégration</td><td>\(\displaystyle\int_0^t x(u)\,du\)</td><td>\(\dfrac1p\,X(p)\)</td></tr>
+<tr><td>Division par \(t\)</td><td>\(\dfrac1t\,x(t)\)</td><td>\(\displaystyle\int_p^{\infty} X(u)\,du\)</td></tr>
+<tr><td>Fonction périodique (période \(T\))</td><td>\(x(t)\)</td><td>\(\dfrac{1}{1 - e^{-pT}}\displaystyle\int_0^T e^{-pt}\,x(t)\,dt\)</td></tr>
+<tr><td>Convolution</td><td>\(x(t) * y(t)\)</td><td>\(X(p)\cdot Y(p)\)</td></tr>
+<tr><td>Produit</td><td>\(x(t)\cdot y(t)\)</td><td>\(X(p) * Y(p)\)</td></tr>
+</table>
+</div>
+<p>Si toutes les conditions initiales sont nulles, la dérivée \(n\)-ième devient simplement \(p^nX(p)\) : dériver \(n\) fois, c'est multiplier par \(p^n\).</p>
+<h4>D'où vient la règle de la dérivée</h4>
+<p>On applique la définition à \(x'(t)\), puis on fait une intégration par parties (\(\int u'v = [uv] - \int uv'\), avec \(u = x\) et \(v = e^{-pt}\)) :</p>
+<div class="formula">\[ \mathcal L[x'] = \int_0^{\infty} x'(t)\,e^{-pt}\,dt = \Big[x(t)\,e^{-pt}\Big]_0^{\infty} - \int_0^{\infty} x(t)\,(-p)\,e^{-pt}\,dt = \big(0 - x(0)\big) + p\,X(p) \]</div>
+<p>On retrouve \(p\,X(p) - x(0)\). Le terme \(-x(0)\) est la condition initiale.</p>
+<div class="box ex"><b class="lbl">Exemple : la transformée de \(t\) grâce à une propriété</b>
+<p>On part de \(\mathcal L[u(t)] = \frac1p\), et on utilise « multiplication par \(t\) » avec \(n = 1\) : \(-t\,u(t) \to \frac{d}{dp}\left(\frac1p\right) = -\frac{1}{p^2}\). On multiplie par \(-1\) des deux côtés :</p>
+\[ \mathcal L[t\,u(t)] = \frac{1}{p^2} \]
+<p>C'est la ligne P2 de la table, obtenue sans aucune intégrale.</p></div>
+
+<h4>Valeur initiale et valeur finale</h4>
+<div class="formula must">\[ x(0) = \lim_{p\to\infty}\big[p\,X(p)\big] \qquad\qquad x(\infty) = \lim_{p\to0}\big[p\,X(p)\big] \]</div>
+<p>Elles donnent le début et la fin d'un signal (par exemple la valeur en <b>régime permanent</b>) sans revenir au temps.</p>
+<div class="box ex"><b class="lbl">Exemple : la réponse d'un filtre RC à un échelon</b>
+<p>Avec \(H(p) = \frac{1}{1 + \tau p}\) et une entrée échelon \(E(p) = \frac1p\), la sortie est \(S(p) = \frac{1}{p(1 + \tau p)}\).</p>
+<ul>
+<li>Valeur finale : \(p\,S(p) = \frac{1}{1 + \tau p} \to \frac{1}{1 + 0} = 1\) quand \(p \to 0\). La sortie finit à 1.</li>
+<li>Valeur initiale : \(p\,S(p) = \frac{1}{1 + \tau p} \to 0\) quand \(p \to \infty\). La sortie part de 0.</li>
+</ul>
+<p>C'est cohérent avec \(s(t) = \left(1 - e^{-t/\tau}\right)u(t)\) du chapitre 3.</p></div>
+<div class="box warn"><p>Le théorème de la valeur finale ne s'applique que si le signal a vraiment une limite (signal stable). Pour \(\sin(\omega t)\), qui oscille sans fin, la formule donnerait un résultat sans signification.</p></div>
+
+<h3>1.6 La table des transformées usuelles</h3>
+<p>La table du cours utilise la variable \(s\) au lieu de \(p\) (c'est la même chose). \(u(t)\) est l'échelon.</p>
+<h4>Les signaux de base</h4>
+<table>
+<tr><th></th><th>\(f(t)\)</th><th>\(F(s)\)</th></tr>
+<tr><td>P1</td><td>\(1\) ou \(u(t)\)</td><td>\(\dfrac1s\)</td></tr>
+<tr><td>P2</td><td>\(t\)</td><td>\(\dfrac{1}{s^2}\)</td></tr>
+<tr><td>P3</td><td>\(t^n\) (\(n\) entier positif)</td><td>\(\dfrac{n!}{s^{n+1}}\)</td></tr>
+<tr><td>P4</td><td>\(e^{-at}\)</td><td>\(\dfrac{1}{s + a}\)</td></tr>
+<tr><td>P5</td><td>\(t\,e^{-at}\)</td><td>\(\dfrac{1}{(s + a)^2}\)</td></tr>
+<tr><td>P6</td><td>\(\sin\omega t\)</td><td>\(\dfrac{\omega}{s^2 + \omega^2}\)</td></tr>
+<tr><td>P7</td><td>\(\cos\omega t\)</td><td>\(\dfrac{s}{s^2 + \omega^2}\)</td></tr>
+<tr><td>P8</td><td>\(e^{-at}\sin\omega t\)</td><td>\(\dfrac{\omega}{(s + a)^2 + \omega^2}\)</td></tr>
+<tr><td>P9</td><td>\(e^{-at}\cos\omega t\)</td><td>\(\dfrac{s + a}{(s + a)^2 + \omega^2}\)</td></tr>
+<tr><td>P10</td><td>\(t\sin\omega t\)</td><td>\(\dfrac{2\omega s}{(s^2 + \omega^2)^2}\)</td></tr>
+<tr><td>P11</td><td>\(t\cos\omega t\)</td><td>\(\dfrac{s^2 - \omega^2}{(s^2 + \omega^2)^2}\)</td></tr>
+<tr><td>P12</td><td>\(t^n\), \(n\) réel, \(n &gt; -1\)</td><td>\(\dfrac{\Gamma(n + 1)}{s^{n+1}}\)</td></tr>
+<tr><td>P13</td><td>\(u(t - a)\)</td><td>\(\dfrac{e^{-as}}{s}\)</td></tr>
+<tr><td>P14</td><td>\(\delta(t)\)</td><td>\(1\)</td></tr>
+<tr><td>P14a</td><td>\(\delta(t - a)\)</td><td>\(e^{-as}\)</td></tr>
+</table>
+<h4>Les propriétés, écrites comme dans la table</h4>
+<table>
+<tr><th></th><th>\(f(t)\)</th><th>\(F(s)\)</th></tr>
+<tr><td>P15</td><td>\(a\,f(t) + b\,g(t)\)</td><td>\(a\,F(s) + b\,G(s)\)</td></tr>
+<tr><td>P16</td><td>\(f'(t)\)</td><td>\(s\,F(s) - f(0^-)\)</td></tr>
+<tr><td>P17</td><td>\(f''(t)\)</td><td>\(s^2F(s) - s\,f(0) - f'(0)\)</td></tr>
+<tr><td>P18</td><td>\(f^{(n)}(t)\)</td><td>\(s^nF(s) - s^{n-1}f(0) - \cdots - f^{(n-1)}(0)\)</td></tr>
+<tr><td>P19</td><td>\(e^{-at}f(t)\)</td><td>\(F(s + a)\)</td></tr>
+<tr><td>P20</td><td>\(f(at)\)</td><td>\(\dfrac1a\,F\!\left(\dfrac sa\right)\)</td></tr>
+<tr><td>P21</td><td>\(t^n\,f(t)\)</td><td>\((-1)^n\,\dfrac{d^n}{ds^n}F(s)\)</td></tr>
+<tr><td>P22</td><td>\(f(t - a)\,u(t - a)\)</td><td>\(e^{-as}\,F(s)\)</td></tr>
+<tr><td>P23</td><td>\(\displaystyle\int_0^t f(x)\,dx\)</td><td>\(\dfrac{F(s)}{s}\)</td></tr>
+<tr><td>P24</td><td>\(\displaystyle\int_0^t f(x)\,g(t - x)\,dx\)</td><td>\(F(s)\cdot G(s)\)</td></tr>
+<tr><td>P25</td><td>\(f(t)\) périodique de période \(P\)</td><td>\(\dfrac{\int_0^P e^{-st}f(t)\,dt}{1 - e^{-sP}}\)</td></tr>
+<tr><td>P26</td><td>\(g(t)\,u(t - a)\)</td><td>\(e^{-as}\,\mathcal L\{g(t + a)\}\)</td></tr>
+</table>
+<h4>Les transformées inverses (on part de \(F(s)\))</h4>
+<table>
+<tr><th></th><th>\(F(s)\)</th><th>\(f(t)\)</th></tr>
+<tr><td>P27</td><td>\(\dfrac{1}{(s + a)^n}\), \(n\) entier positif</td><td>\(\dfrac{t^{n-1}e^{-at}}{(n - 1)!}\)</td></tr>
+<tr><td>P28</td><td>\(\dfrac{1}{s^2 + \omega^2}\)</td><td>\(\dfrac1\omega\sin(\omega t)\)</td></tr>
+<tr><td>P29</td><td>\(\dfrac{1}{(s + a)^2 + \omega^2}\)</td><td>\(\dfrac1\omega\,e^{-at}\sin(\omega t)\)</td></tr>
+<tr><td>P30</td><td>\(\dfrac{1}{s^2 - a^2}\)</td><td>\(\dfrac{1}{2a}\left(e^{at} - e^{-at}\right)\)</td></tr>
+<tr><td>P31</td><td>\(\dfrac{s}{s^2 - a^2}\)</td><td>\(\dfrac12\left(e^{at} + e^{-at}\right)\)</td></tr>
+<tr><td>P32</td><td>\(\dfrac{1}{(s + a)(s + b)}\), \(a \neq b\)</td><td>\(\dfrac{1}{b - a}\left(e^{-at} - e^{-bt}\right)\)</td></tr>
+<tr><td>P33</td><td>\(\dfrac{s}{(s + a)(s + b)}\), \(a \neq b\)</td><td>\(\dfrac{1}{b - a}\left(b\,e^{-bt} - a\,e^{-at}\right)\)</td></tr>
+<tr><td>P34</td><td>\(\dfrac{1}{(s^2 + \omega^2)^2}\)</td><td>\(\dfrac{1}{2\omega^3}\big(\sin(\omega t) - \omega t\cos(\omega t)\big)\)</td></tr>
+<tr><td>P35</td><td>\(\dfrac{s}{(s^2 + \omega^2)^2}\)</td><td>\(\dfrac{1}{2\omega}\,t\sin(\omega t)\)</td></tr>
+<tr><td>P36</td><td>\(\dfrac{s^2}{(s^2 + \omega^2)^2}\)</td><td>\(\dfrac{1}{2\omega}\big(\sin(\omega t) + \omega t\cos(\omega t)\big)\)</td></tr>
+<tr><td>P37</td><td>\(\dfrac{1}{s(s^2 + \omega^2)}\)</td><td>\(\dfrac{1}{\omega^2}\big(1 - \cos(\omega t)\big)\)</td></tr>
+<tr><td>P38</td><td>\(\dfrac{1}{s^2(s^2 + \omega^2)}\)</td><td>\(\dfrac{1}{\omega^3}\big(\omega t - \sin(\omega t)\big)\)</td></tr>
+<tr><td>P39</td><td>\(\dfrac{s}{(s^2 + \omega^2)(s^2 + \beta^2)}\), \(\omega^2 \neq \beta^2\)</td><td>\(\dfrac{1}{\beta^2 - \omega^2}\big(\cos(\omega t) - \cos(\beta t)\big)\)</td></tr>
+<tr><td>P40</td><td>\(\dfrac{1}{(s^2 + \omega^2)(s^2 + \beta^2)}\), \(\omega^2 \neq \beta^2\)</td><td>\(\dfrac{1}{\beta\omega(\beta^2 - \omega^2)}\big(\beta\sin(\omega t) - \omega\sin(\beta t)\big)\)</td></tr>
+</table>
+<div class="must">
+<table>
+<tr><th>Les paires à connaître par cœur</th><th>\(f(t)\)</th><th>\(F(p)\)</th></tr>
+<tr><td>Dirac</td><td>\(\delta(t)\)</td><td>\(1\)</td></tr>
+<tr><td>Échelon</td><td>\(u(t)\)</td><td>\(\dfrac1p\)</td></tr>
+<tr><td>Rampe</td><td>\(t\,u(t)\)</td><td>\(\dfrac{1}{p^2}\)</td></tr>
+<tr><td>Exponentielle</td><td>\(e^{-at}u(t)\)</td><td>\(\dfrac{1}{p + a}\)</td></tr>
+<tr><td>Sinus, cosinus</td><td>\(\sin\omega t\), \(\cos\omega t\)</td><td>\(\dfrac{\omega}{p^2 + \omega^2}\), \(\dfrac{p}{p^2 + \omega^2}\)</td></tr>
+</table>
+</div>
+<div class="box ex"><b class="lbl">Exemple : revenir au temps avec les éléments simples</b>
+<p>On cherche \(h(t)\) quand \(H(p) = \dfrac{1}{(p + 1)(p + 2)}\).</p>
+<ol>
+<li>On décompose (rappel 0.4) : \(H(p) = \dfrac{1}{p + 1} - \dfrac{1}{p + 2}\).</li>
+<li>Chaque morceau est dans la table (P4) : \(\frac{1}{p + 1} \to e^{-t}\) et \(\frac{1}{p + 2} \to e^{-2t}\).</li>
+<li>Par linéarité : \(h(t) = \left(e^{-t} - e^{-2t}\right)u(t)\).</li>
+</ol>
+<p>Vérification avec P32 (\(a = 1\), \(b = 2\)) : \(\frac{1}{2 - 1}\left(e^{-t} - e^{-2t}\right)\). C'est le même résultat.</p></div>
+
+<!-- ============ PARTIE 2 ============ -->
+<h2 id="p2">Partie 2 : Filtrage temporel ou fenêtrage</h2>
+<div class="box idea">
+<p>On ne peut jamais observer un signal pendant un temps infini : on l'enregistre pendant une durée \(\tau\), puis on s'arrête. Cela revient à regarder le signal à travers une <b>fenêtre</b>. Cette fenêtre a un prix : elle <b>étale</b> le spectre. Une raie parfaitement fine devient une bosse en forme de sinc, d'autant plus large que l'observation est courte.</p>
+<p>C'est comme une photo prise avec un temps de pose trop court : on gagne en précision sur l'instant, on perd en précision sur le reste.</p>
+<p class="goal"><b>À la fin de cette partie, tu sais :</b> décrire les trois types de fenêtres, calculer le spectre d'un cosinus tronqué, et expliquer le lien entre durée d'observation et précision du spectre.</p></div>
+
+<h3>2.1 Principe</h3>
+<p>Dans le domaine fréquentiel, on parle de <b>filtrage</b>. Dans le domaine temporel, on parle de <b>fenêtrage</b>. Fenêtrer un signal consiste à :</p>
+<ol>
+<li><b>prélever</b> un morceau du signal (on ne garde que l'intérieur de la fenêtre) ;</li>
+<li>ou <b>interrompre</b> le signal (on le met à zéro pendant un moment) ;</li>
+<li>ou <b>atténuer</b> le signal pendant un moment.</li>
+</ol>
+<div class="figs" data-fig="fenetres"></div>
+<p>Mathématiquement, la fenêtre \(f(t)\) <b>multiplie</b> le signal. D'après Plancherel (chapitre 3), un produit dans le temps devient une convolution dans les fréquences :</p>
+<div class="formula must">\[ s(t) = e(t)\cdot f(t) \quad\xrightarrow{\ \text{TF}\ }\quad S(f) = E(f) * F(f) \]</div>
+
+<h3>2.2 Le fenêtrage par une porte</h3>
+<p>Pour traiter un signal, on a besoin d'un temps fini. Pour écrire cette troncature, on utilise la porte \(\Pi_\tau(t)\) de largeur \(\tau\) (elle vaut 1 entre \(-\frac\tau2\) et \(\frac\tau2\), et 0 ailleurs). Sa transformée de Fourier, calculée en détail :</p>
+<div class="formula">\[ \mathcal F\{\Pi_\tau(t)\} = \int_{-\tau/2}^{+\tau/2} e^{-j2\pi ft}\,dt = \left[\frac{e^{-j2\pi ft}}{-j2\pi f}\right]_{-\tau/2}^{+\tau/2} = \frac{e^{-j\pi f\tau} - e^{+j\pi f\tau}}{-j2\pi f} = \frac{e^{+j\pi f\tau} - e^{-j\pi f\tau}}{j2\pi f} \]</div>
+<p>Avec Euler, \(e^{j\theta} - e^{-j\theta} = 2j\sin\theta\) :</p>
+<div class="formula">\[ \mathcal F\{\Pi_\tau(t)\} = \frac{2j\sin(\pi\tau f)}{j2\pi f} = \frac{\sin(\pi\tau f)}{\pi f} = \tau\,\mathrm{sinc}(\tau f) \]</div>
+<p>Le signal tronqué et son spectre sont donc :</p>
+<div class="formula must">\[ s_\Pi(t) = s(t)\cdot\Pi_\tau(t) \qquad\Longrightarrow\qquad S_\Pi(f) = S(f) * \tau\,\mathrm{sinc}(\tau f) \]</div>
+<p>Cette troncature temporelle (cette fenêtre) <b>perturbe</b> le signal.</p>
+
+<h3>2.3 Exemple détaillé : un cosinus observé pendant \(\tau\)</h3>
+<p>Le signal est \(s(t) = \cos(2\pi F_0t)\). Son spectre théorique est fait de deux raies fines (chapitre 2) :</p>
+<div class="formula">\[ S(f) = \frac12\big[\delta(f + F_0) + \delta(f - F_0)\big] \]</div>
+<p>On ne l'observe qu'entre \(-\frac\tau2\) et \(\frac\tau2\) :</p>
+<div class="formula">\[ s_\Pi(t) = \begin{cases} \cos(2\pi F_0t) & t \in \left[-\frac\tau2, \frac\tau2\right] \\ 0 & \text{ailleurs} \end{cases} \]</div>
+<p>Son spectre est la convolution du sinc par les deux Dirac :</p>
+<div class="formula">\[ S_\Pi(f) = \left[\tau\,\frac{\sin(\pi\tau f)}{\pi\tau f}\right] * \left[\frac12\big(\delta(f + F_0) + \delta(f - F_0)\big)\right] \]</div>
+<p>On utilise que \(\delta\) est l'élément neutre de la convolution, et qu'un Dirac décalé décale : \(X(f) * \delta(f - F_0) = X(f - F_0)\). On distribue :</p>
+<div class="formula must">\[ S_\Pi(f) = \frac\tau2\left[\frac{\sin\big(\pi\tau(f + F_0)\big)}{\pi\tau(f + F_0)} + \frac{\sin\big(\pi\tau(f - F_0)\big)}{\pi\tau(f - F_0)}\right] \]</div>
+<p>Chaque raie fine est remplacée par un <b>sinc centré sur elle</b>, de hauteur \(\frac\tau2\), dont le lobe central va de \(F_0 - \frac1\tau\) à \(F_0 + \frac1\tau\).</p>
+<div class="figs" data-fig="tronc"></div>
+<div class="box ex"><b class="lbl">L'exemple chiffré du cours</b>
+<p>Un cosinus de période 1 ms (\(F_0 = 1000\) Hz) est observé pendant \(\tau = 5\) ms, puis le signal est nul. Au lieu d'une raie fine à 1000 Hz, le spectre mesuré est une bosse dont les premiers zéros sont à \(1000 \pm \frac{1}{0{,}005} = 1000 \pm 200\) Hz, soit 800 Hz et 1200 Hz.</p></div>
+<div class="figs" data-fig="tronc27"></div>
+
+<h3>2.4 Ce qu'il faut en retenir</h3>
+<ul>
+<li>Chaque raie du spectre réel est déformée dans le spectre mesuré (observé) : une raie fine devient une raie large en forme de sinus cardinal.</li>
+<li>La troncature modifie le spectre d'autant plus que \(\tau\) est <b>petit</b>.</li>
+<li>Plus l'observation (la mesure) est longue, plus le spectre est précis.</li>
+<li>La fenêtre (la mesure) perturbe le signal.</li>
+</ul>
+<div class="box key"><b class="lbl">Comme le principe d'incertitude de Heisenberg</b>
+<p>Si on est précis dans le domaine temporel (fenêtre courte), on perd en précision dans le domaine fréquentiel (raies larges), et inversement. C'est la règle « court dans le temps = large en fréquence » des chapitres 1 et 2.</p></div>
+<p><b>À toi de manipuler.</b> Change la durée d'observation \(\tau\), et regarde la raie s'élargir ou s'affiner.</p>
+<div class="figs" data-fig="fenlive"></div>
+
+<!-- ============ PARTIE 3 ============ -->
+<h2 id="p3">Partie 3 : Les filtres analogiques</h2>
+<div class="box idea">
+<p>Un filtre, c'est un <b>tamis à fréquences</b>. Imagine un égaliseur de chaîne hi-fi : chaque curseur monte ou baisse une bande de fréquences. Le filtre ne crée jamais de nouvelle note : il garde, affaiblit ou renforce celles qui sont déjà là, et les décale un peu dans le temps.</p>
+<p>Pour concevoir un filtre, on suit toujours le même chemin : on écrit ce qu'on veut (le <b>gabarit</b>), on le ramène à un passe-bas standard (le <b>prototype</b>), on choisit une famille de réponses (<b>Butterworth</b> ou <b>Tchebychev</b>), on calcule l'<b>ordre</b>, puis on réalise le filtre en cascade de petites cellules.</p>
+<p class="goal"><b>À la fin de cette partie, tu sais :</b> écrire la fonction de transfert d'un filtre, lire et dessiner un gabarit, reconnaître les cinq types de filtres, faire une transposition, et dimensionner un filtre de Butterworth ou de Tchebychev.</p></div>
+
+<h3>3.1 Pourquoi et comment filtrer</h3>
+<p>Pour de multiples raisons, l'information utile peut être cachée au sein d'un signal complexe. Dès que le spectre de l'information est suffisamment isolé des composantes indésirables, on peut l'extraire par <b>filtrage</b>.</p>
+<p>Le filtrage en fréquence est l'une des premières fonctions utilisées en radioélectricité, et on trouve aujourd'hui des filtres dans de nombreux équipements électroniques. La tendance est de remplacer les filtres analogiques par des filtres numériques, mais on garde des filtres analogiques en instrumentation, en électronique de puissance, en électroacoustique et dans les systèmes haute fréquence.</p>
+<div class="box key"><p>Un filtre est un <b>système linéaire</b> dont le rôle est de modifier la composition spectrale d'un signal <b>sans y ajouter de nouvelles composantes</b>. Il permet de renforcer (filtre <b>actif</b>, qui peut amplifier) ou d'atténuer (filtre <b>passif</b>) une ou plusieurs bandes de fréquences.</p></div>
+<h4>Pourquoi un filtre ne crée pas de nouvelle fréquence</h4>
+<p>On envoie une seule exponentielle complexe \(x(t) = k_1\,e^{j\omega_1t}\) (une sinusoïde pure de pulsation \(\omega_1\)) dans un filtre de réponse impulsionnelle \(h\). La sortie est la convolution :</p>
+<div class="formula">\[ y(t) = \int_{-\infty}^{+\infty} h(\tau)\,x(t - \tau)\,d\tau = \int_{-\infty}^{+\infty} h(\tau)\,k_1\,e^{j\omega_1(t - \tau)}\,d\tau \]</div>
+<p>On coupe l'exponentielle en deux (\(e^{j\omega_1(t - \tau)} = e^{j\omega_1t}\,e^{-j\omega_1\tau}\)) et on sort ce qui ne dépend pas de \(\tau\) :</p>
+<div class="formula">\[ y(t) = k_1\,e^{j\omega_1t}\underbrace{\int_{-\infty}^{+\infty} h(\tau)\,e^{-j\omega_1\tau}\,d\tau}_{H(\omega_1)} = k_1\,e^{j\omega_1t}\,H(\omega_1) \]</div>
+<p>\(H(\omega_1)\) est un nombre complexe : \(H(\omega_1) = A_1\,e^{j\varphi_1}\). Donc :</p>
+<div class="formula">\[ y(t) = A_1\,k_1\,e^{j(\omega_1t + \varphi_1)} \]</div>
+<p>La sortie a <b>la même fréquence</b> \(\omega_1\) que l'entrée. Seules changent l'amplitude (multipliée par \(A_1\)) et la phase (décalée de \(\varphi_1\)). Le cours dit que les fréquences sont les « valeurs propres » des SLIT. Plus précisément : les exponentielles \(e^{j\omega t}\) passent à travers le filtre sans changer de forme, et \(H(\omega)\) est le nombre qui les multiplie.</p>
+<div class="box key"><p>Un filtre agit sur chaque harmonique du signal d'entrée, mais n'en crée pas de nouveaux. Chaque harmonique est <b>atténué</b> (ou amplifié) et <b>déphasé</b>.</p></div>
+<div class="figs" data-fig="harmo"></div>
+
+<h3>3.2 Quatre exemples de filtrage</h3>
+<h4>Exemple 1 : filtrage d'un son (passe-bas)</h4>
+<p>Le spectre du signal contient des raies en dessous de 5 kHz, plus une raie indésirable à 18 kHz. Elle s'entend comme un sifflement aigu. Pour la supprimer, on fait un filtrage <b>passe-bas</b>.</p>
+<div class="figs" data-fig="ex1"></div>
+<h4>Exemple 2 : lissage d'une tension échantillonnée-bloquée (passe-bas)</h4>
+<p>La tension en sortie d'un convertisseur numérique-analogique fait des « sauts » de largeur constante \(T_e\) (la période d'échantillonnage). Son spectre contient plusieurs fréquences, dont la fréquence d'échantillonnage \(f_e\). Pour retrouver la sinusoïde et lisser le signal, on fait un filtrage <b>passe-bas</b>.</p>
+<div class="figs" data-fig="ex2"></div>
+<h4>Exemple 3 : suppression de la composante continue (passe-haut)</h4>
+<p>La valeur moyenne est la composante de fréquence nulle. Pour l'éliminer, on fait un filtrage <b>passe-haut</b>.</p>
+<div class="figs" data-fig="ex3"></div>
+<h4>Exemple 4 : sélection d'une station radio FM (passe-bande)</h4>
+<p>L'antenne reçoit tous les signaux émis par les stations de la région. Pour écouter une station, il faut garder seulement sa bande de fréquences. On fait un filtrage <b>passe-bande</b> à fréquence centrale réglable (c'est le bouton de recherche de la radio).</p>
+<div class="figs" data-fig="ex4"></div>
+
+<h3>3.3 Les trois façons de décrire un filtre</h3>
+<p><b>Par une équation différentielle</b>, à coefficients \(a_n\) et \(b_m\) réels et constants :</p>
+<div class="formula">\[ a_n\frac{d^ny}{dt^n} + \cdots + a_1\frac{dy}{dt} + a_0\,y(t) = b_m\frac{d^mx}{dt^m} + \cdots + b_1\frac{dx}{dt} + b_0\,x(t) \]</div>
+<p><b>Par sa réponse impulsionnelle</b> \(h(t)\). La sortie est la convolution (chapitre 3) :</p>
+<div class="formula">\[ y(t) = h(t) * x(t) = \int_{-\infty}^{+\infty} h(u)\,x(t - u)\,du \]</div>
+<p><b>Par sa fonction de transfert</b> \(H(p)\) (partie 3.4).</p>
+<div class="must">
+<table>
+<tr><th></th><th>Dans le temps</th><th>Dans les fréquences</th></tr>
+<tr><td>Un <b>filtre</b></td><td>convolue : \(y = h * x\)</td><td>multiplie : \(Y = H\cdot X\)</td></tr>
+<tr><td>Une <b>fenêtre</b></td><td>multiplie : \(s = e\cdot f\)</td><td>convolue : \(S = E * F\)</td></tr>
+</table>
+</div>
+
+<h3>3.4 La fonction de transfert <span class="tag">essentiel</span></h3>
+<p>La transformée de Laplace transforme une dérivée en expression algébrique : si les conditions initiales sont nulles, \(\frac{d^ny}{dt^n}\) devient \(p^nY(p)\). On applique cela à chaque terme de l'équation différentielle :</p>
+<div class="formula">\[ a_np^nY(p) + \cdots + a_1p\,Y(p) + a_0Y(p) = b_mp^mX(p) + \cdots + b_1p\,X(p) + b_0X(p) \]</div>
+<p>On met \(Y(p)\) en facteur à gauche et \(X(p)\) à droite :</p>
+<div class="formula">\[ Y(p)\big[a_np^n + \cdots + a_0\big] = X(p)\big[b_mp^m + \cdots + b_0\big] \]</div>
+<p>On définit la <b>fonction de transfert</b> comme le rapport de la sortie sur l'entrée :</p>
+<div class="formula must">\[ H(p) = \frac{Y(p)}{X(p)} = \frac{b_mp^m + \cdots + b_1p + b_0}{a_np^n + \cdots + a_1p + a_0} \]</div>
+<p>La réponse en régime harmonique s'obtient en remplaçant \(p = \sigma + j2\pi f = \sigma + j\omega\) par \(j\omega\) :</p>
+<div class="formula">\[ H(j\omega) = \frac{b_m(j\omega)^m + \cdots + b_0}{a_n(j\omega)^n + \cdots + a_0} \]</div>
+<p>Et comme une convolution devient un produit (propriété de Laplace) :</p>
+<div class="formula must">\[ y(t) = h(t) * x(t) \quad\Longleftrightarrow\quad Y(p) = H(p)\cdot X(p), \qquad H(p) = \mathcal L[h(t)] \]</div>
+<p>La fonction de transfert \(H(p)\) est la transformée de Laplace de la réponse impulsionnelle \(h(t)\).</p>
+<div class="box ex"><b class="lbl">Exemple : le filtre RC (chapitre 3)</b>
+<p>Équation : \(RC\,\frac{dy}{dt} + y(t) = x(t)\). Ici \(a_1 = RC\), \(a_0 = 1\) et \(b_0 = 1\). En Laplace :</p>
+\[ RC\,p\,Y(p) + Y(p) = X(p) \;\Longrightarrow\; Y(p)(1 + RCp) = X(p) \;\Longrightarrow\; H(p) = \frac{1}{1 + RCp} \]
+<p>En régime harmonique, \(H(j\omega) = \frac{1}{1 + jRC\omega}\) : c'est exactement le résultat du chapitre 3.</p></div>
+<h4>Ordre d'un filtre</h4>
+<p>On écrit souvent \(H(p) = \dfrac{\sum_{i=0}^{m} a_ip^i}{\sum_{j=0}^{n} b_jp^j}\) avec \(m &lt; n\). (Attention, dans cette diapo les lettres \(a\) et \(b\) sont échangées par rapport à la formule précédente.) L'<b>ordre</b> du filtre est le degré \(n\) du <b>dénominateur</b>. Il fixe le comportement du filtre quand \(\omega \to \infty\), donc la raideur de sa coupure (partie 3.6). Un filtre d'ordre élevé supprime mieux les composantes indésirables.</p>
+
+<h3>3.5 Conditions de réalisation</h3>
+<p>Deux conditions sont nécessaires pour réaliser un filtre linéaire :</p>
+<ul>
+<li><b>Stabilité</b> : la réponse à un signal borné est bornée. Cela se traduit par :
+<div class="formula must">\[ \lim_{t\to\infty} h(t) = 0 \]</div></li>
+<li><b>Causalité</b> : le filtre ne doit pas être anticipatif. Avant l'instant \(t_0 = 0\) où on l'excite, il ne doit pas y avoir de réponse. L'effet ne précède pas la cause :
+<div class="formula must">\[ h(t) = 0 \quad\text{pour } t &lt; 0 \]</div></li>
+</ul>
+<div class="box key"><p>Un filtre est <b>réalisable</b> s'il est <b>causal</b> et <b>stable</b>.</p></div>
+<h4>Pourquoi la causalité impose \(h(t) = 0\) pour \(t &lt; 0\)</h4>
+<p>On écrit la convolution en version numérique. Les instants sont des multiples de \(T_e\) : \(t = nT_e\) est noté \(n\), et \(\tau = kT_e\) est noté \(k\). L'intégrale devient une somme :</p>
+<div class="formula">\[ y(t) = \int_{-\infty}^{+\infty} h(\tau)\,x(t - \tau)\,d\tau \quad\longrightarrow\quad y(n) = \sum_{k=-\infty}^{\infty} x(k)\,h(n - k) = \sum_{k=-\infty}^{\infty} h(k)\,x(n - k) \]</div>
+<p>On écrit par exemple la sortie à l'instant 10 :</p>
+<div class="formula">\[ y(10) = \cdots + h(-2)\,x(12) + h(-1)\,x(11) + h(0)\,x(10) + h(1)\,x(9) + h(2)\,x(8) + \cdots \]</div>
+<p>À l'instant 10, les valeurs \(x(11), x(12), \ldots\) ne sont pas encore arrivées. Pour qu'elles ne comptent pas, il faut que leurs coefficients soient nuls : \(h(-1) = h(-2) = h(-3) = \cdots = 0\). Donc \(h(t) = 0\) pour \(t\) négatif. Tous les systèmes physiquement réalisables sont causals.</p>
+
+<h3>3.6 Associer des filtres</h3>
+<ul>
+<li><b>En parallèle</b> (addition) : les sorties s'ajoutent.
+\[ y(t) = h_1 * x + h_2 * x = [h_1 + h_2] * x \qquad\Longrightarrow\qquad h = h_1 + h_2, \quad H = H_1 + H_2 \]</li>
+<li><b>En cascade</b> (produit) : la sortie du premier entre dans le second. On a \(y_1 = h_1 * x\) et \(y = h_2 * y_1\). Grâce à l'associativité de la convolution :
+\[ y = h_2 * (h_1 * x) = [h_2 * h_1] * x \qquad\Longrightarrow\qquad h = h_1 * h_2, \quad H = H_1\cdot H_2 \]</li>
+</ul>
+<div class="figs" data-fig="assoc"></div>
+
+<h3>3.7 Le gabarit d'un filtre <span class="tag">important</span></h3>
+<p>Le <b>gabarit</b> définit le comportement que doit avoir la réponse fréquentielle du filtre : c'est le « cahier des charges » dessiné. On écrit la fonction de transfert en module et phase :</p>
+<div class="formula">\[ H(f) = |H(f)|\,e^{j\varphi(f)} \qquad |H(f)| \text{ : le gain} \qquad \varphi(f) \text{ : la phase} \]</div>
+<p>Le gain en décibels est \(H_{dB} = 20\log_{10}|H(f)|\). On utilise aussi l'<b>atténuation</b> \(A = \frac{1}{H(f)}\) :</p>
+<div class="formula">\[ A_{dB} = 20\log_{10}\frac{1}{|H|} = 20\log_{10}(1) - 20\log_{10}|H| = -20\log_{10}|H(f)| \]</div>
+<div class="formula must">\[ G_{dB} = 20\log_{10}|H(f)| \qquad\qquad A_{dB} = -20\log_{10}|H(f)| = -G_{dB} \]</div>
+<p>Exemple : un gain de \(-40\) dB correspond à une atténuation de \(+40\) dB.</p>
+<h4>Les paramètres du gabarit (exemple du passe-bas, le filtre de base)</h4>
+<ul>
+<li>La <b>fréquence de coupure</b> \(f_p\) : elle fixe la largeur de la bande passante.</li>
+<li>L'<b>atténuation maximale</b> \(A_{max}\) dans la bande passante : l'atténuation ne doit pas dépasser cette valeur dans la bande passante.</li>
+<li>La fréquence \(f_a\) où commence la <b>bande coupée</b> (bande atténuée).</li>
+<li>L'<b>atténuation minimale</b> \(A_{min}\) dans la bande coupée : l'atténuation ne doit pas être inférieure à cette valeur dans la bande coupée.</li>
+<li>La zone entre \(f_p\) et \(f_a\) s'appelle la <b>bande de transition</b>.</li>
+</ul>
+<div class="figs" data-fig="gabarits"></div>
+<div class="box tip"><b class="lbl">Astuce pour lire un gabarit</b>
+<p>Les zones hachurées sont <b>interdites</b> : la courbe d'atténuation du filtre doit passer entre elles. Dans la bande passante, elle doit rester <b>sous</b> \(A_{max}\) (le signal passe presque intact). Dans la bande coupée, elle doit rester <b>au-dessus</b> de \(A_{min}\) (le signal est bien écrasé). Dans la bande de transition, elle fait ce qu'elle veut.</p></div>
+<h4>La pente dans la bande de transition</h4>
+<p>Le choix de \(f_p\), \(f_a\), \(A_{max}\) et \(A_{min}\) fixe la pente d'atténuation dans la bande de transition. Cette pente fixe l'<b>ordre</b> du filtre. On écrit \(H(p) = \frac{b_mp^m + \cdots + b_0}{a_np^n + \cdots + a_0}\), et l'atténuation \(A(p) = \frac{1}{H(p)} = \frac{a_np^n + \cdots + a_0}{b_mp^m + \cdots + b_0}\).</p>
+<p><b>Calcul de la pente.</b> Quand \(\omega\) devient très grand, seuls les termes de plus haut degré comptent :</p>
+<div class="formula">\[ |H(\omega)| \approx \frac{b_m\,\omega^m}{a_n\,\omega^n} \quad\Longrightarrow\quad 20\log_{10}|H| \approx 20\log_{10}\frac{b_m}{a_n} + 20(m - n)\log_{10}\omega \]</div>
+<p>Si on multiplie \(\omega\) par 10 (une décade), \(\log_{10}\omega\) augmente de 1, donc le gain change de \(20(m - n)\) dB :</p>
+<div class="formula must">\[ \text{pente} = -20\,(n - m)\ \text{dB par décade} \qquad\big(\approx -6\,(n - m)\ \text{dB par octave}\big) \]</div>
+<p>Ici \(n\) et \(m\) sont les degrés du dénominateur et du numérateur de \(H\). Exemple : un passe-bas d'ordre \(n = 4\) avec \(m = 0\) descend de \(-20\times4 = -80\) dB par décade.</p>
+<div class="figs" data-fig="pente"></div>
+
+<h3>3.8 Les cinq types de filtres</h3>
+<ul>
+<li><b>Passe-bas</b> : il ne laisse passer que les fréquences inférieures à la fréquence de coupure \(f_p\).</li>
+<li><b>Passe-haut</b> : il ne laisse passer que les fréquences supérieures à \(f_p\).</li>
+<li><b>Passe-bande</b> (ou sélectif) : il a une fréquence de coupure basse \(f_{p1}\) et une haute \(f_{p2}\), et garde toutes les fréquences situées entre les deux.</li>
+<li><b>Coupe-bande</b> (ou réjecteur) : il élimine les fréquences situées entre les fréquences de coupure basse et haute.</li>
+<li><b>Passe-tout</b> (ou déphaseur pur) : il n'élimine aucune fréquence, son gain est constant quelle que soit la fréquence. Il introduit seulement un déphasage. On l'utilise pour décaler la phase d'un signal sans changer son amplitude.</li>
+</ul>
+<div class="figs" data-fig="types"></div>
+<p>Les gabarits peuvent se dessiner avec le gain \(G_{dB} = 20\log_{10}|H(\omega)|\) (la courbe doit rester dans une zone autorisée sous 0 dB), ou avec l'atténuation \(A_{dB} = -20\log_{10}|H(\omega)|\) (le même dessin, retourné). Les deux représentations disent la même chose.</p>
+
+<h3>3.9 Le temps de propagation de groupe</h3>
+<p>Le gain dit combien le filtre atténue chaque fréquence. Le <b>temps de propagation de groupe</b> \(\tau_g\) mesure le <b>retard</b> que le filtre impose à l'ensemble des composantes spectrales :</p>
+<div class="formula must">\[ \tau_g = -\frac{1}{2\pi}\,\frac{d\varphi(f)}{df} = -\frac{d\varphi(\omega)}{d\omega} \]</div>
+<p>Il reflète l'aptitude du filtre à transmettre un signal <b>sans le déformer</b>. Pour ne pas déformer un signal, le filtre doit avoir dans sa bande passante un <b>gain plat</b> et un <b>temps de propagation constant</b>.</p>
+<p><b>Ce que veut dire « \(\tau_g\) constant ».</b> Si \(\tau_g = \tau_0\) pour toutes les fréquences, alors \(\varphi(\omega) = -\tau_0\,\omega + b\) : la phase est une <b>droite</b> en fonction de la fréquence. On parle de filtre à <b>phase linéaire</b>. (Le cours écrit \(\varphi = a\omega + b\) : avec la définition de \(\tau_g\), on a alors \(\tau_g = -a\).)</p>
+<div class="box tip"><b class="lbl">Pourquoi la phase linéaire ne déforme pas (lien avec le chapitre 2)</b>
+<p>Retarder un signal de \(\tau_0\) multiplie son spectre par \(e^{-j\omega\tau_0}\), c'est-à-dire ajoute la phase \(-\omega\tau_0\) : une droite. Donc un filtre à phase linéaire (et gain plat) se contente de <b>retarder</b> toutes les fréquences de la même durée, et le signal sort avec la même forme. Si la phase n'est pas linéaire, chaque harmonique est retardé différemment, et la forme du signal change.</p></div>
+<div class="figs" data-fig="tg"></div>
+
+<h3>3.10 Filtres d'ordre supérieur : la mise en cascade</h3>
+<p>Un filtre d'ordre \(n\) quelconque (\(n &gt; 2\)) se réalise en mettant en cascade des filtres d'ordre 2 et d'ordre 1. Comme les fonctions de transfert se multiplient (partie 3.6), on factorise le dénominateur en facteurs de degré 2 et 1 :</p>
+<ul>
+<li>ordre 6 = 2 + 2 + 2 : trois cellules d'ordre 2 ;</li>
+<li>ordre 5 = 2 + 2 + 1 : deux cellules d'ordre 2 et une d'ordre 1.</li>
+</ul>
+<div class="figs" data-fig="cascade"></div>
+
+<h3>3.11 Normaliser et transposer : le passe-bas prototype <span class="tag">important</span></h3>
+<p>Les <b>transpositions</b> ramènent l'étude de tout filtre à celle d'un seul filtre : un passe-bas normalisé, appelé <b>prototype</b>. On n'apprend donc à calculer qu'un seul type de filtre.</p>
+<h4>Normaliser la fréquence</h4>
+<p>On divise toutes les fréquences par une fréquence de référence \(f_n\) :</p>
+<ul>
+<li>pour le passe-bas et le passe-haut : \(f_n = f_p\) ;</li>
+<li>pour le passe-bande et le coupe-bande : \(f_n = f_0\) (la fréquence centrale).</li>
+</ul>
+<div class="formula must">\[ F = \frac{f}{f_n} = \frac{\omega}{\omega_n} = \Omega \qquad\qquad P = j\Omega = j\frac{\omega}{\omega_n} = jF \]</div>
+<p>\(F\) (ou \(\Omega\)) est la fréquence (ou pulsation) <b>réduite</b>, et \(P\) la variable de Laplace normalisée. Le prototype est défini par seulement 3 paramètres : la sélectivité \(k\), \(A_{min}\) et \(A_{max}\).</p>
+<h4>Les gabarits et leurs paramètres</h4>
+<table>
+<tr><th></th><th>Passe-bas</th><th>Passe-haut</th><th>Passe-bande</th><th>Coupe-bande</th></tr>
+<tr><td>Fréquence réduite</td><td>\(F = \frac{f}{f_p}\)</td><td>\(F = \frac{f}{f_p}\)</td><td>\(F = \frac{f}{f_0}\)</td><td>\(F = \frac{f}{f_0}\)</td></tr>
+<tr><td>Variable de Laplace réduite</td><td>\(s = \frac{p}{\omega_p}\)</td><td>\(s = \frac{p}{\omega_p}\)</td><td>\(s = \frac{p}{\omega_0}\)</td><td>\(s = \frac{p}{\omega_0}\)</td></tr>
+<tr><td>Sélectivité \(k\) (\(&lt; 1\))</td><td>\(\frac{f_p}{f_a}\)</td><td>\(\frac{f_a}{f_p}\)</td><td>\(\frac{f_p^+ - f_p^-}{f_a^+ - f_a^-}\)</td><td>\(\frac{f_a^+ - f_a^-}{f_p^+ - f_p^-}\)</td></tr>
+<tr><td>Bande passante relative</td><td>—</td><td>—</td><td>\(B = \frac{f_p^+ - f_p^-}{f_0}\)</td><td>\(B = \frac{f_p^+ - f_p^-}{f_0}\)</td></tr>
+</table>
+<p>Pour le passe-bande et le coupe-bande, les fréquences sont symétriques autour de \(f_0\) <b>en échelle logarithmique</b> :</p>
+<div class="formula must">\[ f_a^+\,f_a^- = f_p^+\,f_p^- = f_0^2 \qquad\text{donc}\qquad f_0 = \sqrt{f_p^+\,f_p^-} \]</div>
+<p>(\(f_0\) est la <b>moyenne géométrique</b> des deux fréquences, pas leur moyenne ordinaire.) La largeur de bande est \(\Delta f_p = f_p^+ - f_p^-\), et la largeur relative \(B = \frac{\Delta f_p}{f_0}\).</p>
+<div class="box key"><b class="lbl">La sélectivité</b>
+<p>Pour un passe-bas, \(k = \frac{f_p}{f_a}\). On a \(k &lt; 1\) pour un filtre réel, et \(k = 1\) pour le filtre idéal (transition verticale). \(k\) indique la largeur de la bande de transition : <b>plus \(k\) est grand (proche de 1), plus le filtre est sélectif</b>, et plus il est difficile à réaliser.</p></div>
+<div class="box ex"><b class="lbl">Exemple</b>
+<p>Un passe-bas avec \(f_p = 1\) kHz et \(f_a = 3\) kHz : \(k = \frac13\). Après normalisation, la bande passante va jusqu'à \(F = 1\), et la bande coupée commence à \(F_a = \frac{f_a}{f_p} = 3 = \frac1k\).</p></div>
+
+<h4>Les transpositions vers le prototype</h4>
+<table>
+<tr><th>Transformation</th><th>Changement de variable</th><th>À partir de \(H_{PB}(s) = \frac{1}{1 + s}\)</th></tr>
+<tr><td>Passe-bas → passe-haut</td><td>\(s \to \dfrac1s\)</td><td>\(H_{PH}(s) = \dfrac{s}{1 + s}\)</td></tr>
+<tr><td>Passe-bas → passe-bande</td><td>\(s \to \dfrac1B\left(s + \dfrac1s\right)\)</td><td>\(H_{PBde}(s) = \dfrac{Bs}{1 + Bs + s^2}\)</td></tr>
+<tr><td>Passe-bas → coupe-bande</td><td>\(s \to B\left(s + \dfrac1s\right)^{-1} = \dfrac{Bs}{s^2 + 1}\)</td><td>\(H_{CB}(s) = \dfrac{1 + s^2}{1 + Bs + s^2}\)</td></tr>
+</table>
+<p>Pour le passe-bande et le coupe-bande, les fréquences de coupure réduites sont :</p>
+<div class="formula">\[ F^- = -\frac B2 + \sqrt{\frac{B^2}{4} + 1} \qquad\qquad F^+ = \frac B2 + \sqrt{\frac{B^2}{4} + 1} \]</div>
+<p>(Vérification : \(F^+ - F^- = B\), et \(F^+F^- = \left(\frac{B^2}{4} + 1\right) - \frac{B^2}{4} = 1\).)</p>
+
+<h4>Les trois calculs détaillés</h4>
+<p><b>Passe-haut.</b> On remplace \(P\) par \(\frac1P\) dans \(H_{PB}(P) = \frac{1}{1 + P}\), puis on multiplie en haut et en bas par \(P\) :</p>
+<div class="formula">\[ H_{PH}(P) = H_{PB}\!\left(\frac1P\right) = \frac{1}{1 + \frac1P} = \frac{P}{P + 1} \]</div>
+<p>Pourquoi ça marche : avec \(P = jF\), \(\frac1P = \frac{1}{jF} = -\frac{j}{F}\). Le module de la nouvelle fréquence vaut \(\frac1F\) : les basses fréquences deviennent hautes et inversement. Le gabarit passe-haut (bande coupée jusqu'à \(k\), bande passante à partir de 1) devient un passe-bas avec bande passante jusqu'à 1 et bande coupée à partir de \(F_a = \frac1k\).</p>
+<p><b>Passe-bande.</b> On remplace \(P\) par \(\frac{P^2 + 1}{BP}\) (c'est \(\frac1B\left(P + \frac1P\right)\) mis au même dénominateur), puis on multiplie en haut et en bas par \(BP\) :</p>
+<div class="formula">\[ H_{PBde}(P) = H_{PB}\!\left(\frac{P^2 + 1}{BP}\right) = \frac{1}{1 + \frac{P^2 + 1}{BP}} = \frac{BP}{BP + P^2 + 1} = \frac{BP}{1 + BP + P^2} \]</div>
+<p>Pourquoi ça marche : avec \(P = jF\), \(\frac1B\left(jF + \frac{1}{jF}\right) = \frac jB\left(F - \frac1F\right)\). En \(F = 1\) (le centre), la fréquence du prototype vaut 0 : le passe-bande laisse passer son centre comme un passe-bas laisse passer le continu. En \(F = F_p^+\), elle vaut \(\frac{F_p^+ - 1/F_p^+}{B} = \frac{F_p^+ - F_p^-}{B} = 1\) : c'est la coupure du prototype. Après transformation : \(B = F_p^+ - F_p^-\), \(F_a = \frac{F_a^+ - F_a^-}{B}\), \(F_a^+F_a^- = 1\) et \(F_p^+F_p^- = 1\).</p>
+<p><b>Coupe-bande.</b> On remplace \(P\) par \(\frac{BP}{P^2 + 1}\), puis on multiplie en haut et en bas par \(P^2 + 1\) :</p>
+<div class="formula">\[ H_{CB}(P) = H_{PB}\!\left(\frac{BP}{P^2 + 1}\right) = \frac{1}{1 + \frac{BP}{P^2 + 1}} = \frac{P^2 + 1}{P^2 + 1 + BP} = \frac{1 + P^2}{1 + BP + P^2} \]</div>
+<p>Ici, après transformation : \(B = F_p^+ - F_p^-\), \(F_a = \frac{B}{F_a^+ - F_a^-}\), \(F_a^+F_a^- = 1\) et \(F_p^+F_p^- = 1\).</p>
+<div class="figs" data-fig="transpo"></div>
+
+<h3>3.12 Les fonctions d'approximation</h3>
+<p>Le filtre passe-bas <b>idéal</b> (réponse « rectangulaire ») laisse passer toutes les fréquences de 0 à la fréquence de coupure avec une atténuation nulle, les coupe toutes au-delà avec une atténuation infinie, et passe de l'un à l'autre verticalement. Avec \(A_{dB} = 20\log_{10}\frac{1}{|H|}\) : 0 dB dans la bande passante, l'infini dans la bande coupée.</p>
+<div class="figs" data-fig="ideal"></div>
+<p>Le filtre idéal est <b>irréalisable</b>. On définit donc un gabarit, puis on choisit une fonction de transfert qui le respecte. Le choix est un <b>compromis</b> entre :</p>
+<ul>
+<li><b>l'ordre</b> : il fixe le nombre de composants, donc le coût, la taille et la complexité. En échange, un ordre élevé donne une coupure plus raide ;</li>
+<li><b>la raideur de coupure</b> : c'est la sélectivité vue plus haut ;</li>
+<li><b>l'ondulation dans la bande passante</b> (passband ripple) : un filtre réel ondule dans sa bande passante. Certains systèmes acceptent une ondulation, limitée à \(A_{max}\) ;</li>
+<li><b>la distorsion de phase dans la bande passante</b> : si le signal ne doit pas être déformé, le déphasage doit être linéaire en fréquence, c'est-à-dire que le temps de propagation de groupe doit être constant.</li>
+</ul>
+<p>La plupart des familles de réponses s'écrivent sous la forme :</p>
+<div class="formula must">\[ A(\Omega) = A_0\sqrt{1 + |K(j\Omega)|^2} \]</div>
+<p>\(A(\Omega)\) est l'affaiblissement (l'atténuation) en fonction de la fréquence : c'est la <b>fonction d'approximation</b>. \(A_0\) est une constante, et \(K(j\Omega) = \frac{F(j\Omega)}{P(j\Omega)}\) est la <b>fonction caractéristique</b> du filtre. Il y a deux catégories de filtres :</p>
+<ul>
+<li><b>polynomiaux</b> : \(K(j\Omega)\) est un simple polynôme. Leur fonction de transfert est \(H_{pb}(\Omega) = \frac{1}{A(\Omega)} = \frac{1}{D(\Omega)}\) ;</li>
+<li><b>non polynomiaux</b>, ou à <b>zéros de transmission</b> (les filtres <b>elliptiques</b>) : \(K(j\Omega)\) est une fraction de polynômes, et \(H_{pb}(\Omega) = \frac{N(\Omega)}{D(\Omega)}\).</li>
+</ul>
+<p>Les filtres elliptiques peuvent éliminer complètement une ou plusieurs fréquences particulières, appelées <b>zéros de transmission</b> et notées \(F_\infty\). En les plaçant bien, on supprime des fréquences gênantes (fréquence porteuse, fréquence d'horloge…) et on améliore nettement les performances.</p>
+<div class="figs" data-fig="ellip"></div>
+
+<h3>3.13 Le filtre de Butterworth <span class="tag">essentiel</span></h3>
+<p>Sa réponse en amplitude est <b>monotone</b> (elle ne fait que descendre) et pratiquement <b>plate</b> dans la bande passante. On l'appelle aussi « maximally flat ».</p>
+<div class="formula must">\[ |H(j\Omega)| = \frac{1}{\sqrt{1 + \varepsilon^2\,\Omega^{2n}}} \qquad\text{avec}\qquad \Omega = \frac{\omega}{\omega_n} \]</div>
+<p>Ce qui correspond à une atténuation :</p>
+<div class="formula">\[ A(\Omega) = |H(j\Omega)|^{-1} = \sqrt{1 + \varepsilon^2\,\Omega^{2n}} \qquad\Longrightarrow\qquad |K(j\Omega)|^2 = \varepsilon^2\,\Omega^{2n} \]</div>
+<ul>
+<li>Avec \(\varepsilon = 1\), en \(\Omega = 1\) : \(|H| = \frac{1}{\sqrt2}\), soit <b>−3 dB quel que soit l'ordre</b>.</li>
+<li>Au-delà, la pente est de \(-n\times20\) dB par décade.</li>
+<li>La réponse est plate dans la bande passante : c'est le point important.</li>
+</ul>
+<div class="figs" data-fig="butter"></div>
+
+<h4>Dimensionnement : trouver \(\varepsilon\) et l'ordre \(n\)</h4>
+<p>On part des valeurs \(A_{max}\), \(A_{min}\) et \(\Omega_a = \frac{\omega_a}{\omega_p}\) du prototype passe-bas (\(F = \Omega = 1\) pour \(A = A_{max}\), et \(\Omega = \Omega_a = \frac1k\) pour \(A = A_{min}\)).</p>
+<p><b>Étape 1 : \(\varepsilon\).</b> L'atténuation maximale de la bande passante est atteinte en \(\Omega = 1\). On passe en dB (\(20\log\sqrt{x} = 10\log x\)) :</p>
+<div class="formula">\[ A_{max} = 20\log\sqrt{1 + \varepsilon^2} = 10\log(1 + \varepsilon^2) \;\Longrightarrow\; 1 + \varepsilon^2 = 10^{A_{max}/10} \;\Longrightarrow\; \varepsilon = \sqrt{10^{A_{max}/10} - 1} \]</div>
+<p>Quand \(A_{max} = 3\) dB : \(10^{0{,}3} = 1{,}995\), donc \(\varepsilon \approx 1\).</p>
+<p><b>Étape 2 : l'ordre.</b> L'atténuation minimale de la bande coupée est atteinte en \(\Omega = \Omega_a\). Il faut :</p>
+<div class="formula">\[ 10\log(1 + \varepsilon^2\Omega_a^{2n}) \geq A_{min} \;\Longrightarrow\; 1 + \varepsilon^2\Omega_a^{2n} \geq 10^{A_{min}/10} \;\Longrightarrow\; \varepsilon^2\,\Omega_a^{2n} \geq 10^{A_{min}/10} - 1 \]</div>
+<p>On remplace \(\varepsilon^2\) par \(10^{A_{max}/10} - 1\), on isole \(\Omega_a^{2n}\), puis on prend le log (\(\log(\Omega_a^{2n}) = 2n\log\Omega_a\)) :</p>
+<div class="formula">\[ \Omega_a^{2n} \geq \frac{10^{0{,}1A_{min}} - 1}{10^{0{,}1A_{max}} - 1} \;\Longrightarrow\; 2n\log(\Omega_a) \geq \log\!\left(\frac{10^{0{,}1A_{min}} - 1}{10^{0{,}1A_{max}} - 1}\right) \]</div>
+<div class="formula must">\[ \varepsilon = \sqrt{10^{A_{max}/10} - 1} \qquad\qquad n = \text{entier} \geq \frac{\log\!\left(\dfrac{10^{0{,}1A_{min}} - 1}{10^{0{,}1A_{max}} - 1}\right)}{2\log(\Omega_a)} \]</div>
+<p>On prend toujours l'entier <b>juste au-dessus</b>. (Le cours donne aussi la forme équivalente \(n \geq \frac{\log\left(10^{A_{min}/10} - 1\right) - 2\log\varepsilon}{2\log\Omega_a}\).)</p>
+<h4>La fonction de transfert : les tables</h4>
+<p>Les tables sont données pour \(\varepsilon = 1\), c'est-à-dire \(A_{max} = 3\) dB. Elles donnent le dénominateur (le polynôme de Butterworth) du prototype passe-bas \(H_n(p) = \frac{1}{a_0 + a_1p + \cdots + a_np^n}\) :</p>
+<table>
+<tr><th>Ordre</th><th>\(a_0\)</th><th>\(a_1\)</th><th>\(a_2\)</th><th>\(a_3\)</th><th>\(a_4\)</th><th>\(a_5\)</th><th>\(a_6\)</th></tr>
+<tr><td>1</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>2</td><td>1</td><td>\(\sqrt2\)</td><td>1</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>3</td><td>1</td><td>2</td><td>2</td><td>1</td><td></td><td></td><td></td></tr>
+<tr><td>4</td><td>1</td><td>2,6131</td><td>3,4142</td><td>2,6131</td><td>1</td><td></td><td></td></tr>
+<tr><td>5</td><td>1</td><td>3,2361</td><td>5,2361</td><td>5,2361</td><td>3,2361</td><td>1</td><td></td></tr>
+<tr><td>6</td><td>1</td><td>3,8637</td><td>7,4641</td><td>9,1416</td><td>7,4641</td><td>3,8637</td><td>1</td></tr>
+</table>
+<p>Ou bien, sous forme factorisée (directement les cellules de la cascade) :</p>
+<table>
+<tr><th>Ordre</th><th>\(1/H_n(p)\)</th></tr>
+<tr><td>1</td><td>\(1 + p\)</td></tr>
+<tr><td>2</td><td>\(1 + 1{,}414p + p^2\)</td></tr>
+<tr><td>3</td><td>\((1 + p)(1 + p + p^2)\)</td></tr>
+<tr><td>4</td><td>\((1 + 0{,}765p + p^2)(1 + 1{,}848p + p^2)\)</td></tr>
+<tr><td>5</td><td>\((1 + p)(1 + 0{,}618p + p^2)(1 + 1{,}618p + p^2)\)</td></tr>
+<tr><td>6</td><td>\((1 + 0{,}5176p + p^2)(1 + 1{,}4142p + p^2)(1 + 1{,}9319p + p^2)\)</td></tr>
+</table>
+<div class="box tip"><b class="lbl">Astuce pour vérifier la table</b>
+<p>Les coefficients sont symétriques (\(a_1 = a_{n-1}\), \(a_2 = a_{n-2}\)…). Et en développant la forme factorisée on retrouve la première table : pour l'ordre 3, \((1 + p)(1 + p + p^2) = 1 + 2p + 2p^2 + p^3\).</p></div>
+<div class="box ex"><b class="lbl">Exemple complet de dimensionnement</b>
+<p>Cahier des charges : passe-bas, \(f_p = 1\) kHz avec \(A_{max} = 3\) dB, \(f_a = 3\) kHz avec \(A_{min} = 30\) dB.</p>
+<ol>
+<li>Normalisation : \(\Omega_a = \frac{f_a}{f_p} = 3\) (sélectivité \(k = \frac13\)).</li>
+<li>\(\varepsilon = \sqrt{10^{0{,}3} - 1} = \sqrt{0{,}995} \approx 1\) : on peut utiliser les tables.</li>
+<li>Ordre : \(\frac{10^{3} - 1}{10^{0{,}3} - 1} = \frac{999}{0{,}995} = 1004\), \(\log(1004) = 3{,}002\) et \(2\log 3 = 0{,}954\). Donc \(n \geq \frac{3{,}002}{0{,}954} = 3{,}15\), et on prend <b>\(n = 4\)</b>.</li>
+<li>Table (ordre 4) : \(H(P) = \dfrac{1}{(1 + 0{,}765P + P^2)(1 + 1{,}848P + P^2)}\).</li>
+<li>Dénormalisation : on remplace \(P\) par \(\frac{p}{\omega_p}\), avec \(\omega_p = 2\pi\times1000\) rad/s.</li>
+<li>Réalisation : deux cellules d'ordre 2 en cascade (partie 3.10).</li>
+</ol></div>
+
+<h3>3.14 Le filtre de Tchebychev (Chebyshev) <span class="tag">essentiel</span></h3>
+<p>Dans certaines applications, il n'est pas nécessaire d'avoir une réponse très plate dans la bande passante. On peut alors préférer Tchebychev : sa coupure est <b>plus raide</b> que celle de Butterworth. Le prix à payer : une <b>ondulation</b> dans la bande passante et un temps de propagation de groupe irrégulier. L'ondulation a une amplitude constante (la réponse oscille entre 0 et \(A_{max}\)) : on parle de filtre « equiripple ».</p>
+<p>La fonction caractéristique utilise les polynômes de Tchebychev \(C_n\) :</p>
+<div class="formula must">\[ |K(j\Omega)|^2 = \varepsilon^2\,C_n^2(\Omega) \qquad A(\Omega) = \sqrt{1 + \varepsilon^2\,C_n^2(\Omega)} \]</div>
+<div class="formula must">\[ C_n(\Omega) = \cos\big[n\arccos\Omega\big] \quad\text{pour } \Omega \leq 1 \]\[ C_n(\Omega) = \mathrm{ch}\big[n\,\mathrm{argch}\,\Omega\big] \quad\text{pour } \Omega \geq 1 \]</div>
+<p>\(\varepsilon\) caractérise l'ondulation dans la bande passante. Ce qu'il faut savoir :</p>
+<ul>
+<li>pour \(\Omega &lt; 1\), \(C_n^2(\Omega)\) oscille entre 0 et 1, donc \(A(\Omega)\) varie entre 1 et \(\sqrt{1 + \varepsilon^2}\) : c'est l'ondulation ;</li>
+<li>pour \(\Omega &gt; 1\), \(C_n^2(\Omega)\) croît jusqu'à l'infini : c'est la coupure ;</li>
+<li>pour \(\Omega = 1\), \(C_n^2(1) = 1\) pour tout \(n\).</li>
+</ul>
+<p>Le polynôme \(C_n\) se calcule par récurrence :</p>
+<div class="formula">\[ C_0(\Omega) = 1 \qquad C_1(\Omega) = \Omega \qquad C_{n+1}(\Omega) = 2\Omega\,C_n(\Omega) - C_{n-1}(\Omega) \]</div>
+<div class="box ex"><b class="lbl">Les premiers polynômes, calculés</b>
+<p>\(C_2 = 2\Omega\cdot\Omega - 1 = 2\Omega^2 - 1\), puis \(C_3 = 2\Omega(2\Omega^2 - 1) - \Omega = 4\Omega^3 - 3\Omega\). Vérification en \(\Omega = 1\) : \(C_2(1) = 1\) et \(C_3(1) = 1\).</p></div>
+<div class="figs" data-fig="cheb"></div>
+<h4>Dimensionnement : trouver \(\varepsilon\) et l'ordre \(n\)</h4>
+<p>On choisit en général pour \(A_{max}\) la valeur maximale de l'ondulation. Elle est atteinte en \(\Omega = 1\), où \(C_n^2 = 1\) :</p>
+<div class="formula">\[ A_{max} = 10\log_{10}(1 + \varepsilon^2) \;\Longrightarrow\; \varepsilon^2 = 10^{A_{max}/10} - 1 \]</div>
+<p>En \(\Omega = \Omega_a\) (bande coupée, donc \(\Omega_a &gt; 1\) et on utilise \(\mathrm{ch}\)) :</p>
+<div class="formula">\[ 20\log\left[1 + \varepsilon^2C_n^2(\Omega_a)\right]^{1/2} \geq A_{min} \;\Longrightarrow\; \varepsilon^2\,\mathrm{ch}^2\big[n\,\mathrm{argch}\,\Omega_a\big] \geq 10^{A_{min}/10} - 1 \]</div>
+<p>On remplace \(\varepsilon^2\) et on divise :</p>
+<div class="formula">\[ \mathrm{ch}^2\big[n\,\mathrm{argch}\,\Omega_a\big] \geq \frac{10^{A_{min}/10} - 1}{10^{A_{max}/10} - 1} \]</div>
+<p>On prend la racine carrée, puis \(\mathrm{argch}\) des deux côtés (\(\mathrm{argch}\) défait \(\mathrm{ch}\)), puis on divise par \(\mathrm{argch}\,\Omega_a\) :</p>
+<div class="formula must">\[ \varepsilon = \sqrt{10^{A_{max}/10} - 1} \qquad\qquad n \geq \frac{\mathrm{argch}\sqrt{\dfrac{10^{A_{min}/10} - 1}{10^{A_{max}/10} - 1}}}{\mathrm{argch}(\Omega_a)} \]</div>
+<p>On arrondit à l'entier au-dessus : si on trouve 4,6, on prend \(n = 5\).</p>
+<h4>La fonction de transfert : les tables (ondulation de 1 dB)</h4>
+<p>Les tables sont données pour différentes valeurs de l'ondulation. Pour 1 dB : \(A_{max} = 10\log_{10}(1 + \varepsilon^2) = 1\), soit \(\varepsilon = \sqrt{10^{0{,}1} - 1} = 0{,}50884\). Elles donnent le dénominateur du prototype passe-bas :</p>
+<table>
+<tr><th>Ordre</th><th>\(a_0\)</th><th>\(a_1\)</th><th>\(a_2\)</th><th>\(a_3\)</th><th>\(a_4\)</th><th>\(a_5\)</th><th>\(a_6\)</th></tr>
+<tr><td>1</td><td>1</td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>2</td><td>1</td><td>0,9957</td><td>0,907</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>3</td><td>1</td><td>2,5206</td><td>2,0116</td><td>2,0353</td><td></td><td></td><td></td></tr>
+<tr><td>4</td><td>1</td><td>2,6942</td><td>5,2749</td><td>3,4568</td><td>3,628</td><td></td><td></td></tr>
+<tr><td>5</td><td>1</td><td>4,7264</td><td>7,933</td><td>13,75</td><td>7,6271</td><td>8,1415</td><td></td></tr>
+<tr><td>6</td><td>1</td><td>4,456</td><td>13,632</td><td>17,445</td><td>28,02</td><td>13,47</td><td>14,512</td></tr>
+</table>
+<p>Ou bien :</p>
+<table>
+<tr><th>Ordre</th><th>\(1/H_n(p)\)</th></tr>
+<tr><td>1</td><td>\(1{,}969 + p\)</td></tr>
+<tr><td>2</td><td>\(1{,}103 + 1{,}098p + p^2\)</td></tr>
+<tr><td>3</td><td>\((0{,}494 + p)(0{,}994 + 0{,}494p + p^2)\)</td></tr>
+<tr><td>4</td><td>\((0{,}987 + 0{,}279p + p^2)(0{,}279 + 0{,}674p + p^2)\)</td></tr>
+<tr><td>5</td><td>\((0{,}289 + p)(0{,}998 + 0{,}179p + p^2)(0{,}429 + 0{,}468p + p^2)\)</td></tr>
+<tr><td>6</td><td>\((0{,}991 + 0{,}124p + p^2)(0{,}558 + 0{,}340p + p^2)(0{,}125 + 0{,}464p + p^2)\)</td></tr>
+</table>
+<p>Le cours donne aussi les polynômes complets (variable \(s\)) :</p>
+<div class="formula">\[ \begin{aligned} P_2 &amp;= 0{,}907s^2 + 0{,}9957s + 1 \\ P_3 &amp;= 2{,}0353s^3 + 2{,}0116s^2 + 2{,}5206s + 1 \\ P_4 &amp;= 3{,}628s^4 + 3{,}4568s^3 + 5{,}2749s^2 + 2{,}6942s + 1 \\ P_5 &amp;= 8{,}1415s^5 + 7{,}6271s^4 + 13{,}75s^3 + 7{,}933s^2 + 4{,}7264s + 1 \\ P_6 &amp;= 14{,}512s^6 + 13{,}47s^5 + 28{,}02s^4 + 17{,}445s^3 + 13{,}632s^2 + 4{,}456s + 1 \\ P_7 &amp;= 32{,}566s^7 + 30{,}06s^6 + 70{,}866s^5 + 46{,}53s^4 + 44{,}21s^3 + 17{,}866s^2 + 6{,}9584s + 1 \end{aligned} \]</div>
+<div class="box tip"><b class="lbl">Lien entre les deux tables</b>
+<p>La première table est la seconde divisée par son terme constant, pour avoir \(a_0 = 1\). Ordre 2 : \(\frac{1}{1{,}103} = 0{,}907\) et \(\frac{1{,}098}{1{,}103} = 0{,}995\). On retrouve bien \(a_2 = 0{,}907\) et \(a_1 = 0{,}9957\).</p></div>
+<div class="box warn"><b class="lbl">Petite incohérence de la table</b>
+<p>Pour l'ordre 1, la seconde table donne \(1{,}969 + p\). Divisée par 1,969, elle donne \(1 + 0{,}508p\) : on attend donc \(a_1 \approx 0{,}508\) (c'est \(\varepsilon\)), et non 1 comme dans la première table.</p></div>
+<div class="box ex"><b class="lbl">Exemple : le même type de gabarit en Tchebychev</b>
+<p>Passe-bas avec \(A_{max} = 1\) dB, \(A_{min} = 30\) dB, \(\Omega_a = 3\).</p>
+<ol>
+<li>\(\varepsilon^2 = 10^{0{,}1} - 1 = 0{,}2589\).</li>
+<li>\(\frac{10^{3} - 1}{0{,}2589} = 3859\), et \(\sqrt{3859} = 62{,}1\).</li>
+<li>\(\mathrm{argch}(62{,}1) = \ln\!\left(62{,}1 + \sqrt{62{,}1^2 - 1}\right) = \ln(124{,}2) = 4{,}82\), et \(\mathrm{argch}(3) = 1{,}763\).</li>
+<li>\(n \geq \frac{4{,}82}{1{,}763} = 2{,}73\), donc <b>\(n = 3\)</b>. Table : \(\frac{1}{H(P)} = (0{,}494 + P)(0{,}994 + 0{,}494P + P^2)\).</li>
+</ol>
+<p>Avec Butterworth et le même gabarit, la formule donne \(n \geq \frac{\log(999/0{,}2589)}{2\log3} = \frac{3{,}586}{0{,}954} = 3{,}76\), donc \(n = 4\). <b>Tchebychev économise un ordre</b>, au prix d'une ondulation de 1 dB.</p></div>
+<div class="box key"><p>Plus l'ondulation est forte, plus la coupure peut être raide ensuite.</p></div>
+<p><b>À toi de manipuler.</b> Compare Butterworth et Tchebychev du même ordre, et change l'ondulation.</p>
+<div class="figs" data-fig="bclive"></div>
+
+<h3>3.15 La démarche de synthèse d'un filtre</h3>
+<p>Le but du filtrage est d'isoler une information utile contenue dans une bande déterminée, par rapport aux bruits et aux autres informations hors de cette bande. C'est donc un filtrage fréquentiel : il faut d'abord décomposer le signal dans le domaine de Fourier et travailler sur son spectre. Ensuite, la synthèse suit ces étapes :</p>
+<ol class="steps">
+<li>Étudier le spectre du signal à filtrer.</li>
+<li>Définir le cahier des charges du filtre.</li>
+<li>Définir le gabarit.</li>
+<li>Ramener ce gabarit à un gabarit normalisé de type passe-bas (transposition).</li>
+<li>Choisir une fonction d'approximation du gabarit (Butterworth, Tchebychev…) et calculer l'ordre.</li>
+<li>Choisir une structure de réalisation à partir d'éléments R, L, C et d'amplificateurs opérationnels (AOP).</li>
+<li>Faire la synthèse de cette structure à partir de cellules élémentaires (ordre 1 et 2).</li>
+</ol>
+
+<!-- ============ PARTIE 4 ============ -->
+<h2 id="p4">Partie 4 : La stabilité des filtres</h2>
+<div class="box idea">
+<p>Un filtre stable est comme une cloche qu'on frappe : elle sonne, puis le son s'éteint. Un filtre instable est comme un micro trop près de son haut-parleur : le moindre bruit est amplifié encore et encore, jusqu'au larsen.</p>
+<p>Tout se lit sur les <b>pôles</b> de \(H(p)\) (les valeurs de \(p\) qui annulent le dénominateur). Chaque pôle ajoute à \(h(t)\) un terme en \(e^{\text{pôle}\times t}\). Si la partie réelle du pôle est négative, ce terme s'éteint ; si elle est positive, il explose.</p>
+<p class="goal"><b>À la fin de cette partie, tu sais :</b> trouver les pôles d'une fonction de transfert, dire si un filtre est stable, et prévoir la forme de sa réponse impulsionnelle.</p></div>
+
+<h3>4.1 Définition</h3>
+<p>Une condition nécessaire pour que le filtre soit réalisable est sa stabilité. Un filtre est stable si, pour toute entrée \(e(t)\) bornée, la sortie \(s(t)\) est aussi bornée (BIBO, chapitre 3).</p>
+<p>La sortie à l'instant \(t\) est la somme (l'intégrale) pondérée des valeurs passées de l'entrée, et la fonction de pondération est la réponse impulsionnelle \(h(t)\). La condition nécessaire et suffisante de stabilité est que \(h(t)\) soit de <b>module sommable</b> :</p>
+<div class="formula must">\[ \int_{-\infty}^{+\infty}|h(t)|\,dt &lt; \infty \]</div>
+<p>Pour les filtres usuels (dont \(H(p)\) est une fraction rationnelle), cela revient à \(\lim_{t\to\infty}h(t) = 0\).</p>
+
+<h3>4.2 Pôles et zéros</h3>
+<p>On factorise le numérateur et le dénominateur de \(H(p)\) :</p>
+<div class="formula must">\[ H(p) = \frac{b_mp^m + \cdots + b_0}{a_np^n + \cdots + a_0} = A\,\frac{(p - z_1)(p - z_2)\cdots(p - z_m)}{(p - p_1)(p - p_2)\cdots(p - p_n)} \]</div>
+<ul>
+<li>\(z_1, \ldots, z_m\) sont les <b>zéros</b> du système (ils annulent \(H\)).</li>
+<li>\(p_1, \ldots, p_n\) sont les <b>pôles</b> du système (ils rendent \(H\) infini).</li>
+</ul>
+<p>On décompose en éléments simples de première espèce (pôles distincts), puis on revient au temps avec la table (P4 : \(\frac{1}{p - p_i} \to e^{p_it}\)) :</p>
+<div class="formula must">\[ H(p) = \sum_{i=1}^{n}\frac{A_i}{p - p_i} \qquad\Longrightarrow\qquad h(t) = \sum_{i=1}^{n} A_i\,e^{p_it}\,u(t) \]</div>
+<p>Chaque pôle apporte son propre terme. Il suffit donc d'étudier un pôle à la fois.</p>
+
+<h3>4.3 Premier cas : un pôle réel</h3>
+<p>La contribution du pôle \(p_i\) à \(h(t)\) est \(A_i\,e^{p_it}\,u(t)\) :</p>
+<ul>
+<li>si \(p_i &lt; 0\) : c'est une <b>exponentielle décroissante</b>, qui tend vers 0. Stable ;</li>
+<li>si \(p_i &gt; 0\) : l'exponentielle croît, et \(\lim_{t\to\infty}h(t) = \infty\). <b>Un seul pôle réel positif suffit</b> pour que le système soit instable.</li>
+</ul>
+
+<h3>4.4 Deuxième cas : deux pôles complexes conjugués</h3>
+<p>Si \(p_i\) est un pôle complexe de coefficient \(A_i\), alors son conjugué \(\bar p_i\) est aussi un pôle, de coefficient \(\bar A_i\). On écrit :</p>
+<div class="formula">\[ p_i = \sigma + j\omega, \quad \bar p_i = \sigma - j\omega \qquad\qquad A_i = \alpha + j\beta = \rho\,e^{j\varphi}, \quad \bar A_i = \alpha - j\beta = \rho\,e^{-j\varphi} \]</div>
+<p>La contribution des deux pôles est \(\frac{A_i}{p - p_i} + \frac{\bar A_i}{p - \bar p_i}\). On revient au temps avec la table, puis on regroupe les exponentielles :</p>
+<div class="formula">\[ A_i\,e^{p_it} + \bar A_i\,e^{\bar p_it} = \rho\,e^{j\varphi}\,e^{(\sigma + j\omega)t} + \rho\,e^{-j\varphi}\,e^{(\sigma - j\omega)t} = \rho\,e^{\sigma t}\left[e^{j(\omega t + \varphi)} + e^{-j(\omega t + \varphi)}\right] \]</div>
+<p>Avec Euler, \(e^{j\theta} + e^{-j\theta} = 2\cos\theta\) :</p>
+<div class="formula must">\[ A_i\,e^{p_it} + \bar A_i\,e^{\bar p_it} = 2\rho\,e^{\sigma t}\cos(\omega t + \varphi)\,u(t), \qquad \sigma = \mathrm{Re}(p_i) \]</div>
+<ul>
+<li>si \(\sigma &lt; 0\) : c'est une <b>sinusoïde amortie</b>. Stable ;</li>
+<li>si \(\sigma &gt; 0\) : l'oscillation grandit sans fin. <b>Une seule paire de pôles à partie réelle positive</b> rend le système instable ;</li>
+<li>si \(\sigma = 0\) (pôles sur l'axe imaginaire) : l'oscillation ne s'amortit pas, c'est un <b>oscillateur</b>.</li>
+</ul>
+
+<h3>4.5 Conclusion</h3>
+<div class="box key"><p>Un système n'est stable que si <b>la partie réelle de tous les pôles</b> de sa fonction de transfert est <b>négative</b> (tous les pôles à gauche de l'axe imaginaire). Plus cette partie réelle est grande en valeur absolue, plus l'amortissement est rapide.</p></div>
+<div class="figs" data-fig="poles"></div>
+<div class="box ex"><b class="lbl">Exemple : le filtre RC et un filtre d'ordre 2</b>
+<ul>
+<li>\(H(p) = \frac{1}{1 + RCp}\) : le dénominateur s'annule pour \(p = -\frac{1}{RC}\). Pôle réel négatif : stable, \(h(t) = \frac{1}{RC}e^{-t/RC}u(t)\).</li>
+<li>\(H(P) = \frac{1}{1 + 1{,}414P + P^2}\) (Butterworth d'ordre 2) : on résout \(P^2 + 1{,}414P + 1 = 0\). Discriminant \(\Delta = 1{,}414^2 - 4 = 2 - 4 = -2\), donc deux pôles complexes \(P = \frac{-1{,}414 \pm j\sqrt2}{2} = -0{,}707 \pm j\,0{,}707\). Partie réelle négative : stable, et \(h(t)\) est une sinusoïde amortie.</li>
+</ul></div>
+<p><b>À toi de manipuler.</b> Déplace une paire de pôles et regarde la réponse impulsionnelle.</p>
+<div class="figs" data-fig="polelive"></div>
+
+<!-- ============ FIN ============ -->
+<h2 id="fiche">Fiche méthode : les calculs types</h2>
+<p>Les calculs qui reviennent le plus, sous forme de recettes. Le numéro entre parenthèses renvoie à la partie où tout est expliqué.</p>
+
+<h3>Calculer une transformée de Laplace</h3>
+<p class="methref">Parties 1.2, 1.5 et 1.6</p>
+<ol class="steps">
+<li>Chercher d'abord le signal dans la table (P1 à P14). C'est le plus rapide.</li>
+<li>Sinon, l'écrire comme une combinaison de signaux de la table et utiliser les propriétés : linéarité, retard (\(\times e^{-ap}\)), multiplication par \(e^{-at}\) (\(p \to p + a\)), multiplication par \(t\) (dériver par rapport à \(p\)).</li>
+<li>En dernier recours, calculer \(\int_0^{\infty} s(t)\,e^{-pt}\,dt\) (souvent en regroupant les exponentielles).</li>
+</ol>
+
+<h3>Revenir au temps (transformée inverse)</h3>
+<p class="methref">Parties 0.4 et 1.6</p>
+<ol class="steps">
+<li>Factoriser le dénominateur pour trouver les pôles.</li>
+<li>Décomposer en éléments simples \(\frac{A_i}{p - p_i}\) : multiplier par \((p - p_i)\), puis poser \(p = p_i\).</li>
+<li>Lire chaque morceau dans la table : \(\frac{A_i}{p - p_i} \to A_i\,e^{p_it}\,u(t)\). Pour une paire complexe, utiliser P8, P9 ou P29.</li>
+<li>Additionner les morceaux (linéarité).</li>
+</ol>
+
+<h3>Trouver la fonction de transfert d'un filtre</h3>
+<p class="methref">Partie 3.4</p>
+<ol class="steps">
+<li>Écrire l'équation différentielle entre la sortie \(y\) et l'entrée \(x\) (lois des mailles et des nœuds pour un circuit).</li>
+<li>Passer en Laplace avec des conditions initiales nulles : chaque \(\frac{d^k}{dt^k}\) devient \(p^k\).</li>
+<li>Mettre \(Y(p)\) en facteur d'un côté, \(X(p)\) de l'autre, et faire le rapport \(H(p) = \frac{Y(p)}{X(p)}\).</li>
+<li>Pour la réponse en fréquence, remplacer \(p\) par \(j\omega\), puis prendre le module : \(G_{dB} = 20\log|H(j\omega)|\).</li>
+</ol>
+
+<h3>Trouver la valeur de départ ou de fin d'une sortie</h3>
+<p class="methref">Partie 1.5</p>
+<ol class="steps">
+<li>Calculer \(S(p) = H(p)\cdot E(p)\) (pour un échelon, \(E(p) = \frac1p\)).</li>
+<li>Valeur finale : \(\lim_{p\to0} p\,S(p)\) (seulement si la sortie se stabilise). Valeur initiale : \(\lim_{p\to\infty} p\,S(p)\).</li>
+</ol>
+
+<h3>Ramener un gabarit au prototype passe-bas</h3>
+<p class="methref">Partie 3.11</p>
+<ol class="steps">
+<li>Identifier le type (PB, PH, passe-bande, coupe-bande) et lire \(f_p\), \(f_a\), \(A_{max}\), \(A_{min}\) sur le gabarit.</li>
+<li>Passe-bande ou coupe-bande : calculer \(f_0 = \sqrt{f_p^+f_p^-}\) et \(B = \frac{f_p^+ - f_p^-}{f_0}\).</li>
+<li>Calculer la sélectivité \(k\) avec le tableau, puis \(\Omega_a = \frac1k\).</li>
+<li>Le prototype est un passe-bas avec \(A_{max}\) jusqu'à \(\Omega = 1\) et \(A_{min}\) à partir de \(\Omega_a\).</li>
+<li>Après le calcul du prototype, appliquer la transposition inverse (\(P \to \frac1P\), \(P \to \frac1B\left(P + \frac1P\right)\) ou \(P \to \frac{BP}{P^2 + 1}\)) puis dénormaliser (\(P = \frac{p}{\omega_n}\)).</li>
+</ol>
+
+<h3>Dimensionner un filtre de Butterworth ou de Tchebychev</h3>
+<p class="methref">Parties 3.13 et 3.14</p>
+<ol class="steps">
+<li>Calculer \(\varepsilon = \sqrt{10^{A_{max}/10} - 1}\) (\(\varepsilon \approx 1\) si \(A_{max} = 3\) dB).</li>
+<li>Calculer le rapport \(R = \frac{10^{A_{min}/10} - 1}{10^{A_{max}/10} - 1}\).</li>
+<li>Butterworth : \(n \geq \frac{\log R}{2\log\Omega_a}\). Tchebychev : \(n \geq \frac{\mathrm{argch}\sqrt R}{\mathrm{argch}\,\Omega_a}\).</li>
+<li>Arrondir à l'entier <b>supérieur</b>.</li>
+<li>Lire le dénominateur dans la table (Butterworth pour \(\varepsilon = 1\), Tchebychev pour l'ondulation choisie).</li>
+<li>Dénormaliser (\(P = \frac{p}{\omega_p}\)) et réaliser en cascade de cellules d'ordre 2 et 1.</li>
+</ol>
+
+<h3>Étudier la stabilité</h3>
+<p class="methref">Partie 4</p>
+<ol class="steps">
+<li>Trouver les pôles : les racines du dénominateur de \(H(p)\). Pour un degré 2, utiliser le discriminant \(\Delta = b^2 - 4ac\).</li>
+<li>Regarder le signe de la partie réelle de <b>chaque</b> pôle.</li>
+<li>Tous négatifs : stable. Un seul positif : instable. Sur l'axe imaginaire : oscillateur.</li>
+<li>Pour la forme de \(h(t)\) : pôle réel → exponentielle ; paire complexe → sinusoïde amortie (si stable).</li>
+</ol>
+
+<h2 id="pieges">Les pièges classiques</h2>
+<p>Les erreurs les plus fréquentes, avec ce qu'il faut faire à la place.</p>
+<table>
+<tr><th>Le piège</th><th>Ce qu'il faut faire</th></tr>
+<tr><td>Appliquer Laplace à un signal non causal</td><td>Laplace suppose \(s(t) = 0\) pour \(t &lt; 0\) : l'intégrale commence à 0.</td></tr>
+<tr><td>Oublier les conditions initiales dans la dérivée</td><td>\(\mathcal L[x'] = pX(p) - x(0)\). On n'écrit \(pX(p)\) que si \(x(0) = 0\).</td></tr>
+<tr><td>Inverser les théorèmes des valeurs initiale et finale</td><td>Valeur <b>finale</b> : \(p \to 0\). Valeur <b>initiale</b> : \(p \to \infty\). Les deux avec \(p\,X(p)\), pas \(X(p)\).</td></tr>
+<tr><td>Confondre filtre et fenêtre</td><td>Filtre : convolution dans le temps, produit en fréquence. Fenêtre : produit dans le temps, convolution en fréquence.</td></tr>
+<tr><td>Croire qu'une fenêtre plus courte améliore le spectre</td><td>C'est l'inverse : plus \(\tau\) est petit, plus les raies s'élargissent (lobe de largeur \(\frac2\tau\)).</td></tr>
+<tr><td>Croire qu'un filtre peut créer une fréquence</td><td>Un filtre linéaire ne fait qu'atténuer (ou amplifier) et déphaser les fréquences présentes.</td></tr>
+<tr><td>Confondre gain et atténuation en dB</td><td>\(A_{dB} = -G_{dB}\). Un gain de −40 dB est une atténuation de +40 dB.</td></tr>
+<tr><td>Prendre l'ordre au numérateur</td><td>L'ordre est le degré \(n\) du <b>dénominateur</b> ; la pente est \(-20(n - m)\) dB/décade.</td></tr>
+<tr><td>Calculer \(f_0\) comme une moyenne ordinaire</td><td>\(f_0 = \sqrt{f_p^+f_p^-}\) : moyenne <b>géométrique</b>.</td></tr>
+<tr><td>Se tromper dans la sélectivité d'un passe-haut</td><td>Passe-bas : \(k = \frac{f_p}{f_a}\). Passe-haut : \(k = \frac{f_a}{f_p}\). Toujours \(k &lt; 1\).</td></tr>
+<tr><td>Arrondir l'ordre vers le bas</td><td>Toujours l'entier <b>supérieur</b> : 3,15 donne 4, et 4,6 donne 5.</td></tr>
+<tr><td>Utiliser la table de Butterworth avec \(\varepsilon \neq 1\)</td><td>La table est faite pour \(\varepsilon = 1\) (\(A_{max} = 3\) dB).</td></tr>
+<tr><td>Utiliser \(\cos(n\arccos\Omega)\) au-delà de \(\Omega = 1\)</td><td>Pour \(\Omega \geq 1\), il faut \(\mathrm{ch}(n\,\mathrm{argch}\,\Omega)\).</td></tr>
+<tr><td>Regarder les zéros pour la stabilité</td><td>Ce sont les <b>pôles</b> (racines du dénominateur) qui décident.</td></tr>
+<tr><td>Croire qu'un seul pôle instable « ne compte pas »</td><td>Un seul pôle à partie réelle positive suffit pour rendre le filtre instable.</td></tr>
+</table>
+
+<h2 id="parcoeur">Les formules à connaître par cœur</h2>
+<p>Toutes les formules surlignées dans le chapitre, regroupées par thème. Sous chaque formule : ce qu'elle veut dire et quand l'utiliser.</p>
+
+<h3>Transformée de Laplace</h3>
+<div class="memo">
+<div class="f">\[ \mathcal L[s(t)] = S(p) = \int_0^{\infty} s(t)\,e^{-pt}\,dt, \qquad p = \sigma + j\omega \]</div>
+<div class="d">La définition, pour un signal causal. \(\sigma\) amortit, \(\omega\) fait osciller.</div>
+<div class="f">\[ \mathcal F\{s(t)\} = \mathcal L\{s(t)\}\big|_{p = j2\pi f} \]</div>
+<div class="d">Pour un signal causal, Fourier est Laplace avec \(p = j\omega\).</div>
+<div class="f">\[ \frac{dx}{dt} \to pX(p) - x(0) \qquad \int_0^t x \to \frac{X(p)}{p} \qquad x(t - a) \to X(p)\,e^{-ap} \]</div>
+<div class="d">Dériver multiplie par \(p\), intégrer divise par \(p\), retarder multiplie par \(e^{-ap}\).</div>
+<div class="f">\[ x(t)\,e^{bt} \to X(p - b) \qquad x(at) \to \frac1aX\!\left(\frac pa\right) \qquad x * y \to X\cdot Y \]</div>
+<div class="d">Modulation par une exponentielle, homothétie, convolution.</div>
+<div class="f">\[ x(0) = \lim_{p\to\infty}pX(p) \qquad x(\infty) = \lim_{p\to0}pX(p) \]</div>
+<div class="d">Valeur initiale et valeur finale (régime permanent).</div>
+<div class="f">\[ \delta \to 1 \qquad u(t) \to \frac1p \qquad t\,u(t) \to \frac{1}{p^2} \qquad e^{-at} \to \frac{1}{p + a} \]</div>
+<div class="d">Les paires de base.</div>
+<div class="f">\[ \sin\omega t \to \frac{\omega}{p^2 + \omega^2} \qquad \cos\omega t \to \frac{p}{p^2 + \omega^2} \]</div>
+<div class="d">Sinus et cosinus.</div>
+</div>
+
+<h3>Fenêtrage</h3>
+<div class="memo">
+<div class="f">\[ s(t) = e(t)\cdot f(t) \;\to\; S(f) = E(f) * F(f) \]</div>
+<div class="d">Une fenêtre multiplie dans le temps et convolue en fréquence.</div>
+<div class="f">\[ \Pi_\tau(t) \to \tau\,\mathrm{sinc}(\tau f) \qquad S_\Pi(f) = S(f) * \tau\,\mathrm{sinc}(\tau f) \]</div>
+<div class="d">La troncature par une porte : chaque raie devient un sinc.</div>
+<div class="f">\[ S_\Pi(f) = \frac\tau2\Big[\mathrm{sinc}\big(\tau(f + F_0)\big) + \mathrm{sinc}\big(\tau(f - F_0)\big)\Big] \]</div>
+<div class="d">Le cosinus observé pendant \(\tau\) : deux sinc de hauteur \(\frac\tau2\), lobe de largeur \(\frac2\tau\).</div>
+</div>
+
+<h3>Fonction de transfert et gabarit</h3>
+<div class="memo">
+<div class="f">\[ H(p) = \frac{Y(p)}{X(p)} = \frac{b_mp^m + \cdots + b_0}{a_np^n + \cdots + a_0} = \mathcal L[h(t)] \]</div>
+<div class="d">La fonction de transfert. L'ordre est \(n\), le degré du dénominateur.</div>
+<div class="f">\[ y = h * x \;\Longleftrightarrow\; Y(p) = H(p)\,X(p) \]</div>
+<div class="d">Un filtre convolue dans le temps et multiplie en fréquence.</div>
+<div class="f">\[ h(t) = 0 \text{ pour } t &lt; 0 \qquad \lim_{t\to\infty}h(t) = 0 \]</div>
+<div class="d">Causalité et stabilité : un filtre est réalisable s'il a les deux.</div>
+<div class="f">\[ G_{dB} = 20\log_{10}|H| \qquad A_{dB} = -20\log_{10}|H| \]</div>
+<div class="d">Gain et atténuation : l'un est l'opposé de l'autre.</div>
+<div class="f">\[ \text{pente} = -20(n - m)\ \text{dB/décade} \]</div>
+<div class="d">Raideur de la coupure. Décade : fréquence × 10 ; octave : fréquence × 2.</div>
+<div class="f">\[ \tau_g = -\frac{d\varphi(\omega)}{d\omega} \]</div>
+<div class="d">Temps de propagation de groupe. Constant (phase linéaire) : pas de déformation.</div>
+</div>
+
+<h3>Normalisation et transpositions</h3>
+<div class="memo">
+<div class="f">\[ \Omega = \frac{f}{f_n} \qquad P = j\Omega \qquad k_{PB} = \frac{f_p}{f_a} \qquad k_{PH} = \frac{f_a}{f_p} \]</div>
+<div class="d">Fréquence réduite, variable normalisée, sélectivité (toujours \(k &lt; 1\)).</div>
+<div class="f">\[ f_0 = \sqrt{f_p^+f_p^-} = \sqrt{f_a^+f_a^-} \qquad B = \frac{f_p^+ - f_p^-}{f_0} \]</div>
+<div class="d">Fréquence centrale et bande relative d'un passe-bande ou coupe-bande.</div>
+<div class="f">\[ P \to \frac1P \qquad P \to \frac1B\left(P + \frac1P\right) \qquad P \to \frac{BP}{P^2 + 1} \]</div>
+<div class="d">Les transpositions passe-haut, passe-bande et coupe-bande.</div>
+<div class="f">\[ \frac{1}{1 + P} \to \frac{P}{1 + P},\ \frac{BP}{1 + BP + P^2},\ \frac{1 + P^2}{1 + BP + P^2} \]</div>
+<div class="d">Ce que devient le prototype d'ordre 1 dans chaque cas.</div>
+</div>
+
+<h3>Butterworth et Tchebychev</h3>
+<div class="memo">
+<div class="f">\[ A(\Omega) = A_0\sqrt{1 + |K(j\Omega)|^2} \]</div>
+<div class="d">La forme générale de la fonction d'approximation.</div>
+<div class="f">\[ |H(j\Omega)| = \frac{1}{\sqrt{1 + \varepsilon^2\Omega^{2n}}} \]</div>
+<div class="d">Butterworth : plat, monotone, −3 dB en \(\Omega = 1\) si \(\varepsilon = 1\).</div>
+<div class="f">\[ \varepsilon = \sqrt{10^{A_{max}/10} - 1} \]</div>
+<div class="d">Le même pour les deux familles.</div>
+<div class="f">\[ n_{\text{Butterworth}} \geq \frac{\log\!\left(\frac{10^{0{,}1A_{min}} - 1}{10^{0{,}1A_{max}} - 1}\right)}{2\log\Omega_a} \]</div>
+<div class="d">L'ordre de Butterworth, arrondi à l'entier supérieur.</div>
+<div class="f">\[ A(\Omega) = \sqrt{1 + \varepsilon^2C_n^2(\Omega)} \qquad C_n = \cos(n\arccos\Omega)\ \text{ou}\ \mathrm{ch}(n\,\mathrm{argch}\,\Omega) \]</div>
+<div class="d">Tchebychev : ondulation pour \(\Omega \leq 1\), coupure raide après.</div>
+<div class="f">\[ n_{\text{Tchebychev}} \geq \frac{\mathrm{argch}\sqrt{\frac{10^{A_{min}/10} - 1}{10^{A_{max}/10} - 1}}}{\mathrm{argch}\,\Omega_a} \]</div>
+<div class="d">L'ordre de Tchebychev, arrondi à l'entier supérieur.</div>
+</div>
+
+<h3>Stabilité</h3>
+<div class="memo">
+<div class="f">\[ \int_{-\infty}^{+\infty}|h(t)|\,dt &lt; \infty \]</div>
+<div class="d">Condition nécessaire et suffisante de stabilité.</div>
+<div class="f">\[ H(p) = A\,\frac{\prod(p - z_i)}{\prod(p - p_i)} = \sum\frac{A_i}{p - p_i} \;\Rightarrow\; h(t) = \sum A_i\,e^{p_it}u(t) \]</div>
+<div class="d">Zéros, pôles, et réponse impulsionnelle par éléments simples.</div>
+<div class="f">\[ A_ie^{p_it} + \bar A_ie^{\bar p_it} = 2\rho\,e^{\sigma t}\cos(\omega t + \varphi) \]</div>
+<div class="d">Une paire de pôles complexes donne une sinusoïde, amortie si \(\sigma &lt; 0\).</div>
+<div class="f">\[ \text{stable} \iff \mathrm{Re}(p_i) &lt; 0 \ \text{ pour tous les pôles} \]</div>
+<div class="d">Tous les pôles à gauche de l'axe imaginaire.</div>
+</div>
+
+<h2 id="fin">Checklist de révision</h2>
+<ul class="check">
+<li>Je sais pourquoi on introduit \(e^{-\sigma t}\), et écrire la définition de la transformée de Laplace.</li>
+<li>Je sais calculer \(\mathcal L[u]\), \(\mathcal L[e^{-at}]\) et \(\mathcal L[\cos\omega t]\), et utiliser la table et les propriétés.</li>
+<li>Je sais transformer une équation différentielle en équation algébrique, et revenir au temps par éléments simples.</li>
+<li>Je sais utiliser les théorèmes de la valeur initiale et de la valeur finale.</li>
+<li>Je connais les trois fenêtres et je sais calculer le spectre d'un cosinus tronqué.</li>
+<li>Je sais expliquer pourquoi un filtre ne crée pas de fréquence et associer chaque exemple à son type de filtre.</li>
+<li>Je sais écrire \(H(p)\) à partir d'une équation différentielle et donner son ordre.</li>
+<li>Je connais les conditions de réalisation (causalité, stabilité) et les associations parallèle et cascade.</li>
+<li>Je sais lire un gabarit (\(f_p\), \(f_a\), \(A_{max}\), \(A_{min}\)) et calculer la pente en dB/décade.</li>
+<li>Je connais les cinq types de filtres et le rôle du temps de propagation de groupe.</li>
+<li>Je sais normaliser un gabarit, calculer \(k\), \(f_0\) et \(B\), et faire les trois transpositions.</li>
+<li>Je sais dimensionner un filtre de Butterworth et de Tchebychev, et utiliser leurs tables.</li>
+<li>Je sais trouver les pôles de \(H(p)\) et conclure sur la stabilité.</li>
+</ul>
+
+</main>
+</div>
+
+<script>
+(function(){
+const PI=Math.PI,S=Math.sin,Co=Math.cos,E=Math.exp,R=Math.round,A=Math.abs,SQ=Math.sqrt;
+let uid=0;
+function hash(k){let h=Math.imul(k^0x9e3779b9,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;return (h>>>0)/4294967296;}
+function noise(t,seed){const k=R(t*997)+seed*100003;const u1=Math.max(hash(2*k+1),1e-9),u2=hash(2*k+7);return SQ(-2*Math.log(u1))*Co(2*PI*u2);}
+function head(x,y,ang,c,sz){sz=sz||6;c=c||'var(--muted)';return `<path d="M0 0L${-sz} ${-sz/2}L${-sz} ${sz/2}Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang})" style="fill:${c}"/>`;}
+function plot(o){
+ const W=o.w||300,H=o.h||170,ml=30,mr=16,mt=18,mb=26;
+ const xa=o.x[0],xb=o.x[1],ya=o.y[0],yb=o.y[1];
+ const X=x=>ml+(x-xa)/(xb-xa)*(W-ml-mr),Y=y=>mt+(yb-y)/(yb-ya)*(H-mt-mb);
+ const id='clip'+(uid++);
+ const y0=Y(Math.min(Math.max(0,ya),yb)),x0=X(Math.min(Math.max(0,xa),xb));
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot"><defs><clipPath id="${id}"><rect x="${ml-4}" y="${mt-10}" width="${W-ml-mr+8}" height="${H-mt-mb+12}"/></clipPath></defs>`;
+ (o.hl||[]).forEach(h=>{s+=`<line x1="${ml}" x2="${W-mr}" y1="${Y(h.y)}" y2="${Y(h.y)}" class="guide"/>`;if(h.t)s+=`<text x="${W-mr}" y="${Y(h.y)-3}" text-anchor="end" class="small" style="fill:${h.c||'var(--muted)'}">${h.t}</text>`;});
+ (o.vl||[]).forEach(v=>{s+=`<line y1="${mt-8}" y2="${H-mb}" x1="${X(v.x)}" x2="${X(v.x)}" class="guide"/>`;if(v.t)s+=`<text x="${X(v.x)+3}" y="${mt-2}" class="small" style="fill:${v.c||'var(--muted)'}">${v.t}</text>`;});
+ s+=`<line x1="${ml-6}" y1="${y0}" x2="${W-6}" y2="${y0}" class="ax"/>`+head(W-6,y0,0);
+ s+=`<line x1="${x0}" y1="${H-mb+4}" x2="${x0}" y2="4" class="ax"/>`+head(x0,4,-90);
+ s+=`<text x="${x0+6}" y="12" class="lab">${o.yl||''}</text><text x="${W-8}" y="${y0-6}" text-anchor="end" class="lab">${o.xl===undefined?'t':o.xl}</text>`;
+ (o.xt||[]).forEach(([v,l])=>{s+=`<line x1="${X(v)}" x2="${X(v)}" y1="${y0-3}" y2="${y0+3}" class="ax"/><text x="${X(v)}" y="${y0+14}" text-anchor="middle" class="small">${l}</text>`;});
+ (o.yt||[]).forEach(([v,l])=>{s+=`<line x1="${x0-3}" x2="${x0+3}" y1="${Y(v)}" y2="${Y(v)}" class="ax"/><text x="${x0-5}" y="${Y(v)+4}" text-anchor="end" class="small">${l}</text>`;});
+ s+=`<g clip-path="url(#${id})">`;
+ (o.s||[]).forEach(z=>{
+  const c=z.c||'var(--c1)';
+  if(z.type==='stem'){z.xs.forEach((x,i)=>{const v=z.ys?z.ys[i]:z.f(x);s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)}" style="stroke:${c};stroke-width:1.6"/><circle cx="${X(x)}" cy="${Y(v)}" r="2.6" style="fill:${c}"/>`;});}
+  else if(z.type==='dirac'){z.xs.forEach((x,i)=>{const v=Array.isArray(z.h)?z.h[i]:(typeof z.h==='function'?z.h(x):z.h);const up=v>=0;s+=`<line x1="${X(x)}" x2="${X(x)}" y1="${y0}" y2="${Y(v)+(up?6:-6)}" style="stroke:${c};stroke-width:${z.w||2.2}"/>`+head(X(x),Y(v),up?-90:90,c,z.sz||8);});}
+  else{const a=z.a===undefined?xa:z.a,b=z.b===undefined?xb:z.b,N=z.n||500;let d='',pen=false,pts=[];
+   for(let i=0;i<=N;i++){const x=a+(b-a)*i/N;const v=z.f(x);if(v==null||!isFinite(v)){pen=false;continue;}const yy=Math.max(-60,Math.min(H+60,Y(v)));d+=(pen?'L':'M')+X(x).toFixed(1)+' '+yy.toFixed(1);pen=true;pts.push(X(x).toFixed(1)+' '+yy.toFixed(1));}
+   if(z.type==='area')s+=`<path d="M${X(a)} ${y0}L${pts.join('L')}L${X(b)} ${y0}Z" style="fill:${c};fill-opacity:.25;stroke:none"/>`;
+   else s+=`<path d="${d}" style="fill:none;stroke:${c};stroke-width:${z.w||1.8};opacity:${z.op||1}${z.dash?';stroke-dasharray:4 3':''}"/>`;}
+ });
+ s+='</g>';
+ (o.tx||[]).forEach(t=>{s+=`<text x="${X(t.x)}" y="${Y(t.y)}" text-anchor="${t.a||'start'}" class="small" style="fill:${t.c||'var(--fg)'}">${t.t}</text>`;});
+ return s+'</svg>';
+}
+function fig(name,panels,cols){
+ const el=document.querySelector('[data-fig="'+name+'"]');if(!el)return;
+ try{
+  const n=cols||Math.min(3,panels.length);el.style.setProperty('--cols',n);
+  if(panels.length===1&&!panels[0].wide)el.style.maxWidth='440px';
+  el.innerHTML=panels.map(p=>`<figure${p.wide?' class="wide"':''}>${p.svg?p.svg():plot(p)}${p.cap?`<figcaption>${p.cap}</figcaption>`:''}</figure>`).join('');
+ }catch(e){console.error(name,e);}
+}
+const sinc=x=>A(x)<1e-9?1:S(PI*x)/(PI*x);
+const rect=(t,T)=>A(t)<T/2?1:0;
+const tri=(t,T)=>Math.max(0,1-A(t)/T);
+const ln=(x1,y1,x2,y2,c,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:${c||'var(--ink-2)'};stroke-width:${w||1.6}"/>`;
+const arr=(x1,y1,x2,y2,c,w)=>ln(x1,y1,x2,y2,c,w)+head(x2,y2,Math.atan2(y2-y1,x2-x1)*180/PI,c||'var(--ink-2)',7);
+const tx=(x,y,t,cls,anc,c)=>`<text x="${x}" y="${y}" text-anchor="${anc||'middle'}" class="${cls||'mid'}"${c?` style="fill:${c}"`:''}>${t}</text>`;
+
+/* ---------- outils : schémas ---------- */
+const ST='stroke:var(--ink-2);stroke-width:1.6;fill:none';
+const box=(x,y,w,h,lines,c)=>{let o=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="fill:var(--sheet);stroke:${c||'var(--ink-2)'};stroke-width:1.6"/>`;const n=lines.length;lines.forEach((l,i)=>{o+=tx(x+w/2,y+h/2+5+(i-(n-1)/2)*18,l,'mid');});return o;};
+const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" style="fill:var(--ink-2)"/>`;
+const term=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.5" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.4"/>`;
+const sumc=(x,y)=>`<circle cx="${x}" cy="${y}" r="13" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+tx(x,y+5,'+','mid');
+function resH(x1,x2,y){const m=(x1+x2)/2,w=40;let d=`M${x1} ${y}L${m-w/2} ${y}`;for(let i=0;i<6;i++)d+=`L${m-w/2+(i+0.5)*w/6} ${y+(i%2?7:-7)}`;d+=`L${m+w/2} ${y}L${x2} ${y}`;return `<path d="${d}" style="${ST}"/>`;}
+function resV(x,y1,y2){const m=(y1+y2)/2,w=40;let d=`M${x} ${y1}L${x} ${m-w/2}`;for(let i=0;i<6;i++)d+=`L${x+(i%2?7:-7)} ${m-w/2+(i+0.5)*w/6}`;d+=`L${x} ${m+w/2}L${x} ${y2}`;return `<path d="${d}" style="${ST}"/>`;}
+function indV(x,y1,y2){const m=(y1+y2)/2;let d=`M${x} ${y1}L${x} ${m-24}`;for(let i=0;i<4;i++)d+='a6 6 0 0 1 0 12';d+=`L${x} ${y2}`;return `<path d="${d}" style="${ST}"/>`;}
+function indH(x1,x2,y){const m=(x1+x2)/2;let d=`M${x1} ${y}L${m-24} ${y}`;for(let i=0;i<4;i++)d+='a6 6 0 0 1 12 0';d+=`L${x2} ${y}`;return `<path d="${d}" style="${ST}"/>`;}
+function capV(x,y1,y2){const m=(y1+y2)/2;return ln(x,y1,x,m-5)+ln(x-15,m-5,x+15,m-5,'var(--ink-2)',2.2)+ln(x-15,m+5,x+15,m+5,'var(--ink-2)',2.2)+ln(x,m+5,x,y2);}
+function vsrc(x,y1,y2,lab){const m=(y1+y2)/2;return ln(x,y1,x,m-16)+ln(x,m+16,x,y2)+`<circle cx="${x}" cy="${m}" r="16" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+tx(x,m-3,'+','small')+tx(x,m+11,'−','small')+tx(x-22,m+5,lab,'mid','end');}
+function isrc(x,y1,y2,lab){const m=(y1+y2)/2;return ln(x,y1,x,m-16)+ln(x,m+16,x,y2)+`<circle cx="${x}" cy="${m}" r="16" style="fill:var(--sheet);stroke:var(--ink-2);stroke-width:1.6"/>`+arr(x,m+9,x,m-9,'var(--ink-2)',1.4)+tx(x-22,m+5,lab,'mid','end');}
+function vout(x,y1,y2,lab,c){c=c||'var(--c2)';const m=(y1+y2)/2;return arr(x,y2-4,x,y1+6,c,1.4)+tx(x+8,m+5,lab,'mid','start',c)+tx(x+8,y1+16,'+','small','start')+tx(x+8,y2-6,'−','small','start');}
+
+
+/* ---------- figures interactives ---------- */
+const fmt=(x,d)=>(d===undefined?String(+x.toFixed(3)):x.toFixed(d)).replace('.',',');
+function live(name,ctr,draw,cap){const el=document.querySelector('[data-fig="'+name+'"]');if(!el)return;
+ try{el.style.setProperty('--cols',1);
+ el.innerHTML='<figure class="wide"><div class="lv-out"></div>'+ctr.map(c=>`<label class="slider"><span>${c.l} = <output></output></span><input type="range" min="${c.min}" max="${c.max}" step="${c.st}" value="${c.v}" aria-label="${c.l}"></label>`).join('')+`<figcaption>${cap}</figcaption></figure>`;
+ const out=el.querySelector('.lv-out'),ins=[...el.querySelectorAll('input')],os=[...el.querySelectorAll('output')];
+ const go=()=>{const v=ins.map(i=>+i.value);v.forEach((x,i)=>os[i].textContent=ctr[i].f(x));out.innerHTML=draw(...v);};
+ ins.forEach(i=>i.addEventListener('input',go));go();}catch(e){console.error(name,e);}}
+
+/* ================= Chapitre 4 ================= */
+const lg=Math.log10, LT=[[-1,'0,1'],[0,'1'],[1,'10']];
+
+/* ---------- Partie 1 ---------- */
+fig('lapdamp',[
+ {x:[0,4.2],y:[-1.3,1.3],yl:'cos(ωt)',xt:[[1,'1'],[2,'2'],[3,'3']],s:[{f:t=>Co(2*PI*t),n:800}],cap:'Fourier : la fonction de base oscille sans jamais s’amortir.'},
+ {x:[0,4.2],y:[-1.3,1.3],yl:'e<tspan baseline-shift="super" font-size="75%">−σt</tspan> cos(ωt)',xt:[[1,'1'],[2,'2'],[3,'3']],s:[{f:t=>E(-0.6*t),n:400,c:'var(--ink-2)',dash:1},{f:t=>-E(-0.6*t),n:400,c:'var(--ink-2)',dash:1},{f:t=>E(-0.6*t)*Co(2*PI*t),n:800,c:'var(--c2)'}],cap:'Laplace : la même oscillation, écrasée par l’amortisseur e<sup>−σt</sup> (pointillés).'},
+ {x:[0,4.2],y:[-0.3,4.2],yl:'',xt:[[1,'1'],[2,'2'],[3,'3']],s:[{f:t=>E(0.3*t),n:400,c:'var(--c4)'},{f:t=>E(0.3*t)*E(-0.9*t),n:400,c:'var(--c3)'}],tx:[{x:2.6,y:2.6,t:'s(t) = e<tspan baseline-shift="super" font-size="75%">0,3t</tspan>',c:'var(--c4)'},{x:1.4,y:0.9,t:'s(t) e<tspan baseline-shift="super" font-size="75%">−σt</tspan>',c:'var(--c3)'}],cap:'Un signal qui grandit (violet) n’a pas de TF. Multiplié par e<sup>−σt</sup>, il s’éteint (vert) : l’intégrale converge.'}
+],3);
+
+/* ---------- Partie 2 : fenêtres ---------- */
+const eW=t=>0.55+0.25*S(1.3*t+0.5)+0.12*S(3.1*t),w1=t=>t>=2&&t<=3.4?1:0,w2=t=>t>=2&&t<=3.4?0:1,w3=t=>t>=2&&t<=3.4?0.4:1;
+const FW=(f,yl,cap,c)=>({x:[0,5.4],y:[-0.1,1.25],yl,xt:[[2,''],[3.4,'']],vl:[{x:2},{x:3.4}],s:[{f,n:1200,c:c||'var(--c1)',w:2}],tx:[{x:2.7,y:1.12,t:'T',a:'middle'}],cap});
+fig('fenetres',[
+ FW(w1,'fenêtre 1','Fenêtre 1 : vaut 1 pendant T, 0 ailleurs.'),FW(t=>eW(t)*w1(t),'s₁(t)','Prélever : on ne garde que le morceau dans la fenêtre.','var(--c2)'),
+ FW(w2,'fenêtre 2','Fenêtre 2 : vaut 0 pendant T, 1 ailleurs.'),FW(t=>eW(t)*w2(t),'s₂(t)','Interrompre : le signal est coupé pendant T.','var(--c2)'),
+ FW(w3,'fenêtre 3','Fenêtre 3 : vaut 0,4 pendant T, 1 ailleurs.'),FW(t=>eW(t)*w3(t),'s₃(t)','Atténuer : le signal est réduit pendant T.','var(--c2)')
+],2);
+const tauT=3;
+fig('tronc',[
+ {x:[-2.2,2.2],y:[-0.25,1.75],xl:'f',yl:'S(f)',xt:[[-1,'−F₀'],[1,'F₀']],s:[{type:'dirac',xs:[-1,1],h:0.75}],tx:[{x:1.1,y:0.8,t:'1/2'}],cap:'Spectre théorique du cosinus : deux raies fines (observation infinie).'},
+ {x:[-2.2,2.2],y:[-0.5,1.75],xl:'f',yl:'S<tspan baseline-shift="sub" font-size="75%">Π</tspan>(f)',xt:[[-1,'−F₀'],[1,'F₀']],s:[{f:f=>tauT/2*(sinc(tauT*(f+1))+sinc(tauT*(f-1))),n:1200,c:'var(--c2)',w:2}],tx:[{x:1.15,y:1.55,t:'τ/2'}],cap:'Spectre observé pendant τ : chaque raie devient un sinc. Les petits lobes de chaque côté sont des fréquences « fantômes » créées par la fenêtre.'}
+],2);
+fig('tronc27',[
+ {x:[0,10.5],y:[-1.3,1.3],yl:'signal',xl:'t (ms)',xt:[[2,'2'],[4,'4'],[5,'5'],[6,'6'],[8,'8'],[10,'10']],s:[{f:t=>t<=5?Co(2*PI*t):0,n:1500,w:1.6}],cap:'Un cosinus de période 1 ms observé pendant 5 ms, puis nul.'},
+ {x:[0,2100],y:[0,1.15],yl:'spectre',xl:'f (Hz)',xt:[[500,'500'],[1000,'1000'],[1500,'1500'],[2000,'2000']],vl:[{x:800,t:'800'},{x:1200,t:'1200'}],s:[{f:f=>A(sinc(0.005*(f-1000))+sinc(0.005*(f+1000))),n:1500,c:'var(--c2)',w:1.8},{type:'dirac',xs:[1000],h:1,c:'var(--ink-2)',w:1.4}],cap:'Son spectre : au lieu de la raie fine à 1000 Hz (flèche), une bosse de 800 à 1200 Hz et des petits lobes.'}
+],2);
+
+/* ---------- Partie 3 : harmoniques et exemples ---------- */
+{const fc=3,H=f=>1/SQ(1+(f/fc)**2),sqw=t=>((t%1)+1)%1<0.5?1:-1,out=t=>{let s=0;for(let n=1;n<=99;n+=2)s+=4/(PI*n)*H(n)*S(2*PI*n*t-Math.atan(n/fc));return s;},ns=[1,3,5,7,9,11,13,15,17,19];
+fig('harmo',[
+ {x:[0,24/12],y:[-1.6,1.6],yl:'',xt:[[1,'T₀']],s:[{f:sqw,n:1600,c:'var(--ink-2)',dash:1,w:1.2},{f:out,n:700,c:'var(--c2)',w:2}],tx:[{x:0.03,y:1.42,t:'entrée (pointillés), sortie (orange)'}],cap:'Un signal carré passe dans un filtre passe-bas : la sortie est arrondie.'},
+ {x:[0,21],y:[0,1.45],xl:'f',yl:'',xt:[[1,'F₀'],[3,'3F₀'],[5,'5F₀']],s:[{type:'stem',xs:ns,f:n=>4/(PI*n),c:'var(--rule)'},{f:H,n:600,c:'var(--c4)',w:1.5},{type:'stem',xs:ns,f:n=>4/(PI*n)*H(n),c:'var(--c2)'}],tx:[{x:9,y:1.25,t:'|H(f)| (violet)'}],cap:'Les raies d’entrée (gris) et de sortie (orange) : mêmes fréquences, chaque raie multipliée par |H(f)|. Aucune raie nouvelle.'}
+],2);}
+{const comps=[[1,25],[2.5,30],[3.2,14],[18,9]],sig=(t,keep)=>comps.filter(([f])=>keep||f<10).reduce((v,[f,a])=>v+a*S(2*PI*f*t+f),0);
+fig('ex1',[
+ {x:[0,1.05],y:[-80,80],yl:'tension (mV)',xl:'t (ms)',xt:[[0.5,'0,5'],[1,'1']],s:[{f:t=>sig(t,1),n:1500,c:'var(--c1)',w:1.4}],cap:'Avant : le son, avec un sifflement aigu superposé.'},
+ {x:[0,1.05],y:[-80,80],yl:'tension (mV)',xl:'t (ms)',xt:[[0.5,'0,5'],[1,'1']],s:[{f:t=>sig(t,0),n:1500,c:'var(--c2)',w:1.6}],cap:'Après le passe-bas : le sifflement a disparu.'},
+ {x:[0,21],y:[0,36],yl:'(mV)',xl:'f (kHz)',xt:[[5,'5'],[10,'10'],[18,'18']],s:[{type:'stem',xs:comps.map(c=>c[0]),ys:comps.map(c=>c[1]),c:'var(--c1)'}],cap:'Spectre avant : des raies sous 5 kHz, et une raie à 18 kHz.'},
+ {x:[0,21],y:[0,36],yl:'(mV)',xl:'f (kHz)',xt:[[5,'5'],[10,'10'],[18,'18']],s:[{type:'stem',xs:comps.slice(0,3).map(c=>c[0]),ys:comps.slice(0,3).map(c=>c[1]),c:'var(--c2)'}],cap:'Spectre après : la raie à 18 kHz a été supprimée.'}
+],2);}
+{const Te=1/14,stair=t=>S(2*PI*Math.floor(t/Te)*Te)+0.04;
+fig('ex2',[
+ {x:[0,2.05],y:[-1.3,1.3],yl:'sortie du CNA',xt:[[1,'T'],[2,'2T']],s:[{f:stair,n:2000,c:'var(--c1)',w:1.6}],cap:'Avant : une sinusoïde en escalier, avec des sauts tous les Tₑ.'},
+ {x:[0,2.05],y:[-1.3,1.3],yl:'après lissage',xt:[[1,'T'],[2,'2T']],s:[{f:stair,n:2000,c:'var(--ink-2)',w:1,op:.5},{f:t=>S(2*PI*(t-Te/2)),n:800,c:'var(--c2)',w:2}],cap:'Après le passe-bas : les marches (hautes fréquences, autour de fₑ) sont supprimées, il reste la sinusoïde.'}
+],2);}
+{const sig=t=>0.4*S(2*PI*3*t)+0.25*S(2*PI*7*t+1)+0.15*S(2*PI*11*t);
+fig('ex3',[
+ {x:[0,1.05],y:[-0.9,1.9],yl:'signal complet',xt:[[1,'']],hl:[{y:0.9,t:'moyenne'}],s:[{f:t=>0.9+sig(t),n:1200,c:'var(--c1)',w:1.6}],cap:'Avant : le signal oscille autour d’une valeur moyenne non nulle.'},
+ {x:[0,1.05],y:[-0.9,1.9],yl:'moyenne supprimée',xt:[[1,'']],s:[{f:sig,n:1200,c:'var(--c2)',w:1.6}],cap:'Après le passe-haut : la composante de fréquence nulle a disparu, le signal oscille autour de 0.'}
+],2);}
+{const bump=(c,s)=>f=>{const u=(f-c)/0.09;return A(u)>1?0:(1-u*u)*(0.75+0.25*S(37*f*s))*2.4;},st=[98.6,99.3,99.7].map((c,i)=>bump(c,i+1));
+fig('ex4',[
+ {x:[98.3,100.05],y:[0,3.2],yl:'reçu par l’antenne',xl:'f (MHz)',xt:[[98.6,'98,6'],[99.3,'99,3'],[99.7,'99,7']],s:[...st.map(b=>({type:'area',f:b,n:900,c:'var(--c3)'})),...st.map(b=>({f:b,n:900,c:'var(--c3)',w:1.4}))],tx:[{x:98.6,y:2.9,t:'station 1',a:'middle'},{x:99.3,y:2.9,t:'station 2',a:'middle'},{x:99.7,y:2.9,t:'station 3',a:'middle'}],cap:'Avant : l’antenne reçoit les trois stations.'},
+ {x:[98.3,100.05],y:[0,3.2],yl:'après filtrage',xl:'f (MHz)',xt:[[98.6,'98,6'],[99.3,'99,3'],[99.7,'99,7']],s:[{type:'area',f:st[1],n:900,c:'var(--c2)'},{f:st[1],n:900,c:'var(--c2)',w:1.4}],tx:[{x:99.3,y:2.9,t:'station 2',a:'middle'}],cap:'Après le passe-bande réglé sur 99,3 MHz : seule la station 2 reste.'}
+],2);}
+
+/* ---------- associations ---------- */
+function assocSvg(){let o='<svg viewBox="0 0 640 250" class="plot">';
+ o+=tx(14,22,'En parallèle','mid','start');
+ o+=tx(14,86,'x(t)','mid','start','var(--c1)')+ln(48,82,90,82)+dot(90,82)+ln(90,50,90,114)+arr(90,50,130,50)+arr(90,114,130,114);
+ o+=box(130,32,70,36,['h₁'])+box(130,96,70,36,['h₂'])+ln(200,50,240,50)+arr(240,50,240,69)+ln(200,114,240,114)+arr(240,114,240,95)+sumc(240,82)+arr(253,82,290,82)+tx(296,86,'y(t)','mid','start','var(--c2)');
+ o+=tx(350,86,'≡','big2')+tx(380,86,'x(t)','mid','start','var(--c1)')+arr(414,82,450,82)+box(450,64,90,36,['h₁ + h₂'])+arr(540,82,580,82)+tx(586,86,'y(t)','mid','start','var(--c2)');
+ o+=tx(14,160,'En cascade','mid','start');
+ o+=tx(14,214,'x(t)','mid','start','var(--c1)')+arr(48,210,90,210)+box(90,192,60,36,['h₁'])+arr(150,210,200,210)+tx(175,202,'y₁','small')+box(200,192,60,36,['h₂'])+arr(260,210,300,210)+tx(306,214,'y(t)','mid','start','var(--c2)');
+ o+=tx(350,214,'≡','big2')+tx(380,214,'x(t)','mid','start','var(--c1)')+arr(414,210,450,210)+box(450,192,90,36,['h₁ ∗ h₂'])+arr(540,210,580,210)+tx(586,214,'y(t)','mid','start','var(--c2)');
+ return o+'</svg>';}
+fig('assoc',[{svg:assocSvg,wide:true,cap:'En parallèle, les réponses impulsionnelles s’additionnent (H = H₁ + H₂). En cascade, elles se convoluent (H = H₁ · H₂).'}],1);
+
+/* ---------- gabarits ---------- */
+function gab(kind){return function(){
+ const W=300,H=200,ml=38,mr=14,mt=16,mb=30,X=f=>ml+f*(W-ml-mr),Y=a=>H-mb-a*(H-mt-mb);
+ const AM=0.22,Am=0.72;let o=`<svg viewBox="0 0 ${W} ${H}" class="plot">`;
+ const zone=(f1,f2,a1,a2)=>`<rect x="${X(f1)}" y="${Y(a2)}" width="${X(f2)-X(f1)}" height="${Y(a1)-Y(a2)}" style="fill:var(--c2);fill-opacity:.18;stroke:var(--c2);stroke-width:1"/>`;
+ const P={PB:{z:[[0,.38,AM,1],[.55,1,0,Am]],tk:[[.38,'f_p'],[.55,'f_a']],c:f=>.6*(f/.45)**6},
+  PH:{z:[[0,.45,0,Am],[.62,1,AM,1]],tk:[[.45,'f_a'],[.62,'f_p']],c:f=>.6*(.53/Math.max(f,.01))**6},
+  PBde:{z:[[0,.22,0,Am],[.38,.62,AM,1],[.78,1,0,Am]],tk:[[.22,'f_a⁻'],[.38,'f_p⁻'],[.62,'f_p⁺'],[.78,'f_a⁺']],c:f=>.6*(A(f-.5)/.15)**6},
+  CB:{z:[[0,.22,AM,1],[.38,.62,0,Am],[.78,1,AM,1]],tk:[[.22,'f_p⁻'],[.38,'f_a⁻'],[.62,'f_a⁺'],[.78,'f_p⁺']],c:f=>.6*(.15/Math.max(A(f-.5),.005))**6}}[kind];
+ P.z.forEach(z=>o+=zone(...z));
+ o+=ln(ml,H-mb,W-6,H-mb,'var(--ink-2)',1.2)+head(W-6,H-mb,0)+ln(ml,H-mb,ml,6,'var(--ink-2)',1.2)+head(ml,6,-90);
+ o+=`<line x1="${ml}" x2="${W-mr}" y1="${Y(AM)}" y2="${Y(AM)}" class="guide"/><line x1="${ml}" x2="${W-mr}" y1="${Y(Am)}" y2="${Y(Am)}" class="guide"/>`;
+ o+=tx(ml-4,Y(AM)+4,'A<tspan baseline-shift="sub" font-size="75%">max</tspan>','small','end')+tx(ml-4,Y(Am)+4,'A<tspan baseline-shift="sub" font-size="75%">min</tspan>','small','end')+tx(ml+4,12,'A (dB)','lab','start')+tx(W-8,H-mb-6,'f','lab','end');
+ P.tk.forEach(([f,l])=>{o+=`<line x1="${X(f)}" x2="${X(f)}" y1="${H-mb-3}" y2="${H-mb+3}" class="ax"/>`+tx(X(f),H-mb+15,l.replace(/_(\w)/,'<tspan baseline-shift="sub" font-size="75%">$1</tspan>'),'small');});
+ let d='';for(let i=0;i<=300;i++){const f=i/300,a=Math.min(1.02,P.c(f));d+=(i?'L':'M')+X(f).toFixed(1)+' '+Y(a).toFixed(1);}
+ o+=`<path d="${d}" style="fill:none;stroke:var(--c1);stroke-width:2"/>`;
+ return o+'</svg>';};}
+fig('gabarits',[
+ {svg:gab('PB'),cap:'Passe-bas. Zones orange interdites. La courbe bleue (atténuation du filtre) passe entre elles.'},
+ {svg:gab('PH'),cap:'Passe-haut : bande coupée en bas, bande passante en haut.'},
+ {svg:gab('PBde'),cap:'Passe-bande : une bande passante entre deux bandes coupées.'},
+ {svg:gab('CB'),cap:'Coupe-bande : une bande coupée entre deux bandes passantes.'}
+],2);
+
+/* ---------- pente ---------- */
+fig('pente',[{x:[-1,2.05],y:[-85,8],w:600,h:230,wide:true,xl:'log ω',yl:'G (dB)',xt:[[-1,'0,1'],[0,'1'],[1,'10'],[2,'100']],yt:[[-20,'−20'],[-40,'−40'],[-80,'−80']],hl:[{y:-20},{y:-40},{y:-80}],vl:[{x:1}],
+ s:[1,2,4].map((k,i)=>({f:x=>-10*k*lg(1+10**(2*x)),n:500,c:['var(--c1)','var(--c3)','var(--c2)'][i],w:2})),
+ tx:[{x:-0.95,y:-52,t:'n − m = 1 : −20 dB/décade',c:'var(--c1)'},{x:-0.95,y:-62,t:'n − m = 2 : −40 dB/décade',c:'var(--c3)'},{x:-0.95,y:-72,t:'n − m = 4 : −80 dB/décade',c:'var(--c2)'}],
+ cap:'Trois filtres passe-bas d’ordres 1, 2 et 4. Entre ω = 1 et ω = 10 (une décade), le gain baisse de 20, 40 et 80 dB : la pente vaut −20(n − m) dB par décade.'}],1);
+
+/* ---------- 5 types ---------- */
+{const PB=x=>1/SQ(1+x*x),PH=x=>x/SQ(1+x*x),Q=2,BP=x=>1/SQ(1+Q*Q*(x-1/x)**2),CBf=x=>A(Q*(x-1/x))/SQ(1+Q*Q*(x-1/x)**2);
+const TP=(f,yl,cap,c,o)=>Object.assign({x:[-1.3,1.3],y:[0,1.25],xl:'log f',yl,xt:LT,yt:[[1,'1']],hl:[{y:1/SQ(2),t:'1/√2'}],s:[{f:x=>f(10**x),n:600,c:c||'var(--c1)',w:2}],cap},o||{});
+fig('types',[
+ TP(PB,'|H|','Passe-bas : garde les basses fréquences.'),
+ TP(PH,'|H|','Passe-haut : garde les hautes fréquences.'),
+ TP(BP,'|H|','Passe-bande : garde une bande autour de f₀.'),
+ TP(CBf,'|H|','Coupe-bande : supprime une bande autour de f₀.'),
+ TP(x=>1,'|H|','Passe-tout : le gain vaut 1 partout…','var(--c4)'),
+ {x:[-1.3,1.3],y:[-200,20],xl:'log f',yl:'φ (°)',xt:LT,yt:[[-90,'−90'],[-180,'−180']],s:[{f:x=>-2*Math.atan(10**x)*180/PI,n:600,c:'var(--c4)',w:2}],cap:'… mais il déphase : sa phase descend de 0 à −180°.'}
+],3);}
+
+/* ---------- temps de groupe ---------- */
+{const xin=t=>S(2*PI*t)+0.5*S(2*PI*3*t),d=0.15;
+fig('tg',[
+ {x:[0,2.05],y:[-1.7,1.7],yl:'',xt:[[1,'1'],[2,'2']],s:[{f:xin,n:900,c:'var(--ink-2)',dash:1,w:1.2},{f:t=>xin(t-d),n:900,c:'var(--c3)',w:2}],cap:'Phase linéaire : les deux harmoniques sont retardés de la même durée. La sortie (vert) a la même forme que l’entrée (pointillés), simplement décalée.'},
+ {x:[0,2.05],y:[-1.7,1.7],yl:'',xt:[[1,'1'],[2,'2']],s:[{f:xin,n:900,c:'var(--ink-2)',dash:1,w:1.2},{f:t=>S(2*PI*(t-d))+0.5*S(2*PI*3*t+PI/2),n:900,c:'var(--c2)',w:2}],cap:'Phase non linéaire : chaque harmonique a un retard différent. Le gain est le même, mais la forme du signal (orange) a changé.'}
+],2);}
+
+/* ---------- cascade ---------- */
+function cascSvg(){let o='<svg viewBox="0 0 640 210" class="plot">';
+ const row=(y,ords,lab)=>{o+=`<rect x="70" y="${y-34}" width="470" height="80" rx="4" style="fill:none;stroke:var(--ink-2);stroke-dasharray:5 4"/>`+tx(305,y+40,lab,'small');
+  o+=tx(14,y+5,'entrée','small','start')+arr(52,y,90,y);let x=90;ords.forEach((n,i)=>{o+=box(x,y-20,120,40,['passe-bas','ordre '+n]);x+=120;if(i<ords.length-1){o+=arr(x,y,x+25,y);x+=25;}});o+=arr(x,y,x+40,y)+tx(x+46,y+5,'sortie','small','start');};
+ row(50,[2,2,2],'passe-bas d’ordre 6 = 2 + 2 + 2');row(160,[2,2,1],'passe-bas d’ordre 5 = 2 + 2 + 1');
+ return o+'</svg>';}
+fig('cascade',[{svg:cascSvg,wide:true,cap:'Un filtre d’ordre élevé = une cascade de cellules d’ordre 2 (et une d’ordre 1 si l’ordre est impair). Les fonctions de transfert se multiplient.'}],1);
+
+/* ---------- transpositions ---------- */
+{const B=0.5,m=z=>SQ(z[0]*z[0]+z[1]*z[1]),div=(a,b)=>{const d=b[0]*b[0]+b[1]*b[1];return [(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d];};
+const HPB=F=>m(div([1,0],[1,F])),HPH=F=>m(div([0,F],[1,F])),HBP=F=>m(div([0,B*F],[1-F*F,B*F])),HCB=F=>m(div([1-F*F,0],[1-F*F,B*F]));
+const TR=(f,yl,cap,c)=>({x:[-1.2,1.2],y:[0,1.2],xl:'log F',yl,xt:LT,yt:[[1,'1']],hl:[{y:1/SQ(2)}],s:[{f:x=>f(10**x),n:800,c:c||'var(--c1)',w:2}],cap});
+fig('transpo',[
+ TR(HPB,'|H<tspan baseline-shift="sub" font-size="75%">PB</tspan>|','Prototype : 1/(1 + P). Coupure à F = 1.'),
+ TR(HPH,'|H<tspan baseline-shift="sub" font-size="75%">PH</tspan>|','P → 1/P : P/(1 + P), un passe-haut.','var(--c3)'),
+ TR(HBP,'|H<tspan baseline-shift="sub" font-size="75%">PBde</tspan>|','P → (P + 1/P)/B : BP/(1 + BP + P²), un passe-bande centré sur F = 1 (ici B = 0,5).','var(--c2)'),
+ TR(HCB,'|H<tspan baseline-shift="sub" font-size="75%">CB</tspan>|','P → BP/(P² + 1) : (1 + P²)/(1 + BP + P²), un coupe-bande (B = 0,5).','var(--c4)')
+],2);}
+
+/* ---------- idéal ---------- */
+fig('ideal',[
+ {x:[0,2.2],y:[-0.1,1.3],xl:'Ω',yl:'|H|(Ω)',xt:[[1,'1']],yt:[[1,'1']],s:[{f:x=>x<1?1:0,n:1200,c:'var(--c2)',w:2.2}],cap:'Le passe-bas idéal : |H| = 1 jusqu’à Ω = 1, puis 0.'},
+ {x:[0,2.2],y:[-0.1,1.3],xl:'Ω',yl:'A<tspan baseline-shift="sub" font-size="75%">dB</tspan>(Ω)',xt:[[1,'1']],s:[{type:'area',f:x=>x<1?0.03:1.25,n:1200,c:'var(--c1)'},{f:x=>x<1?0.03:null,n:600,c:'var(--c2)',w:2.4}],vl:[{x:1}],tx:[{x:0.5,y:0.5,t:'bande passante',a:'middle'},{x:1.6,y:0.5,t:'bande coupée',a:'middle'},{x:0.5,y:0.12,t:'0 dB',a:'middle',c:'var(--c2)'},{x:1.6,y:1.12,t:'∞',a:'middle'}],cap:'Son atténuation : 0 dB dans la bande passante, infinie dans la bande coupée, transition verticale. Irréalisable.'}
+],2);
+
+/* ---------- elliptique ---------- */
+{const eps=0.5,Ap=x=>10*lg(1+(eps*x**3)**2),Ae=x=>{const k=eps*x**3/(1-(x/1.5)**2);return Math.min(80,10*lg(1+k*k));};
+fig('ellip',[{x:[0,4.1],y:[0,62],w:600,h:230,wide:true,xl:'F',yl:'A (dB)',xt:[[1,'1'],[1.5,'F∞'],[3,'3']],yt:[[3,'3'],[20,'20'],[40,'40']],hl:[{y:20,t:'A<tspan baseline-shift="sub" font-size="75%">min</tspan> = 20 dB'}],vl:[{x:1.5}],
+ s:[{f:Ap,n:800,c:'var(--c1)',w:2},{f:Ae,n:1500,c:'var(--c2)',w:2}],tx:[{x:2.6,y:52,t:'polynomial',c:'var(--c1)'},{x:1.62,y:46,t:'elliptique',c:'var(--c2)'}],
+ cap:'Deux filtres de même ordre (3). L’elliptique (orange) monte beaucoup plus vite et devient infini en F∞ (zéro de transmission) : il supprime totalement cette fréquence. En échange, son atténuation redescend après F∞. Le polynomial (bleu) monte régulièrement.'}],1);}
+
+/* ---------- Butterworth et Tchebychev ---------- */
+const cols6=['var(--c1)','var(--c4)','var(--c3)','var(--c5)','var(--c2)','var(--warn)'];
+const Cn=(n,x)=>x<=1?Co(n*Math.acos(Math.max(-1,x))):Math.cosh(n*Math.acosh(x));
+const Gb=(n,e)=>x=>-10*lg(1+e*e*(10**x)**(2*n)),Gc=(n,e)=>x=>-10*lg(1+e*e*Cn(n,10**x)**2);
+fig('butter',[{x:[-1,1.05],y:[-62,3],w:600,h:240,wide:true,xl:'Ω (log)',yl:'gain (dB)',xt:LT,yt:[[-3,'−3'],[-20,'−20'],[-40,'−40'],[-60,'−60']],hl:[{y:-3}],
+ s:[1,2,3,4,5,6].map(n=>({f:Gb(n,1),n:600,c:cols6[n-1],w:1.8})),tx:[1,2,3,4,5,6].map(n=>({x:-0.95+0.17*(n-1),y:-50,t:'n = '+n,c:cols6[n-1]})),
+ cap:'Butterworth, ε = 1, ordres 1 à 6. Toutes les courbes passent par −3 dB en Ω = 1, restent plates avant, puis descendent de −20n dB par décade.'}],1);
+{const e1=SQ(10**0.1-1);
+fig('cheb',[
+ {x:[-1,1.05],y:[-62,3],xl:'Ω (log)',yl:'gain (dB)',xt:LT,yt:[[-20,'−20'],[-40,'−40'],[-60,'−60']],s:[1,2,3,4,5,6].map(n=>({f:Gc(n,e1),n:900,c:cols6[n-1],w:1.6})),cap:'Tchebychev, ondulation 1 dB, ordres 1 à 6 : coupure plus raide que Butterworth.'},
+ {x:[-1,0.3],y:[-3.2,0.6],xl:'Ω (log)',yl:'gain (dB)',xt:[[-1,'0,1'],[0,'1']],yt:[[-1,'−1'],[-3,'−3']],hl:[{y:-1}],s:[1,2,3,4,5,6].map(n=>({f:Gc(n,e1),n:900,c:cols6[n-1],w:1.6})),cap:'Zoom sur la bande passante : les courbes ondulent entre 0 et −1 dB (equiripple). Plus l’ordre est grand, plus il y a d’ondulations.'}
+],2);}
+
+/* ---------- pôles ---------- */
+function poleMap(){const W=380,H=250,cx=200,cy=125,s=40;let o=`<svg viewBox="0 0 ${W} ${H}" class="plot">`;
+ o+=`<rect x="10" y="10" width="${cx-10}" height="${H-30}" style="fill:var(--c3);fill-opacity:.12"/><rect x="${cx}" y="10" width="${W-10-cx}" height="${H-30}" style="fill:var(--warn);fill-opacity:.10"/>`;
+ o+=ln(14,cy,W-10,cy,'var(--ink-2)',1.2)+head(W-10,cy,0)+ln(cx,H-22,cx,8,'var(--ink-2)',1.2)+head(cx,8,-90)+tx(W-14,cy-6,'Re','lab','end')+tx(cx+6,18,'Im','lab','start');
+ o+=tx(100,H-6,'stable (Re &lt; 0)','small','middle','var(--c3)')+tx(290,H-6,'instable (Re &gt; 0)','small','middle','var(--warn)');
+ const P=(x,y,l)=>{o+=tx(cx+x*s,cy-y*s+5,'×','big2','middle','var(--c2)')+tx(cx+x*s+9,cy-y*s-6,l,'small','start');};
+ P(-2.5,0,'a');P(-1.6,1.6,'b');P(-1.6,-1.6,'b');P(0,1.9,'c');P(0,-1.9,'c');P(0,0,'d');P(2.2,0,'e');P(1.5,1.5,'f');P(1.5,-1.5,'f');
+ return o+'</svg>';}
+{const PP=(f,cap,c,y)=>({x:[0,6.2],y:y||[-1.3,1.3],xt:[[3,'']],s:[{f,n:600,c:c||'var(--c2)',w:1.8}],cap});
+fig('poles',[
+ {svg:poleMap,wide:true,cap:'Le plan complexe des pôles. À gauche de l’axe imaginaire (vert) : stable. À droite (rouge) : instable. Les lettres renvoient aux réponses ci-dessous.'},
+ PP(t=>E(-1*t),'a) pôle réel négatif : exponentielle décroissante (filtre d’ordre 1).','var(--c3)',[-0.2,1.2]),
+ PP(t=>E(-0.5*t)*Co(3*t),'b) pôles complexes, Re < 0 : sinusoïde amortie (filtre d’ordre 2).','var(--c3)'),
+ PP(t=>Co(3*t),'c) pôles sur l’axe imaginaire : oscillation entretenue (oscillateur).','var(--c1)'),
+ PP(t=>1,'d) pôle en 0 : réponse constante, ni amortie ni explosive.','var(--c1)',[-0.2,1.3]),
+ PP(t=>E(0.45*t),'e) pôle réel positif : exponentielle qui explose. Instable.','var(--warn)',[-0.2,16]),
+ PP(t=>E(0.35*t)*Co(3*t),'f) pôles complexes, Re > 0 : oscillation qui grandit. Instable.','var(--warn)',[-9,9])
+],3);}
+
+
+/* ---------- interactives ---------- */
+live('fenlive',[{l:'durée τ (en périodes)',min:1,max:20,st:0.5,v:4,f:x=>fmt(x)}],
+ (T)=>'<div class="lv-grid">'
+  +plot({x:[-11,11],y:[-1.3,1.3],yl:'s<tspan baseline-shift="sub" font-size="75%">Π</tspan>(t)',xt:[[-T/2,'−τ/2'],[T/2,'τ/2']],s:[{f:t=>A(t)<=T/2?Co(2*PI*t):0,n:2400,w:1.4}]})
+  +plot({x:[-2.5,2.5],y:[-0.35,1.15],xl:'f',yl:'',xt:[[-1,'−F₀'],[1,'F₀']],s:[{type:'dirac',xs:[-1,1],h:1,c:'var(--rule)',w:1.4},{f:f=>sinc(T*(f+1))+sinc(T*(f-1)),n:1500,c:'var(--c2)',w:2}]})
+  +'</div><p class="lv-info">Hauteur des pics : <b>τ/2 = '+fmt(T/2,2)+'</b> (ici ramenée à 1) ; lobe central de largeur <b>2/τ = '+fmt(2/T,2)+' F₀</b>. Les flèches grises sont les raies théoriques.</p>',
+ 'À gauche : le cosinus observé pendant τ. À droite : son spectre. Une observation courte donne des bosses larges qui se mélangent ; une observation longue donne des pics fins, proches des raies théoriques.');
+
+live('bclive',[{l:'ordre n',min:1,max:8,st:1,v:3,f:x=>String(x)},{l:'ondulation A<sub>max</sub> (dB)',min:0.1,max:3,st:0.1,v:1,f:x=>fmt(x,1)}],
+ (n,r)=>{const e=SQ(10**(r/10)-1),x2=lg(2);
+  return '<div class="lv-grid">'
+  +plot({x:[-1,1.05],y:[-80,3],xl:'Ω (log)',yl:'gain (dB)',xt:LT,yt:[[-20,'−20'],[-40,'−40'],[-60,'−60']],s:[{f:Gb(n,e),n:700,c:'var(--c1)',w:2},{f:Gc(n,e),n:900,c:'var(--c2)',w:2}],tx:[{x:-0.97,y:-66,t:'Butterworth',c:'var(--c1)'},{x:-0.97,y:-75,t:'Tchebychev',c:'var(--c2)'}]})
+  +plot({x:[-1,0.3],y:[-(r+1.6),0.5],xl:'Ω (log)',yl:'zoom (dB)',xt:[[-1,'0,1'],[0,'1']],yt:[[-r,'−'+fmt(r,1)]],hl:[{y:-r}],s:[{f:Gb(n,e),n:700,c:'var(--c1)',w:2},{f:Gc(n,e),n:900,c:'var(--c2)',w:2}]})
+  +'</div><p class="lv-info">ε = <b>'+fmt(e,3)+'</b>. Atténuation en Ω = 2 : Butterworth <b>'+fmt(-Gb(n,e)(x2),1)+' dB</b>, Tchebychev <b>'+fmt(-Gc(n,e)(x2),1)+' dB</b>.</p>';},
+ 'Les deux filtres ont le même ordre et la même atténuation A<sub>max</sub> en Ω = 1. À droite (zoom), Butterworth est plat alors que Tchebychev ondule entre 0 et −A<sub>max</sub>. À gauche, Tchebychev coupe plus vite : à Ω = 2, il atténue davantage. Plus l’ondulation autorisée est forte, plus l’écart grandit.');
+
+live('polelive',[{l:'partie réelle σ',min:-2,max:1,st:0.05,v:-0.5,f:x=>fmt(x,2)},{l:'partie imaginaire ω',min:0,max:8,st:0.25,v:3,f:x=>fmt(x,2)}],
+ (sg,w)=>{const h=t=>E(sg*t)*Co(w*t);let M=1;for(let i=0;i<=300;i++)M=Math.max(M,A(h(6*i/300)));M=Math.min(M,60)*1.1;
+  const st=sg<-1e-9?'<b style="color:var(--c3)">stable</b> : h(t) s’éteint':sg>1e-9?'<b style="color:var(--warn)">instable</b> : h(t) explose':'<b>limite (oscillateur)</b> : h(t) ne s’éteint pas';
+  const pts=w>0?[[sg,w],[sg,-w]]:[[sg,0]];
+  return '<div class="lv-grid">'
+  +plot({x:[-2.3,1.3],y:[-9,9],xl:'Re',yl:'Im',xt:[[-2,'−2'],[-1,'−1'],[1,'1']],yt:[[5,'5'],[-5,'−5']],s:[{type:'area',f:x=>9,a:-2.3,b:0,c:'var(--c3)'},{type:'area',f:x=>-9,a:-2.3,b:0,c:'var(--c3)'}],tx:pts.map(([a,b])=>({x:a,y:b-0.9,t:'<tspan font-size="22" font-weight="700">×</tspan>',a:'middle',c:'var(--c2)'}))})
+  +plot({x:[0,6.2],y:[-M,M],yl:'h(t)',xt:[[2,'2'],[4,'4'],[6,'6']],s:[{f:h,n:900,c:'var(--c2)',w:2}]})
+  +'</div><p class="lv-info">Pôles : '+fmt(sg,2)+(w>0?' ± j'+fmt(w,2):'')+'. Partie réelle '+(sg<0?'négative':sg>0?'positive':'nulle')+' : '+st+'.</p>';},
+ 'À gauche : la position des pôles (zone verte = stable). À droite : la réponse impulsionnelle e<sup>σt</sup> cos(ωt). σ règle l’amortissement (plus il est négatif, plus h s’éteint vite) ; ω règle la vitesse d’oscillation (ω = 0 : pôle réel, pas d’oscillation).');
+
+})();
+</script>
+<script>
+(function(){
+ const list=document.getElementById('toc-list'),toc=document.getElementById('toc');
+ const clean=s=>s.replace(/\\\((.*?)\\\)/g,(m,x)=>x.replace(/\\mathrm\{(.*?)\}/g,'$1').replace(/\\delta/g,'δ').replace(/\\log_\{10\}/g,'log₁₀').replace(/_\{T_0\}/g,'').replace(/\^2/g,'²').replace(/\\!/g,'').replace(/[\\{}]/g,'')).replace(/\s+/g,' ').trim();
+ const heads=[...document.querySelectorAll('main h2, main h3')];
+ const links=[];
+ heads.forEach((h,i)=>{
+  if(!h.id)h.id='s'+i;
+  const c=h.cloneNode(true);c.querySelectorAll('.tag').forEach(t=>t.remove());
+  const li=document.createElement('li'),a=document.createElement('a');
+  a.href='#'+h.id;a.textContent=clean(c.textContent);a.className=h.tagName==='H2'?'t2':'t3';
+  li.appendChild(a);list.appendChild(li);links.push([h,a]);
+ });
+ const btn=toc.querySelector('.toc-toggle'),state=toc.querySelector('.toc-state');
+ const setOpen=o=>{toc.classList.toggle('open',o);btn.setAttribute('aria-expanded',o);state.textContent=o?'Masquer':'Afficher';};
+ btn.addEventListener('click',()=>setOpen(!toc.classList.contains('open')));
+ list.addEventListener('click',e=>{if(e.target.tagName==='A')setOpen(false);});
+ let current=null;
+ const mark=a=>{if(current===a)return;if(current)current.classList.remove('active');current=a;a.classList.add('active');if(getComputedStyle(btn).display==='none'){const r=a.getBoundingClientRect(),tr=toc.getBoundingClientRect();if(r.top<tr.top+40||r.bottom>tr.bottom-40)a.scrollIntoView({block:'center'});}};
+ const spy=()=>{let best=links[0];for(const l of links){if(l[0].getBoundingClientRect().top<120)best=l;else break;}if(best)mark(best[1]);};
+ addEventListener('scroll',spy,{passive:true});spy();
+
+ const el=document.getElementById('hero-wave');if(!el)return;
+ const W=1000,H=190,PI=Math.PI,mid=80;
+ const hs=k=>{let x=Math.sin(k*12.9898)*43758.5453;return x-Math.floor(x);};
+ const pure=t=>Math.sin(2*PI*1.5*t),noisy=t=>pure(t)+0.32*Math.sin(2*PI*17*t+1)+0.22*Math.sin(2*PI*29*t)+0.25*(hs(Math.round(t*400))-0.5);
+ let d1='',d2='';for(let i=0;i<=600;i++){const t=i/600;d1+=(i?'L':'M')+(20+t*290).toFixed(1)+' '+(mid-38*noisy(t)).toFixed(1);d2+=(i?'L':'M')+(690+t*295).toFixed(1)+' '+(mid-46*pure(t-0.04)).toFixed(1);}
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Un signal bruité traverse un filtre passe-bas et ressort propre">`;
+ s+=`<line x1="20" x2="310" y1="${mid}" y2="${mid}" style="stroke:var(--grid);stroke-width:1.2"/><line x1="690" x2="985" y1="${mid}" y2="${mid}" style="stroke:var(--grid);stroke-width:1.2"/>`;
+ s+=`<path d="${d1}" style="fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round"/><path d="${d2}" style="fill:none;stroke:var(--c2);stroke-width:2.6"/>`;
+ const ar=(x1,x2,y)=>`<line x1="${x1}" x2="${x2-10}" y1="${y}" y2="${y}" style="stroke:var(--ink-2);stroke-width:1.8"/><path d="M${x2} ${y}l-11 -6v12z" style="fill:var(--ink-2)"/>`;
+ s+=ar(335,415,mid)+ar(585,665,mid);
+ s+=`<rect x="415" y="22" width="170" height="116" rx="4" style="fill:var(--sheet);stroke:var(--ink);stroke-width:1.8"/>`;
+ let g='';for(let i=0;i<=200;i++){const x=i/200,f=10**(-1+2*x),G=1/Math.sqrt(1+f**8);g+=(i?'L':'M')+(430+x*140).toFixed(1)+' '+(120-62*G).toFixed(1);}
+ s+=`<line x1="430" x2="572" y1="120" y2="120" style="stroke:var(--rule);stroke-width:1.2"/><line x1="430" x2="430" y1="120" y2="48" style="stroke:var(--rule);stroke-width:1.2"/><path d="${g}" style="fill:none;stroke:var(--c4);stroke-width:2.4"/>`;
+ s+=`<text x="500" y="40" text-anchor="middle" style="font-family:var(--serif);font-style:italic;font-size:17px;fill:var(--ink-2)">|H(f)|</text>`;
+ [[20,'le signal bruité'],[415,'le filtre passe-bas'],[690,'le signal filtré']].forEach(([x,l])=>{s+=`<text x="${x}" y="${H-3}" style="font-family:var(--sans);font-size:15px;font-weight:500;fill:var(--ink-2)">${l}</text>`;});
+ el.innerHTML=s+'</svg>';
+})();
+</script>
+</body>
+</html>
